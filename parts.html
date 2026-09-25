@@ -1,0 +1,3500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI PC & Laptop Repair Assistant | Parts Explorer</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+:root{
+    --bg:#07111f;
+    --bg2:#0b1728;
+    --card:rgba(15,29,48,.82);
+    --card2:#102039;
+    --text:#f5f7fb;
+    --muted:#9baac0;
+    --primary:#6c63ff;
+    --primary2:#8b7cff;
+    --cyan:#00d9ff;
+    --green:#21e6a0;
+    --border:rgba(255,255,255,.09);
+    --shadow:0 20px 60px rgba(0,0,0,.3);
+}
+
+body.light{
+    --bg:#f4f7fb;
+    --bg2:#ffffff;
+    --card:rgba(255,255,255,.92);
+    --card2:#ffffff;
+    --text:#111827;
+    --muted:#667085;
+    --border:rgba(15,23,42,.1);
+    --shadow:0 20px 50px rgba(15,23,42,.1);
+}
+
+body{
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:
+        radial-gradient(circle at 10% 10%,rgba(108,99,255,.13),transparent 28%),
+        radial-gradient(circle at 90% 20%,rgba(0,217,255,.09),transparent 25%),
+        var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    transition:.3s ease;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    backdrop-filter:blur(20px);
+    background:rgba(7,17,31,.76);
+    border-bottom:1px solid var(--border);
+}
+
+body.light .header{
+    background:rgba(255,255,255,.82);
+}
+
+.navbar{
+    max-width:1400px;
+    margin:auto;
+    padding:16px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:25px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.logo-mark{
+    width:40px;
+    height:40px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,var(--primary),var(--cyan));
+    box-shadow:0 0 25px rgba(108,99,255,.4);
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.nav-links a{
+    padding:10px 15px;
+    border-radius:10px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+    color:var(--text);
+    background:rgba(108,99,255,.13);
+}
+
+.theme-btn{
+    width:42px;
+    height:42px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--card);
+    color:var(--text);
+    transition:.3s;
+}
+
+.theme-btn:hover{
+    transform:rotate(15deg) scale(1.08);
+    border-color:var(--primary);
+}
+
+.hero{
+    max-width:1400px;
+    margin:auto;
+    min-height:620px;
+    padding:80px 28px 70px;
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    align-items:center;
+    gap:50px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 15px;
+    border:1px solid rgba(108,99,255,.3);
+    background:rgba(108,99,255,.08);
+    border-radius:50px;
+    color:#b9b4ff;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.hero h1{
+    margin-top:22px;
+    font-size:clamp(42px,5vw,72px);
+    line-height:1.03;
+    letter-spacing:-3px;
+}
+
+.gradient-text{
+    background:linear-gradient(90deg,#fff,var(--cyan),var(--primary2));
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    margin-top:22px;
+    max-width:700px;
+    color:var(--muted);
+    line-height:1.8;
+    font-size:17px;
+}
+
+.hero-actions{
+    display:flex;
+    gap:14px;
+    margin-top:30px;
+    flex-wrap:wrap;
+}
+
+.primary-btn,
+.secondary-btn{
+    border:none;
+    border-radius:13px;
+    padding:14px 20px;
+    font-weight:800;
+    position:relative;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.primary-btn{
+    color:white;
+    background:linear-gradient(135deg,var(--primary),#4e8cff);
+    box-shadow:0 12px 30px rgba(108,99,255,.25);
+}
+
+.secondary-btn{
+    color:var(--text);
+    border:1px solid var(--border);
+    background:var(--card);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover{
+    transform:translateY(-3px);
+}
+
+.hero-stats{
+    margin-top:40px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+}
+
+.stat strong{
+    display:block;
+    font-size:25px;
+}
+
+.stat span{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.hero-visual{
+    min-height:450px;
+    display:grid;
+    place-items:center;
+    position:relative;
+}
+
+.orbit{
+    width:360px;
+    height:360px;
+    border:1px solid rgba(108,99,255,.25);
+    border-radius:50%;
+    position:relative;
+    animation:spin 24s linear infinite;
+}
+
+.orbit:before,
+.orbit:after{
+    content:"";
+    position:absolute;
+    inset:35px;
+    border:1px solid rgba(0,217,255,.16);
+    border-radius:50%;
+}
+
+.orbit:after{
+    inset:90px;
+    border-color:rgba(108,99,255,.2);
+}
+
+.orbit-center{
+    position:absolute;
+    width:120px;
+    height:120px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    border-radius:35px;
+    display:grid;
+    place-items:center;
+    font-size:48px;
+    background:linear-gradient(135deg,var(--primary),var(--cyan));
+    box-shadow:0 0 70px rgba(108,99,255,.35);
+    animation:pulse 2.5s ease-in-out infinite;
+}
+
+.orbit-item{
+    position:absolute;
+    width:55px;
+    height:55px;
+    display:grid;
+    place-items:center;
+    border-radius:18px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    font-size:22px;
+}
+
+.o1{top:-15px;left:150px}
+.o2{right:5px;top:75px}
+.o3{right:15px;bottom:55px}
+.o4{left:150px;bottom:-15px}
+.o5{left:5px;bottom:55px}
+.o6{left:0;top:75px}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+@keyframes pulse{
+    50%{transform:translate(-50%,-50%) scale(1.06)}
+}
+
+.section{
+    max-width:1400px;
+    margin:auto;
+    padding:70px 28px;
+}
+
+.section-heading{
+    margin-bottom:35px;
+}
+
+.section-heading h2{
+    margin-top:12px;
+    font-size:38px;
+    letter-spacing:-1.5px;
+}
+
+.section-heading p{
+    margin-top:10px;
+    max-width:700px;
+    color:var(--muted);
+    line-height:1.7;
+}
+
+.search-box{
+    position:relative;
+    margin-bottom:20px;
+}
+
+.search-box input{
+    width:100%;
+    padding:19px 22px 19px 55px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:16px;
+    outline:none;
+    transition:.3s;
+}
+
+.search-box input:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 4px rgba(108,99,255,.1);
+}
+
+.search-icon{
+    position:absolute;
+    left:20px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+}
+
+.filters{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+    margin-bottom:35px;
+}
+
+.filter-btn{
+    border:1px solid var(--border);
+    color:var(--muted);
+    background:var(--card);
+    padding:10px 15px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+    transition:.25s;
+}
+
+.filter-btn:hover,
+.filter-btn.active{
+    background:linear-gradient(135deg,var(--primary),#4e8cff);
+    color:white;
+    border-color:transparent;
+    transform:translateY(-2px);
+}
+
+.parts-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.part-card{
+    position:relative;
+    overflow:hidden;
+    padding:22px;
+    border-radius:20px;
+    background:linear-gradient(145deg,var(--card),rgba(108,99,255,.035));
+    border:1px solid var(--border);
+    transition:.35s;
+}
+
+.part-card:before{
+    content:"";
+    position:absolute;
+    width:150px;
+    height:150px;
+    background:var(--primary);
+    opacity:.07;
+    border-radius:50%;
+    filter:blur(35px);
+    right:-60px;
+    top:-60px;
+}
+
+.part-card:hover{
+    transform:translateY(-8px);
+    border-color:rgba(108,99,255,.35);
+    box-shadow:var(--shadow);
+}
+
+.part-icon{
+    width:55px;
+    height:55px;
+    border-radius:16px;
+    display:grid;
+    place-items:center;
+    font-size:27px;
+    background:rgba(108,99,255,.11);
+    margin-bottom:18px;
+}
+
+.part-category{
+    color:var(--cyan);
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.part-card h3{
+    margin-top:7px;
+    font-size:19px;
+}
+
+.part-card p{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+    margin-top:9px;
+    min-height:62px;
+}
+
+.specs{
+    list-style:none;
+    margin-top:15px;
+    border-top:1px solid var(--border);
+    padding-top:12px;
+}
+
+.specs li{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    color:var(--muted);
+    font-size:11px;
+    padding:5px 0;
+}
+
+.specs strong{
+    color:var(--text);
+}
+
+.card-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:17px;
+}
+
+.price{
+    font-size:16px;
+    font-weight:900;
+}
+
+.details-btn{
+    border:1px solid var(--border);
+    color:var(--text);
+    background:transparent;
+    padding:9px 12px;
+    border-radius:9px;
+    font-size:11px;
+    font-weight:800;
+    transition:.25s;
+}
+
+.details-btn:hover{
+    background:var(--primary);
+    color:white;
+    border-color:var(--primary);
+}
+
+.hide-card{
+    display:none!important;
+}
+
+.no-results{
+    display:none;
+    text-align:center;
+    padding:60px;
+    color:var(--muted);
+    border:1px dashed var(--border);
+    border-radius:18px;
+}
+
+.tools-section{
+    max-width:1400px;
+    margin:30px auto 0;
+    padding:70px 28px;
+}
+
+.tools-header{
+    text-align:center;
+    max-width:750px;
+    margin:0 auto 38px;
+}
+
+.tools-header h2{
+    font-size:40px;
+    margin-top:12px;
+}
+
+.tools-header p{
+    color:var(--muted);
+    line-height:1.7;
+    margin-top:12px;
+}
+
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.tool-card{
+    border:1px solid var(--border);
+    background:linear-gradient(145deg,var(--card),rgba(108,99,255,.04));
+    border-radius:20px;
+    overflow:hidden;
+    transition:.35s;
+}
+
+.tool-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(108,99,255,.35);
+    box-shadow:var(--shadow);
+}
+
+.tool-trigger{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:var(--text);
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    text-align:left;
+}
+
+.tool-icon{
+    width:52px;
+    height:52px;
+    min-width:52px;
+    display:grid;
+    place-items:center;
+    border-radius:15px;
+    background:rgba(108,99,255,.12);
+    font-size:23px;
+}
+
+.tool-info{
+    flex:1;
+}
+
+.tool-info h3{
+    font-size:16px;
+}
+
+.tool-info p{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:5px;
+}
+
+.tool-arrow{
+    color:var(--muted);
+    transition:.35s;
+}
+
+.tool-card.open .tool-arrow{
+    transform:rotate(180deg);
+    color:var(--cyan);
+}
+
+.tool-panel{
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition:max-height .5s ease,opacity .3s ease,padding .4s ease;
+    padding:0 22px;
+}
+
+.tool-card.open .tool-panel{
+    max-height:800px;
+    opacity:1;
+    padding:0 22px 22px;
+}
+
+.tool-inner{
+    border-top:1px solid var(--border);
+    padding-top:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:13px;
+}
+
+.field label{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:800;
+    margin-bottom:7px;
+}
+
+.field select,
+.field input,
+.field textarea{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--bg2);
+    color:var(--text);
+    outline:none;
+}
+
+.field textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.tool-action{
+    margin-top:15px;
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:11px;
+    color:white;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--primary),#4e8cff);
+    position:relative;
+    overflow:hidden;
+    transition:.25s;
+}
+
+.tool-action:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 25px rgba(108,99,255,.25);
+}
+
+.result-box{
+    margin-top:15px;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:rgba(0,0,0,.12);
+    color:var(--muted);
+    line-height:1.7;
+    font-size:13px;
+}
+
+.result-box strong{
+    color:var(--text);
+}
+
+.score{
+    font-size:38px;
+    font-weight:900;
+    color:var(--green);
+}
+
+.compare-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.compare-result{
+    margin-top:15px;
+}
+
+.info-section{
+    max-width:1400px;
+    margin:auto;
+    padding:90px 28px;
+    scroll-margin-top:80px;
+}
+
+.how-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.how-card{
+    position:relative;
+    padding:28px;
+    min-height:260px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--card);
+    overflow:hidden;
+    transition:.35s;
+    opacity:0;
+    transform:translateY(30px);
+}
+
+.section-visible .how-card{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.section-visible .how-card:nth-child(2){transition-delay:.08s}
+.section-visible .how-card:nth-child(3){transition-delay:.16s}
+.section-visible .how-card:nth-child(4){transition-delay:.24s}
+
+.how-card:hover{
+    transform:translateY(-8px);
+    border-color:rgba(108,99,255,.4);
+}
+
+.how-number{
+    position:absolute;
+    right:18px;
+    top:14px;
+    font-size:55px;
+    font-weight:900;
+    opacity:.05;
+}
+
+.how-icon{
+    font-size:30px;
+    margin-bottom:35px;
+}
+
+.how-card h3{
+    font-size:19px;
+}
+
+.how-card p{
+    color:var(--muted);
+    line-height:1.7;
+    font-size:13px;
+    margin-top:10px;
+}
+
+.about-section{
+    border-top:1px solid var(--border);
+}
+
+.about-container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:70px;
+    align-items:center;
+}
+
+.about-content h2{
+    margin-top:14px;
+    font-size:42px;
+}
+
+.about-content>p{
+    color:var(--muted);
+    line-height:1.8;
+    margin-top:17px;
+}
+
+.about-features{
+    margin-top:28px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+}
+
+.about-feature{
+    display:flex;
+    gap:11px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--card);
+}
+
+.about-feature>span{
+    color:var(--green);
+    font-weight:900;
+}
+
+.about-feature strong{
+    display:block;
+    font-size:12px;
+}
+
+.about-feature small{
+    display:block;
+    color:var(--muted);
+    margin-top:4px;
+    line-height:1.4;
+}
+
+.about-visual{
+    display:grid;
+    place-items:center;
+    min-height:400px;
+}
+
+.about-orbit{
+    width:330px;
+    height:330px;
+    border:1px solid rgba(108,99,255,.3);
+    border-radius:50%;
+    position:relative;
+    animation:spin 22s linear infinite;
+}
+
+.about-center{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:100px;
+    height:100px;
+    display:grid;
+    place-items:center;
+    border-radius:30px;
+    font-size:40px;
+    background:linear-gradient(135deg,var(--primary),var(--cyan));
+    box-shadow:0 0 50px rgba(108,99,255,.3);
+}
+
+.about-item{
+    position:absolute;
+    padding:12px 16px;
+    border-radius:12px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    font-size:11px;
+    font-weight:900;
+}
+
+.item-one{top:-15px;left:125px}
+.item-two{right:-25px;top:100px}
+.item-three{right:5px;bottom:35px}
+.item-four{left:105px;bottom:-25px}
+.item-five{left:-30px;top:105px}
+
+.footer{
+    border-top:1px solid var(--border);
+    padding:35px 28px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px);
+    z-index:2000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(650px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:28px;
+    position:relative;
+    box-shadow:0 30px 100px rgba(0,0,0,.5);
+    animation:modalIn .3s ease;
+}
+
+@keyframes modalIn{
+    from{opacity:0;transform:scale(.94) translateY(20px)}
+    to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+.close-modal{
+    position:absolute;
+    right:18px;
+    top:18px;
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text);
+    font-size:20px;
+}
+
+.modal-icon{
+    font-size:45px;
+}
+
+.modal-category{
+    color:var(--cyan);
+    font-size:11px;
+    font-weight:900;
+    margin-top:15px;
+}
+
+.modal-box h2{
+    margin-top:6px;
+    font-size:30px;
+}
+
+.modal-description{
+    color:var(--muted);
+    line-height:1.7;
+    margin-top:12px;
+}
+
+.modal-info{
+    margin-top:20px;
+    display:grid;
+    gap:12px;
+}
+
+.modal-info div{
+    padding:15px;
+    border-radius:12px;
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--border);
+}
+
+.modal-info strong{
+    display:block;
+    font-size:11px;
+    color:var(--cyan);
+    margin-bottom:5px;
+}
+
+.modal-info span{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+}
+
+.top-btn{
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    width:45px;
+    height:45px;
+    border:0;
+    border-radius:14px;
+    color:white;
+    background:linear-gradient(135deg,var(--primary),var(--cyan));
+    z-index:900;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(20px);
+    transition:.3s;
+}
+
+.top-btn.show{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+}
+
+.ripple{
+    position:absolute;
+    border-radius:50%;
+    transform:scale(0);
+    animation:ripple .6s linear;
+    background:rgba(255,255,255,.35);
+    pointer-events:none;
+}
+
+@keyframes ripple{
+    to{
+        transform:scale(4);
+        opacity:0;
+    }
+}
+
+@media(max-width:1100px){
+    .parts-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .how-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .tools-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:850px){
+    .navbar{
+        flex-wrap:wrap;
+    }
+
+    .nav-links{
+        order:3;
+        width:100%;
+        overflow-x:auto;
+        justify-content:flex-start;
+    }
+
+    .hero{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .hero p{
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .hero-actions,
+    .hero-stats{
+        justify-content:center;
+    }
+
+    .hero-visual{
+        min-height:350px;
+    }
+
+    .about-container{
+        grid-template-columns:1fr;
+    }
+
+    .about-content{
+        text-align:center;
+    }
+
+    .about-features{
+        text-align:left;
+    }
+}
+
+@media(max-width:650px){
+    .navbar,
+    .hero,
+    .section,
+    .tools-section,
+    .info-section{
+        padding-left:17px;
+        padding-right:17px;
+    }
+
+    .hero{
+        padding-top:55px;
+    }
+
+    .hero h1{
+        letter-spacing:-2px;
+    }
+
+    .orbit{
+        width:280px;
+        height:280px;
+    }
+
+    .orbit-center{
+        width:90px;
+        height:90px;
+    }
+
+    .o1,.o4{
+        left:112px;
+    }
+
+    .parts-grid,
+    .tools-grid,
+    .how-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid,
+    .compare-grid,
+    .about-features{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .section-heading h2,
+    .tools-header h2,
+    .about-content h2{
+        font-size:30px;
+    }
+
+    .hero-stats{
+        gap:18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="navbar">
+
+        <a href="index.html" class="logo">
+            <span class="logo-mark">⚡</span>
+            <span>PC Repair AI</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#parts" class="active">Parts Explorer</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <button class="theme-btn" id="themeBtn" title="Change theme">🌙</button>
+
+    </div>
+</header>
+
+<main>
+
+<section class="hero">
+
+    <div>
+
+        <span class="badge">🔧 SMART HARDWARE LIBRARY</span>
+
+        <h1>
+            Build Smarter.<br>
+            Choose <span class="gradient-text">Compatible Parts.</span>
+        </h1>
+
+        <p>
+            Explore PC and laptop components, understand specifications,
+            check hardware compatibility, estimate your build budget and
+            troubleshoot common hardware problems.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#parts" class="primary-btn ripple-btn">Explore Parts</a>
+            <a href="#smart-tools" class="secondary-btn ripple-btn">Open Smart Tools</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat">
+                <strong>30+</strong>
+                <span>Components</span>
+            </div>
+
+            <div class="stat">
+                <strong>20+</strong>
+                <span>Compatibility Rules</span>
+            </div>
+
+            <div class="stat">
+                <strong>₹</strong>
+                <span>Budget Estimator</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hero-visual">
+
+        <div class="orbit">
+
+            <div class="orbit-center">⚡</div>
+
+            <div class="orbit-item o1">🧠</div>
+            <div class="orbit-item o2">💾</div>
+            <div class="orbit-item o3">🎮</div>
+            <div class="orbit-item o4">⚡</div>
+            <div class="orbit-item o5">❄️</div>
+            <div class="orbit-item o6">🔋</div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section" id="parts">
+
+    <div class="section-heading">
+
+        <span class="badge">🧩 HARDWARE EXPLORER</span>
+
+        <h2>Find Your PC & Laptop Parts</h2>
+
+        <p>
+            Search for a component or filter the library by hardware category.
+            Click any part to see detailed information.
+        </p>
+
+    </div>
+
+    <div class="search-box">
+
+        <span class="search-icon">🔎</span>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search CPU, RAM, SSD, GPU, battery, keyboard..."
+        >
+
+    </div>
+
+    <div class="filters">
+
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="processor">CPU</button>
+        <button class="filter-btn" data-filter="motherboard">Motherboard</button>
+        <button class="filter-btn" data-filter="memory">RAM</button>
+        <button class="filter-btn" data-filter="storage">Storage</button>
+        <button class="filter-btn" data-filter="graphics">GPU</button>
+        <button class="filter-btn" data-filter="power">Power</button>
+        <button class="filter-btn" data-filter="cooling">Cooling</button>
+        <button class="filter-btn" data-filter="laptop">Laptop</button>
+        <button class="filter-btn" data-filter="peripheral">Peripheral</button>
+        <button class="filter-btn" data-filter="chassis">Chassis</button>
+
+    </div>
+
+    <div class="parts-grid" id="partsGrid">
+
+        <article class="part-card" data-category="processor" data-name="cpu processor intel amd">
+            <div class="part-icon">🧠</div>
+            <span class="part-category">Processor</span>
+            <h3>CPU / Processor</h3>
+            <p>The main processing unit responsible for calculations and application performance.</p>
+            <ul class="specs">
+                <li><span>Brands</span><strong>Intel / AMD</strong></li>
+                <li><span>Important</span><strong>Socket</strong></li>
+                <li><span>Use</span><strong>All PCs</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹7,000+</span>
+                <button class="details-btn" data-part="CPU">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="motherboard" data-name="motherboard mainboard board">
+            <div class="part-icon">🧩</div>
+            <span class="part-category">Motherboard</span>
+            <h3>Motherboard</h3>
+            <p>Connects the CPU, RAM, storage, GPU and other hardware components.</p>
+            <ul class="specs">
+                <li><span>Important</span><strong>Socket</strong></li>
+                <li><span>Memory</span><strong>DDR4/DDR5</strong></li>
+                <li><span>Form</span><strong>ATX/mATX</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹5,000+</span>
+                <button class="details-btn" data-part="Motherboard">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="memory" data-name="ram memory ddr4 ddr5">
+            <div class="part-icon">🧠</div>
+            <span class="part-category">Memory</span>
+            <h3>RAM</h3>
+            <p>Temporary memory used by applications and the operating system.</p>
+            <ul class="specs">
+                <li><span>Common</span><strong>8–64 GB</strong></li>
+                <li><span>Types</span><strong>DDR4/DDR5</strong></li>
+                <li><span>Upgrade</span><strong>Yes</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹2,500+</span>
+                <button class="details-btn" data-part="RAM">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="storage" data-name="nvme ssd m2 storage">
+            <div class="part-icon">💾</div>
+            <span class="part-category">Storage</span>
+            <h3>NVMe SSD</h3>
+            <p>High-speed storage connected through the M.2 interface.</p>
+            <ul class="specs">
+                <li><span>Interface</span><strong>PCIe</strong></li>
+                <li><span>Size</span><strong>500GB–4TB</strong></li>
+                <li><span>Speed</span><strong>Very High</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹3,000+</span>
+                <button class="details-btn" data-part="NVMe SSD">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="storage" data-name="sata ssd 2.5 storage">
+            <div class="part-icon">💽</div>
+            <span class="part-category">Storage</span>
+            <h3>SATA SSD</h3>
+            <p>A reliable solid-state storage option for desktops and laptops.</p>
+            <ul class="specs">
+                <li><span>Interface</span><strong>SATA III</strong></li>
+                <li><span>Form</span><strong>2.5"</strong></li>
+                <li><span>Speed</span><strong>Fast</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹2,500+</span>
+                <button class="details-btn" data-part="SATA SSD">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="storage" data-name="hdd hard disk drive storage">
+            <div class="part-icon">💿</div>
+            <span class="part-category">Storage</span>
+            <h3>HDD</h3>
+            <p>Traditional mechanical storage suitable for large amounts of data.</p>
+            <ul class="specs">
+                <li><span>Capacity</span><strong>1TB–8TB</strong></li>
+                <li><span>Price</span><strong>Low/GB</strong></li>
+                <li><span>Speed</span><strong>Medium</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹3,500+</span>
+                <button class="details-btn" data-part="HDD">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="graphics" data-name="gpu graphics card nvidia amd">
+            <div class="part-icon">🎮</div>
+            <span class="part-category">Graphics</span>
+            <h3>GPU</h3>
+            <p>Handles graphics rendering, gaming workloads, editing and AI acceleration.</p>
+            <ul class="specs">
+                <li><span>Brands</span><strong>NVIDIA/AMD</strong></li>
+                <li><span>Memory</span><strong>4GB+</strong></li>
+                <li><span>Use</span><strong>Gaming/AI</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹21,000+</span>
+                <button class="details-btn" data-part="GPU">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="power" data-name="psu power supply smps">
+            <div class="part-icon">⚡</div>
+            <span class="part-category">Power</span>
+            <h3>Power Supply</h3>
+            <p>Converts AC power into the regulated DC power required by PC components.</p>
+            <ul class="specs">
+                <li><span>Common</span><strong>450–850W</strong></li>
+                <li><span>Efficiency</span><strong>80 Plus</strong></li>
+                <li><span>Important</span><strong>Wattage</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹3,200+</span>
+                <button class="details-btn" data-part="PSU">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="cooling" data-name="cpu cooler heatsink cooling">
+            <div class="part-icon">❄️</div>
+            <span class="part-category">Cooling</span>
+            <h3>CPU Cooler</h3>
+            <p>Removes heat from the processor and helps maintain stable temperatures.</p>
+            <ul class="specs">
+                <li><span>Types</span><strong>Air/AIO</strong></li>
+                <li><span>Use</span><strong>CPU</strong></li>
+                <li><span>Importance</span><strong>High</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹1,800+</span>
+                <button class="details-btn" data-part="CPU Cooler">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="cooling" data-name="case fan cabinet fan cooling">
+            <div class="part-icon">🌀</div>
+            <span class="part-category">Cooling</span>
+            <h3>Case Fan</h3>
+            <p>Improves airflow inside the cabinet and helps remove hot air.</p>
+            <ul class="specs">
+                <li><span>Sizes</span><strong>120/140mm</strong></li>
+                <li><span>Type</span><strong>Airflow</strong></li>
+                <li><span>Use</span><strong>Cabinet</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹500+</span>
+                <button class="details-btn" data-part="Case Fan">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="chassis" data-name="pc cabinet case chassis tower">
+            <div class="part-icon">🖥️</div>
+            <span class="part-category">Chassis</span>
+            <h3>PC Cabinet</h3>
+            <p>Protects components and provides mounting points and airflow.</p>
+            <ul class="specs">
+                <li><span>Types</span><strong>ATX/mATX</strong></li>
+                <li><span>Airflow</span><strong>Important</strong></li>
+                <li><span>GPU</span><strong>Check Length</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹3,000+</span>
+                <button class="details-btn" data-part="PC Cabinet">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="laptop" data-name="laptop battery notebook battery">
+            <div class="part-icon">🔋</div>
+            <span class="part-category">Laptop</span>
+            <h3>Laptop Battery</h3>
+            <p>Provides portable power for notebooks and laptops.</p>
+            <ul class="specs">
+                <li><span>Type</span><strong>Li-ion</strong></li>
+                <li><span>Important</span><strong>Voltage</strong></li>
+                <li><span>Check</span><strong>Model</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹1,500+</span>
+                <button class="details-btn" data-part="Laptop Battery">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="laptop" data-name="laptop display screen lcd led panel">
+            <div class="part-icon">📺</div>
+            <span class="part-category">Laptop</span>
+            <h3>Laptop Display</h3>
+            <p>LCD or LED display panel used for visual output.</p>
+            <ul class="specs">
+                <li><span>Sizes</span><strong>13–17"</strong></li>
+                <li><span>Resolution</span><strong>HD/FHD</strong></li>
+                <li><span>Check</span><strong>Connector</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹3,000+</span>
+                <button class="details-btn" data-part="Laptop Display">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="laptop" data-name="laptop keyboard notebook keyboard">
+            <div class="part-icon">⌨️</div>
+            <span class="part-category">Laptop</span>
+            <h3>Laptop Keyboard</h3>
+            <p>Integrated keyboard designed specifically for laptop models.</p>
+            <ul class="specs">
+                <li><span>Layout</span><strong>Model Based</strong></li>
+                <li><span>Type</span><strong>Membrane</strong></li>
+                <li><span>Check</span><strong>Connector</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹800+</span>
+                <button class="details-btn" data-part="Laptop Keyboard">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="laptop" data-name="laptop charger adapter power">
+            <div class="part-icon">🔌</div>
+            <span class="part-category">Laptop</span>
+            <h3>Laptop Charger</h3>
+            <p>Supplies regulated power to charge and operate the laptop.</p>
+            <ul class="specs">
+                <li><span>Important</span><strong>Voltage</strong></li>
+                <li><span>Output</span><strong>Wattage</strong></li>
+                <li><span>Check</span><strong>Connector</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹900+</span>
+                <button class="details-btn" data-part="Laptop Charger">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="laptop" data-name="wifi card wireless network adapter">
+            <div class="part-icon">📶</div>
+            <span class="part-category">Laptop</span>
+            <h3>Wi-Fi Card</h3>
+            <p>Provides wireless network and Bluetooth connectivity.</p>
+            <ul class="specs">
+                <li><span>Interface</span><strong>M.2/PCIe</strong></li>
+                <li><span>Network</span><strong>Wi-Fi</strong></li>
+                <li><span>Bluetooth</span><strong>Yes</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹800+</span>
+                <button class="details-btn" data-part="Wi-Fi Card">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="peripheral" data-name="monitor display screen desktop">
+            <div class="part-icon">🖥️</div>
+            <span class="part-category">Peripheral</span>
+            <h3>Monitor</h3>
+            <p>External display used for visual output from the computer.</p>
+            <ul class="specs">
+                <li><span>Size</span><strong>22–32"</strong></li>
+                <li><span>Refresh</span><strong>60Hz+</strong></li>
+                <li><span>Panel</span><strong>IPS/VA</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹6,000+</span>
+                <button class="details-btn" data-part="Monitor">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="peripheral" data-name="keyboard usb wireless mechanical">
+            <div class="part-icon">⌨️</div>
+            <span class="part-category">Peripheral</span>
+            <h3>Keyboard</h3>
+            <p>Input device used for typing and computer control.</p>
+            <ul class="specs">
+                <li><span>Types</span><strong>Membrane/Mech</strong></li>
+                <li><span>Connection</span><strong>USB/Wireless</strong></li>
+                <li><span>RGB</span><strong>Optional</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹500+</span>
+                <button class="details-btn" data-part="Keyboard">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="peripheral" data-name="mouse usb wireless gaming">
+            <div class="part-icon">🖱️</div>
+            <span class="part-category">Peripheral</span>
+            <h3>Mouse</h3>
+            <p>Pointing device for navigation, applications and gaming.</p>
+            <ul class="specs">
+                <li><span>Types</span><strong>Optical</strong></li>
+                <li><span>DPI</span><strong>Adjustable</strong></li>
+                <li><span>Connection</span><strong>USB/Wireless</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹300+</span>
+                <button class="details-btn" data-part="Mouse">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="cooling" data-name="thermal paste cpu cooling compound">
+            <div class="part-icon">🧴</div>
+            <span class="part-category">Cooling</span>
+            <h3>Thermal Paste</h3>
+            <p>Improves heat transfer between the processor and cooler.</p>
+            <ul class="specs">
+                <li><span>Use</span><strong>CPU/GPU</strong></li>
+                <li><span>Purpose</span><strong>Heat Transfer</strong></li>
+                <li><span>Replace</span><strong>Periodically</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹200+</span>
+                <button class="details-btn" data-part="Thermal Paste">Details</button>
+            </div>
+        </article>
+
+        <article class="part-card" data-category="power" data-name="ups backup power battery">
+            <div class="part-icon">🔋</div>
+            <span class="part-category">Power</span>
+            <h3>UPS</h3>
+            <p>Provides temporary backup power and protection against interruptions.</p>
+            <ul class="specs">
+                <li><span>Capacity</span><strong>600VA+</strong></li>
+                <li><span>Backup</span><strong>Short Term</strong></li>
+                <li><span>Protection</span><strong>Yes</strong></li>
+            </ul>
+            <div class="card-bottom">
+                <span class="price">₹2,500+</span>
+                <button class="details-btn" data-part="UPS">Details</button>
+            </div>
+        </article>
+
+    </div>
+
+    <div class="no-results" id="noResults">
+        🔎 No hardware parts found. Try another search or category.
+    </div>
+
+</section>
+
+
+<section class="tools-section" id="smart-tools">
+
+    <div class="tools-header">
+
+        <span class="badge">🧰 SMART HARDWARE TOOLS</span>
+
+        <h2>Powerful Tools. One Clean Workspace.</h2>
+
+        <p>
+            Choose only the tool you need. Each tool opens inside its own
+            professional panel so the page stays clean and easy to use.
+        </p>
+
+    </div>
+
+    <div class="tools-grid">
+
+        <div class="tool-card">
+
+            <button class="tool-trigger ripple-btn" data-tool="compatibility">
+
+                <span class="tool-icon">⚡</span>
+
+                <span class="tool-info">
+                    <h3>Compatibility Checker</h3>
+                    <p>Check CPU, RAM, storage and GPU compatibility.</p>
+                </span>
+
+                <span class="tool-arrow">⌄</span>
+
+            </button>
+
+            <div class="tool-panel">
+
+                <div class="tool-inner">
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label>PROCESSOR</label>
+                            <select id="cpuSelect">
+                                <option value="i3-10100">Intel Core i3-10100</option>
+                                <option value="i5-10400">Intel Core i5-10400</option>
+                                <option value="i5-11400">Intel Core i5-11400</option>
+                                <option value="i3-12100">Intel Core i3-12100</option>
+                                <option value="i5-12400">Intel Core i5-12400</option>
+                                <option value="i5-13400">Intel Core i5-13400</option>
+                                <option value="i5-14400">Intel Core i5-14400</option>
+                                <option value="i7-13700">Intel Core i7-13700</option>
+                                <option value="r5-3600">AMD Ryzen 5 3600</option>
+                                <option value="r5-5600">AMD Ryzen 5 5600</option>
+                                <option value="r7-5700x">AMD Ryzen 7 5700X</option>
+                                <option value="r5-7600">AMD Ryzen 5 7600</option>
+                                <option value="r5-9600x">AMD Ryzen 5 9600X</option>
+                                <option value="r7-9700x">AMD Ryzen 7 9700X</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>USAGE</label>
+                            <select id="usageSelect">
+                                <option value="office">Office</option>
+                                <option value="student">Student</option>
+                                <option value="gaming">Gaming</option>
+                                <option value="editing">Video Editing</option>
+                                <option value="ai">AI / Data Science</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>RAM</label>
+                            <select id="ramSelect">
+                                <option value="8">8 GB</option>
+                                <option value="16" selected>16 GB</option>
+                                <option value="32">32 GB</option>
+                                <option value="64">64 GB</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>STORAGE</label>
+                            <select id="storageSelect">
+                                <option value="500">500 GB SSD</option>
+                                <option value="1000" selected>1 TB SSD</option>
+                                <option value="2000">2 TB SSD</option>
+                                <option value="4000">4 TB SSD</option>
+                            </select>
+                        </div>
+
+                        <div class="field full">
+                            <label>GRAPHICS</label>
+                            <select id="gpuSelect">
+                                <option value="integrated">Integrated Graphics</option>
+                                <option value="rx6600">AMD RX 6600</option>
+                                <option value="rtx3050">NVIDIA RTX 3050</option>
+                                <option value="rtx4060">NVIDIA RTX 4060</option>
+                                <option value="rtx5060">NVIDIA RTX 5060</option>
+                                <option value="rtx5070">NVIDIA RTX 5070</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <button class="tool-action ripple-btn" id="buildButton">
+                        Check Compatibility
+                    </button>
+
+                    <div class="result-box" id="compatibilityResult">
+                        Select your components and click the button.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <button class="tool-trigger ripple-btn" data-tool="planner">
+
+                <span class="tool-icon">🧩</span>
+
+                <span class="tool-info">
+                    <h3>Build Planner</h3>
+                    <p>Create a quick component checklist.</p>
+                </span>
+
+                <span class="tool-arrow">⌄</span>
+
+            </button>
+
+            <div class="tool-panel">
+
+                <div class="tool-inner">
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label>BUILD TYPE</label>
+                            <select id="plannerUse">
+                                <option value="office">Office PC</option>
+                                <option value="student">Student PC</option>
+                                <option value="gaming">Gaming PC</option>
+                                <option value="editing">Editing PC</option>
+                                <option value="ai">AI / Data Science PC</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>BUDGET</label>
+                            <select id="plannerBudget">
+                                <option value="40000">₹40,000</option>
+                                <option value="60000" selected>₹60,000</option>
+                                <option value="80000">₹80,000</option>
+                                <option value="100000">₹1,00,000</option>
+                                <option value="150000">₹1,50,000</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <button class="tool-action ripple-btn" id="plannerButton">
+                        Generate Build Plan
+                    </button>
+
+                    <div class="result-box" id="plannerResult">
+                        Choose your use case and budget.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <button class="tool-trigger ripple-btn" data-tool="budget">
+
+                <span class="tool-icon">💰</span>
+
+                <span class="tool-info">
+                    <h3>Budget Calculator</h3>
+                    <p>Estimate component-wise spending.</p>
+                </span>
+
+                <span class="tool-arrow">⌄</span>
+
+            </button>
+
+            <div class="tool-panel">
+
+                <div class="tool-inner">
+
+                    <div class="field">
+                        <label>YOUR TOTAL BUDGET</label>
+                        <input type="number" id="budgetInput" value="60000" min="10000">
+                    </div>
+
+                    <button class="tool-action ripple-btn" id="budgetButton">
+                        Calculate Budget
+                    </button>
+
+                    <div class="result-box" id="budgetResult">
+                        Enter your budget to see the suggested allocation.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <button class="tool-trigger ripple-btn" data-tool="compare">
+
+                <span class="tool-icon">📊</span>
+
+                <span class="tool-info">
+                    <h3>Compare Parts</h3>
+                    <p>Compare two hardware components.</p>
+                </span>
+
+                <span class="tool-arrow">⌄</span>
+
+            </button>
+
+            <div class="tool-panel">
+
+                <div class="tool-inner">
+
+                    <div class="compare-grid">
+
+                        <div class="field">
+                            <label>PART A</label>
+                            <select id="compareA">
+                                <option value="i5-12400">Intel i5-12400</option>
+                                <option value="i5-13400">Intel i5-13400</option>
+                                <option value="r5-5600">Ryzen 5 5600</option>
+                                <option value="r5-7600">Ryzen 5 7600</option>
+                                <option value="rtx4060">RTX 4060</option>
+                                <option value="rtx5060">RTX 5060</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>PART B</label>
+                            <select id="compareB">
+                                <option value="i5-13400">Intel i5-13400</option>
+                                <option value="i5-12400">Intel i5-12400</option>
+                                <option value="r5-5600">Ryzen 5 5600</option>
+                                <option value="r5-7600">Ryzen 5 7600</option>
+                                <option value="rtx5060">RTX 5060</option>
+                                <option value="rtx4060">RTX 4060</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <button class="tool-action ripple-btn" id="compareButton">
+                        Compare
+                    </button>
+
+                    <div class="result-box compare-result" id="compareResult">
+                        Select two parts to compare.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <button class="tool-trigger ripple-btn" data-tool="assistant">
+
+                <span class="tool-icon">🤖</span>
+
+                <span class="tool-info">
+                    <h3>Build Assistant</h3>
+                    <p>Describe what you want to build.</p>
+                </span>
+
+                <span class="tool-arrow">⌄</span>
+
+            </button>
+
+            <div class="tool-panel">
+
+                <div class="tool-inner">
+
+                    <div class="field">
+                        <label>YOUR REQUIREMENT</label>
+
+                        <textarea
+                            id="assistantInput"
+                            placeholder="Example: I need a PC for gaming and data science under ₹70,000..."
+                        ></textarea>
+
+                    </div>
+
+                    <button class="tool-action ripple-btn" id="assistantButton">
+                        Generate Suggestion
+                    </button>
+
+                    <div class="result-box" id="assistantResult">
+                        Tell the assistant what kind of PC you want.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <button class="tool-trigger ripple-btn" data-tool="troubleshoot">
+
+                <span class="tool-icon">🛠️</span>
+
+                <span class="tool-info">
+                    <h3>Troubleshooter</h3>
+                    <p>Identify common PC hardware problems.</p>
+                </span>
+
+                <span class="tool-arrow">⌄</span>
+
+            </button>
+
+            <div class="tool-panel">
+
+                <div class="tool-inner">
+
+                    <div class="field">
+                        <label>SELECT YOUR PROBLEM</label>
+
+                        <select id="problemSelect">
+
+                            <option value="no-power">
+                                PC does not turn on
+                            </option>
+
+                            <option value="no-display">
+                                PC turns on but no display
+                            </option>
+
+                            <option value="slow">
+                                PC is very slow
+                            </option>
+
+                            <option value="overheat">
+                                PC is overheating
+                            </option>
+
+                            <option value="restart">
+                                PC randomly restarts
+                            </option>
+
+                            <option value="battery">
+                                Laptop battery drains quickly
+                            </option>
+
+                            <option value="wifi">
+                                Wi-Fi is not working
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button class="tool-action ripple-btn" id="troubleshootButton">
+                        Diagnose Problem
+                    </button>
+
+                    <div class="result-box" id="troubleshootResult">
+                        Select a problem to see suggested checks.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="info-section" id="how-it-works">
+
+    <div class="section-heading">
+
+        <span class="badge">⚙️ HOW IT WORKS</span>
+
+        <h2>How AI PC Repair Assistant Works</h2>
+
+        <p>
+            The platform brings hardware exploration, compatibility checking,
+            budgeting and troubleshooting together in one simple workspace.
+        </p>
+
+    </div>
+
+    <div class="how-grid">
+
+        <div class="how-card">
+
+            <div class="how-number">01</div>
+
+            <div class="how-icon">🔎</div>
+
+            <h3>Explore Parts</h3>
+
+            <p>
+                Search and filter CPUs, RAM, SSDs, GPUs, power supplies,
+                laptop components and other hardware.
+            </p>
+
+        </div>
+
+        <div class="how-card">
+
+            <div class="how-number">02</div>
+
+            <div class="how-icon">🧩</div>
+
+            <h3>Check Compatibility</h3>
+
+            <p>
+                Select your processor, RAM, storage and GPU to understand
+                important hardware compatibility relationships.
+            </p>
+
+        </div>
+
+        <div class="how-card">
+
+            <div class="how-number">03</div>
+
+            <div class="how-icon">💰</div>
+
+            <h3>Plan Your Budget</h3>
+
+            <p>
+                Enter your approximate budget and get a suggested distribution
+                across important PC components.
+            </p>
+
+        </div>
+
+        <div class="how-card">
+
+            <div class="how-number">04</div>
+
+            <div class="how-icon">🛠️</div>
+
+            <h3>Find Solutions</h3>
+
+            <p>
+                Use the troubleshooting and build assistant tools to understand
+                common hardware problems and possible checks.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="info-section about-section" id="about">
+
+    <div class="about-container">
+
+        <div class="about-content">
+
+            <span class="badge">⚡ ABOUT THE PROJECT</span>
+
+            <h2>AI PC & Laptop Repair Assistant</h2>
+
+            <p>
+                AI PC & Laptop Repair Assistant is designed to make computer
+                hardware information easier to understand for students,
+                beginners, technicians and everyday PC users.
+            </p>
+
+            <p>
+                Users can explore hardware specifications, understand
+                compatibility, estimate build costs and troubleshoot common
+                PC and laptop problems from one place.
+            </p>
+
+            <div class="about-features">
+
+                <div class="about-feature">
+                    <span>✓</span>
+                    <div>
+                        <strong>Hardware Explorer</strong>
+                        <small>Explore common PC and laptop components.</small>
+                    </div>
+                </div>
+
+                <div class="about-feature">
+                    <span>✓</span>
+                    <div>
+                        <strong>Compatibility Tools</strong>
+                        <small>Understand important hardware relationships.</small>
+                    </div>
+                </div>
+
+                <div class="about-feature">
+                    <span>✓</span>
+                    <div>
+                        <strong>Budget Planning</strong>
+                        <small>Estimate how your PC budget can be distributed.</small>
+                    </div>
+                </div>
+
+                <div class="about-feature">
+                    <span>✓</span>
+                    <div>
+                        <strong>Repair Guidance</strong>
+                        <small>Learn about common hardware problems.</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="about-visual">
+
+            <div class="about-orbit">
+
+                <div class="about-center">⚡</div>
+
+                <div class="about-item item-one">CPU</div>
+                <div class="about-item item-two">RAM</div>
+                <div class="about-item item-three">SSD</div>
+                <div class="about-item item-four">GPU</div>
+                <div class="about-item item-five">AI</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div>
+        ⚡ <strong>AI PC & Laptop Repair Assistant</strong>
+    </div>
+
+    <p style="margin-top:8px;">
+        Explore hardware. Understand compatibility. Build smarter.
+    </p>
+
+</footer>
+
+
+<div class="modal" id="partModal">
+
+    <div class="modal-box">
+
+        <button class="close-modal" id="closeModal">×</button>
+
+        <div class="modal-icon" id="modalIcon">🧩</div>
+
+        <div class="modal-category" id="modalCategory">
+            HARDWARE
+        </div>
+
+        <h2 id="modalTitle">
+            Part
+        </h2>
+
+        <p class="modal-description" id="modalDescription"></p>
+
+        <div class="modal-info">
+
+            <div>
+                <strong>COMPATIBILITY</strong>
+                <span id="modalCompatibility"></span>
+            </div>
+
+            <div>
+                <strong>COMMON PROBLEMS</strong>
+                <span id="modalProblems"></span>
+            </div>
+
+            <div>
+                <strong>RECOMMENDED USE</strong>
+                <span id="modalUse"></span>
+            </div>
+
+            <div>
+                <strong>APPROXIMATE PRICE</strong>
+                <span id="modalPrice"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<button class="top-btn" id="topBtn">↑</button>
+
+
+<script>
+
+const themeBtn = document.getElementById("themeBtn");
+
+const savedTheme = localStorage.getItem("theme");
+
+if(savedTheme === "light"){
+    document.body.classList.add("light");
+    themeBtn.textContent = "☀️";
+}
+
+themeBtn.addEventListener("click", () => {
+
+    document.body.classList.toggle("light");
+
+    const isLight = document.body.classList.contains("light");
+
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+
+    themeBtn.textContent = isLight ? "☀️" : "🌙";
+
+});
+
+
+const searchInput = document.getElementById("searchInput");
+
+const filterButtons = document.querySelectorAll(".filter-btn");
+
+const partCards = document.querySelectorAll(".part-card");
+
+const noResults = document.getElementById("noResults");
+
+let currentFilter = "all";
+
+
+function filterParts(){
+
+    const search = searchInput.value.toLowerCase().trim();
+
+    let visible = 0;
+
+    partCards.forEach(card => {
+
+        const category = card.dataset.category;
+
+        const name = card.dataset.name.toLowerCase();
+
+        const text = card.innerText.toLowerCase();
+
+        const categoryMatch =
+            currentFilter === "all" ||
+            category === currentFilter;
+
+        const searchMatch =
+            !search ||
+            name.includes(search) ||
+            text.includes(search);
+
+        if(categoryMatch && searchMatch){
+
+            card.classList.remove("hide-card");
+
+            visible++;
+
+        }else{
+
+            card.classList.add("hide-card");
+
+        }
+
+    });
+
+    noResults.style.display =
+        visible === 0 ? "block" : "none";
+
+}
+
+
+searchInput.addEventListener("input", filterParts);
+
+
+filterButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        filterButtons.forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+        button.classList.add("active");
+
+        currentFilter = button.dataset.filter;
+
+        filterParts();
+
+    });
+
+});
+
+
+const partDetails = {
+
+    "CPU":{
+        icon:"🧠",
+        category:"PROCESSOR",
+        description:"The CPU is the main processing unit of a computer and executes instructions from applications and the operating system.",
+        compatibility:"CPU socket must match the motherboard. RAM generation must also be supported by the platform.",
+        problems:"High temperature, thermal throttling, unstable performance and incorrect installation.",
+        use:"Office, programming, gaming, editing and AI workloads depending on model.",
+        price:"Approximately ₹7,000+"
+    },
+
+    "Motherboard":{
+        icon:"🧩",
+        category:"MOTHERBOARD",
+        description:"The motherboard connects the processor, memory, storage, graphics card and other hardware.",
+        compatibility:"CPU socket, chipset, RAM generation and form factor must be considered.",
+        problems:"Boot failure, damaged slots, BIOS issues and power problems.",
+        use:"Every desktop PC build requires a compatible motherboard.",
+        price:"Approximately ₹5,000+"
+    },
+
+    "RAM":{
+        icon:"🧠",
+        category:"MEMORY",
+        description:"RAM provides temporary high-speed memory for running applications.",
+        compatibility:"The motherboard must support the RAM generation and capacity.",
+        problems:"Boot loops, crashes, application errors and random freezes.",
+        use:"Office, study, programming, gaming and professional applications.",
+        price:"Approximately ₹2,500+"
+    },
+
+    "NVMe SSD":{
+        icon:"💾",
+        category:"STORAGE",
+        description:"NVMe SSDs provide high-speed storage using PCIe and are commonly installed in M.2 slots.",
+        compatibility:"Check M.2 slot type and PCIe support on the motherboard.",
+        problems:"Drive not detected, overheating and performance degradation.",
+        use:"Operating system, applications, games and professional workloads.",
+        price:"Approximately ₹3,000+"
+    },
+
+    "SATA SSD":{
+        icon:"💽",
+        category:"STORAGE",
+        description:"SATA SSDs provide faster and more responsive storage than traditional hard drives.",
+        compatibility:"Requires SATA data and power connection.",
+        problems:"Drive not detected, cable issues and storage health degradation.",
+        use:"Desktop and laptop upgrades.",
+        price:"Approximately ₹2,500+"
+    },
+
+    "HDD":{
+        icon:"💿",
+        category:"STORAGE",
+        description:"Hard disk drives use mechanical platters to store large amounts of data.",
+        compatibility:"Check SATA interface and physical drive bay.",
+        problems:"Bad sectors, clicking noises and slow performance.",
+        use:"Mass storage, backups and archives.",
+        price:"Approximately ₹3,500+"
+    },
+
+    "GPU":{
+        icon:"🎮",
+        category:"GRAPHICS",
+        description:"A GPU handles graphics rendering and can accelerate gaming, video editing and AI workloads.",
+        compatibility:"Check PCIe slot, cabinet clearance and PSU wattage.",
+        problems:"Driver errors, overheating, artifacts and crashes.",
+        use:"Gaming, editing, 3D work and AI depending on model.",
+        price:"Approximately ₹21,000+"
+    },
+
+    "PSU":{
+        icon:"⚡",
+        category:"POWER",
+        description:"The PSU provides regulated electrical power to the computer components.",
+        compatibility:"Wattage and connector requirements must match the system.",
+        problems:"Random shutdowns, restarts and failure to power on.",
+        use:"Every desktop PC requires a suitable PSU.",
+        price:"Approximately ₹3,200+"
+    },
+
+    "CPU Cooler":{
+        icon:"❄️",
+        category:"COOLING",
+        description:"A CPU cooler transfers heat away from the processor.",
+        compatibility:"Check socket support and cabinet clearance.",
+        problems:"High temperatures, fan failure and thermal throttling.",
+        use:"All desktop CPUs benefit from appropriate cooling.",
+        price:"Approximately ₹1,800+"
+    },
+
+    "Case Fan":{
+        icon:"🌀",
+        category:"COOLING",
+        description:"Case fans move air through the computer cabinet.",
+        compatibility:"Check fan size and motherboard/case headers.",
+        problems:"Noise, dust buildup and poor airflow.",
+        use:"Improving cabinet airflow.",
+        price:"Approximately ₹500+"
+    },
+
+    "PC Cabinet":{
+        icon:"🖥️",
+        category:"CHASSIS",
+        description:"The cabinet houses and protects the desktop components.",
+        compatibility:"Check motherboard form factor, GPU length and cooler height.",
+        problems:"Poor airflow, insufficient space and cable management issues.",
+        use:"Desktop PC builds.",
+        price:"Approximately ₹3,000+"
+    },
+
+    "Laptop Battery":{
+        icon:"🔋",
+        category:"LAPTOP",
+        description:"The laptop battery provides portable power.",
+        compatibility:"Battery model, voltage, connector and physical dimensions must match.",
+        problems:"Rapid discharge, swelling and charging problems.",
+        use:"Laptop portable operation.",
+        price:"Approximately ₹1,500+"
+    },
+
+    "Laptop Display":{
+        icon:"📺",
+        category:"LAPTOP",
+        description:"The display provides visual output from the laptop.",
+        compatibility:"Panel size, connector, resolution and mounting must match.",
+        problems:"Lines, flickering, black screen and damaged panels.",
+        use:"Laptop screen replacement.",
+        price:"Approximately ₹3,000+"
+    },
+
+    "Laptop Keyboard":{
+        icon:"⌨️",
+        category:"LAPTOP",
+        description:"The laptop keyboard provides text and command input.",
+        compatibility:"Exact laptop model and connector should be checked.",
+        problems:"Dead keys, liquid damage and keyboard connection issues.",
+        use:"Laptop keyboard replacement.",
+        price:"Approximately ₹800+"
+    },
+
+    "Laptop Charger":{
+        icon:"🔌",
+        category:"LAPTOP",
+        description:"The charger supplies power to the laptop and charges the battery.",
+        compatibility:"Voltage, current, wattage and connector must match.",
+        problems:"Charging failure, overheating and loose connections.",
+        use:"Laptop charging and operation.",
+        price:"Approximately ₹900+"
+    },
+
+    "Wi-Fi Card":{
+        icon:"📶",
+        category:"LAPTOP",
+        description:"The Wi-Fi card provides wireless network and Bluetooth connectivity.",
+        compatibility:"Check M.2 key type, supported standards and laptop BIOS compatibility.",
+        problems:"Wi-Fi disconnects, missing drivers and Bluetooth issues.",
+        use:"Wireless connectivity.",
+        price:"Approximately ₹800+"
+    },
+
+    "Monitor":{
+        icon:"🖥️",
+        category:"PERIPHERAL",
+        description:"A monitor displays the visual output generated by the computer.",
+        compatibility:"Check ports such as HDMI, DisplayPort or USB-C.",
+        problems:"Dead pixels, flickering and no signal.",
+        use:"Office, gaming, editing and general computing.",
+        price:"Approximately ₹6,000+"
+    },
+
+    "Keyboard":{
+        icon:"⌨️",
+        category:"PERIPHERAL",
+        description:"A keyboard is an input device used for typing and computer control.",
+        compatibility:"Usually USB or wireless and broadly compatible.",
+        problems:"Dead keys, connection problems and switch failure.",
+        use:"Everyday computing and gaming.",
+        price:"Approximately ₹500+"
+    },
+
+    "Mouse":{
+        icon:"🖱️",
+        category:"PERIPHERAL",
+        description:"A mouse provides pointer and navigation control.",
+        compatibility:"USB or wireless connectivity.",
+        problems:"Tracking problems, connection issues and button failure.",
+        use:"Everyday computing and gaming.",
+        price:"Approximately ₹300+"
+    },
+
+    "Thermal Paste":{
+        icon:"🧴",
+        category:"COOLING",
+        description:"Thermal paste improves heat transfer between a chip and its cooler.",
+        compatibility:"Should be suitable for CPU or GPU cooling applications.",
+        problems:"High temperatures caused by dried or incorrectly applied paste.",
+        use:"CPU and GPU maintenance.",
+        price:"Approximately ₹200+"
+    },
+
+    "UPS":{
+        icon:"🔋",
+        category:"POWER",
+        description:"A UPS provides temporary battery backup and power protection.",
+        compatibility:"UPS VA rating should be suitable for the connected equipment.",
+        problems:"Short backup time, battery degradation and overload.",
+        use:"Desktop backup and power protection.",
+        price:"Approximately ₹2,500+"
+    }
+
+};
+
+
+const modal = document.getElementById("partModal");
+
+const closeModal = document.getElementById("closeModal");
+
+document.querySelectorAll(".details-btn").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const part = button.dataset.part;
+
+        const data = partDetails[part];
+
+        if(!data) return;
+
+        document.getElementById("modalIcon").textContent = data.icon;
+        document.getElementById("modalCategory").textContent = data.category;
+        document.getElementById("modalTitle").textContent = part;
+        document.getElementById("modalDescription").textContent = data.description;
+        document.getElementById("modalCompatibility").textContent = data.compatibility;
+        document.getElementById("modalProblems").textContent = data.problems;
+        document.getElementById("modalUse").textContent = data.use;
+        document.getElementById("modalPrice").textContent = data.price;
+
+        modal.classList.add("show");
+
+        document.body.style.overflow = "hidden";
+
+    });
+
+});
+
+
+function closePartModal(){
+
+    modal.classList.remove("show");
+
+    document.body.style.overflow = "";
+
+}
+
+
+closeModal.addEventListener("click", closePartModal);
+
+
+modal.addEventListener("click", event => {
+
+    if(event.target === modal){
+        closePartModal();
+    }
+
+});
+
+
+document.addEventListener("keydown", event => {
+
+    if(event.key === "Escape"){
+        closePartModal();
+    }
+
+});
+
+
+document.querySelectorAll(".tool-trigger").forEach(trigger => {
+
+    trigger.addEventListener("click", () => {
+
+        const card = trigger.closest(".tool-card");
+
+        document.querySelectorAll(".tool-card").forEach(other => {
+
+            if(other !== card){
+                other.classList.remove("open");
+            }
+
+        });
+
+        card.classList.toggle("open");
+
+    });
+
+});
+
+
+const cpuData = {
+
+    "i3-10100":{
+        socket:"LGA1200",
+        ram:"DDR4",
+        boards:"H410/B460/H470/Z490/B560/H510",
+        price:7500
+    },
+
+    "i5-10400":{
+        socket:"LGA1200",
+        ram:"DDR4",
+        boards:"B460/H470/Z490/B560/H510",
+        price:9500
+    },
+
+    "i5-11400":{
+        socket:"LGA1200",
+        ram:"DDR4",
+        boards:"B560/H570/Z590",
+        price:11000
+    },
+
+    "i3-12100":{
+        socket:"LGA1700",
+        ram:"DDR4/DDR5",
+        boards:"H610/B660/B760/H670/Z690/Z790",
+        price:8500
+    },
+
+    "i5-12400":{
+        socket:"LGA1700",
+        ram:"DDR4/DDR5",
+        boards:"H610/B660/B760/H670/Z690/Z790",
+        price:12000
+    },
+
+    "i5-13400":{
+        socket:"LGA1700",
+        ram:"DDR4/DDR5",
+        boards:"B660/B760/H670/Z690/Z790",
+        price:18000
+    },
+
+    "i5-14400":{
+        socket:"LGA1700",
+        ram:"DDR4/DDR5",
+        boards:"B760/H770/Z790",
+        price:21000
+    },
+
+    "i7-13700":{
+        socket:"LGA1700",
+        ram:"DDR4/DDR5",
+        boards:"B660/B760/Z690/Z790",
+        price:30000
+    },
+
+    "r5-3600":{
+        socket:"AM4",
+        ram:"DDR4",
+        boards:"A320/B350/B450/B550/X470/X570",
+        price:7000
+    },
+
+    "r5-5600":{
+        socket:"AM4",
+        ram:"DDR4",
+        boards:"B450/B550/X470/X570",
+        price:13000
+    },
+
+    "r7-5700x":{
+        socket:"AM4",
+        ram:"DDR4",
+        boards:"B450/B550/X470/X570",
+        price:17000
+    },
+
+    "r5-7600":{
+        socket:"AM5",
+        ram:"DDR5",
+        boards:"A620/B650/B650E/B850/X670/X870",
+        price:18000
+    },
+
+    "r5-9600x":{
+        socket:"AM5",
+        ram:"DDR5",
+        boards:"B650/B650E/B850/X670/X870",
+        price:24000
+    },
+
+    "r7-9700x":{
+        socket:"AM5",
+        ram:"DDR5",
+        boards:"B650/B650E/B850/X670/X870",
+        price:34000
+    }
+
+};
+
+
+const gpuData = {
+
+    integrated:{
+        name:"Integrated Graphics",
+        price:0,
+        watt:450
+    },
+
+    rx6600:{
+        name:"AMD RX 6600",
+        price:21000,
+        watt:500
+    },
+
+    rtx3050:{
+        name:"NVIDIA RTX 3050",
+        price:22000,
+        watt:550
+    },
+
+    rtx4060:{
+        name:"NVIDIA RTX 4060",
+        price:30000,
+        watt:550
+    },
+
+    rtx5060:{
+        name:"NVIDIA RTX 5060",
+        price:35000,
+        watt:600
+    },
+
+    rtx5070:{
+        name:"NVIDIA RTX 5070",
+        price:60000,
+        watt:650
+    }
+
+};
+
+
+const ramPrices = {
+    8:2500,
+    16:4500,
+    32:8500,
+    64:17000
+};
+
+
+const storagePrices = {
+    500:3000,
+    1000:5500,
+    2000:10000,
+    4000:20000
+};
+
+
+function formatPrice(value){
+
+    return "₹" + Math.round(value).toLocaleString("en-IN");
+
+}
+
+
+function psuPrice(watt){
+
+    if(watt <= 450) return 3200;
+    if(watt <= 550) return 4200;
+    if(watt <= 650) return 5200;
+    if(watt <= 750) return 6500;
+    if(watt <= 850) return 8500;
+
+    return 11000;
+
+}
+
+
+document.getElementById("buildButton").addEventListener("click", () => {
+
+    const cpuKey = document.getElementById("cpuSelect").value;
+    const usage = document.getElementById("usageSelect").value;
+    const ram = Number(document.getElementById("ramSelect").value);
+    const storage = Number(document.getElementById("storageSelect").value);
+    const gpuKey = document.getElementById("gpuSelect").value;
+
+    const cpu = cpuData[cpuKey];
+    const gpu = gpuData[gpuKey];
+
+    let score = 90;
+
+    if(usage === "ai" && gpuKey === "integrated"){
+        score -= 15;
+    }
+
+    if(usage === "gaming" && gpuKey === "integrated"){
+        score -= 20;
+    }
+
+    if(usage === "ai" && ram < 32){
+        score -= 5;
+    }
+
+    if(usage === "editing" && ram < 32){
+        score -= 5;
+    }
+
+    score = Math.max(60,Math.min(99,score));
+
+    let motherboardPrice = 5500;
+
+    if(cpu.socket === "AM5"){
+        motherboardPrice = 11000;
+    }else if(cpu.socket === "LGA1700"){
+        motherboardPrice = 7500;
+    }else if(cpu.socket === "LGA1200"){
+        motherboardPrice = 5000;
+    }
+
+    if(cpu.socket === "AM4"){
+        motherboardPrice = 5500;
+    }
+
+    const coolerPrice =
+        ["gaming","editing","ai"].includes(usage)
+        ? 3000
+        : 1800;
+
+    let requiredWatt = gpu.watt;
+
+    if(cpuKey === "i7-13700" || cpuKey === "r7-9700x"){
+        requiredWatt += 50;
+    }
+
+    const psu = psuPrice(requiredWatt);
+
+    const total =
+        cpu.price +
+        motherboardPrice +
+        ramPrices[ram] +
+        storagePrices[storage] +
+        gpu.price +
+        psu +
+        3000 +
+        coolerPrice;
+
+    const result = document.getElementById("compatibilityResult");
+
+    result.innerHTML = `
+        <div class="score">${score}%</div>
+        <strong>Compatibility Score</strong>
+        <br><br>
+        CPU: <strong>${cpuKey.toUpperCase()}</strong><br>
+        Socket: <strong>${cpu.socket}</strong><br>
+        RAM Support: <strong>${cpu.ram}</strong><br>
+        Recommended PSU: <strong>${requiredWatt}W+</strong><br>
+        Estimated Build Cost: <strong>${formatPrice(total)}</strong>
+        <br><br>
+        <span>
+        Supported motherboard families: ${cpu.boards}
+        </span>
+    `;
+
+});
+
+
+document.getElementById("budgetButton").addEventListener("click", () => {
+
+    const budget = Number(document.getElementById("budgetInput").value);
+
+    if(!budget || budget < 10000){
+
+        document.getElementById("budgetResult").innerHTML =
+            "Please enter a budget of at least ₹10,000.";
+
+        return;
+
+    }
+
+    const allocation = {
+
+        CPU:0.22,
+        Motherboard:0.13,
+        RAM:0.09,
+        Storage:0.08,
+        GPU:0.28,
+        PSU:0.08,
+        Cabinet:0.07,
+        Cooling:0.05
+
+    };
+
+    let html = `<strong>Suggested allocation for ${formatPrice(budget)}</strong><br><br>`;
+
+    Object.entries(allocation).forEach(([name,percent]) => {
+
+        html += `
+            ${name}: <strong>${formatPrice(budget * percent)}</strong>
+            <br>
+        `;
+
+    });
+
+    document.getElementById("budgetResult").innerHTML = html;
+
+});
+
+
+document.getElementById("plannerButton").addEventListener("click", () => {
+
+    const use = document.getElementById("plannerUse").value;
+    const budget = Number(document.getElementById("plannerBudget").value);
+
+    let cpu = "Core i5 / Ryzen 5";
+    let gpu = "Integrated Graphics";
+    let ram = "16 GB";
+    let storage = "1 TB SSD";
+
+    if(use === "gaming"){
+        cpu = "Core i5 / Ryzen 5";
+        gpu = "RTX 4060 / similar";
+        ram = "16 GB";
+        storage = "1 TB NVMe SSD";
+    }
+
+    if(use === "editing"){
+        cpu = "Core i5/i7 or Ryzen 5/7";
+        gpu = "RTX 4060 / similar";
+        ram = "32 GB";
+        storage = "1 TB NVMe SSD";
+    }
+
+    if(use === "ai"){
+        cpu = "Core i5/i7 or Ryzen 5/7";
+        gpu = "Dedicated NVIDIA GPU recommended";
+        ram = "32 GB+";
+        storage = "1–2 TB NVMe SSD";
+    }
+
+    if(use === "student"){
+        cpu = "Core i3/i5 or Ryzen 3/5";
+        gpu = "Integrated Graphics";
+        ram = "16 GB";
+        storage = "500 GB–1 TB SSD";
+    }
+
+    document.getElementById("plannerResult").innerHTML = `
+        <strong>${use.toUpperCase()} BUILD PLAN</strong><br><br>
+        Budget: <strong>${formatPrice(budget)}</strong><br>
+        CPU: <strong>${cpu}</strong><br>
+        GPU: <strong>${gpu}</strong><br>
+        RAM: <strong>${ram}</strong><br>
+        Storage: <strong>${storage}</strong><br>
+        Motherboard: <strong>Choose matching socket/chipset</strong><br>
+        PSU: <strong>Choose according to GPU</strong><br>
+        Cooling: <strong>Air cooler recommended where required</strong>
+    `;
+
+});
+
+
+const compareData = {
+
+    "i5-12400":{
+        name:"Intel i5-12400",
+        type:"CPU",
+        performance:78,
+        price:12000,
+        use:"Gaming / Office"
+    },
+
+    "i5-13400":{
+        name:"Intel i5-13400",
+        type:"CPU",
+        performance:86,
+        price:18000,
+        use:"Gaming / Editing"
+    },
+
+    "r5-5600":{
+        name:"Ryzen 5 5600",
+        type:"CPU",
+        performance:76,
+        price:13000,
+        use:"Gaming / Office"
+    },
+
+    "r5-7600":{
+        name:"Ryzen 5 7600",
+        type:"CPU",
+        performance:90,
+        price:18000,
+        use:"Gaming / Productivity"
+    },
+
+    "rtx4060":{
+        name:"RTX 4060",
+        type:"GPU",
+        performance:84,
+        price:30000,
+        use:"1080p Gaming / AI"
+    },
+
+    "rtx5060":{
+        name:"RTX 5060",
+        type:"GPU",
+        performance:91,
+        price:35000,
+        use:"Gaming / AI"
+    }
+
+};
+
+
+document.getElementById("compareButton").addEventListener("click", () => {
+
+    const a = compareData[
+        document.getElementById("compareA").value
+    ];
+
+    const b = compareData[
+        document.getElementById("compareB").value
+    ];
+
+    document.getElementById("compareResult").innerHTML = `
+
+        <strong>${a.name}</strong><br>
+        Performance: ${a.performance}/100<br>
+        Approx Price: ${formatPrice(a.price)}<br>
+        Recommended: ${a.use}
+
+        <br><br>
+
+        <strong>${b.name}</strong><br>
+        Performance: ${b.performance}/100<br>
+        Approx Price: ${formatPrice(b.price)}<br>
+        Recommended: ${b.use}
+
+        <br><br>
+
+        <strong>Difference:</strong>
+        ${Math.abs(a.performance-b.performance)} performance points
+        <br>
+        Price difference:
+        ${formatPrice(Math.abs(a.price-b.price))}
+
+    `;
+
+});
+
+
+document.getElementById("assistantButton").addEventListener("click", () => {
+
+    const input =
+        document.getElementById("assistantInput").value
+        .toLowerCase();
+
+    if(!input.trim()){
+
+        document.getElementById("assistantResult").innerHTML =
+            "Please describe what you want to build.";
+
+        return;
+
+    }
+
+    let recommendation =
+        "A balanced Core i5 / Ryzen 5 system with 16 GB RAM and a 1 TB SSD is a good starting configuration.";
+
+    if(input.includes("gaming")){
+
+        recommendation =
+            "For gaming, consider a modern Core i5/Ryzen 5 CPU, 16 GB RAM, 1 TB NVMe SSD and a dedicated GPU such as an RTX 4060-class card.";
+
+    }
+
+    if(input.includes("ai") || input.includes("machine learning")){
+
+        recommendation =
+            "For AI and machine learning, prioritize 32 GB or more RAM, a modern multi-core CPU, fast NVMe storage and a dedicated NVIDIA GPU where GPU acceleration is required.";
+
+    }
+
+    if(input.includes("editing") || input.includes("video")){
+
+        recommendation =
+            "For video editing, consider a Core i5/i7 or Ryzen 5/7 processor, 32 GB RAM, a fast NVMe SSD and a dedicated GPU.";
+
+    }
+
+    if(input.includes("student") || input.includes("college")){
+
+        recommendation =
+            "For student use, a Core i3/i5 or Ryzen 3/5 processor, 16 GB RAM and a 500 GB–1 TB SSD should cover common study and programming workloads.";
+
+    }
+
+    document.getElementById("assistantResult").innerHTML = `
+        <strong>Suggested Direction</strong><br><br>
+        ${recommendation}
+        <br><br>
+        <small>
+        This is a general starting point. Exact components should be selected
+        according to your budget and compatibility requirements.
+        </small>
+    `;
+
+});
+
+
+const troubleshooting = {
+
+    "no-power":{
+        title:"Power-on problem",
+        steps:[
+            "Check the wall socket and power cable.",
+            "Check the PSU switch.",
+            "Check motherboard power connectors.",
+            "Check front-panel power switch connection.",
+            "If possible, test with a known-good PSU."
+        ]
+    },
+
+    "no-display":{
+        title:"No display",
+        steps:[
+            "Check monitor input source.",
+            "Reconnect HDMI/DisplayPort cable.",
+            "Check RAM seating.",
+            "If a dedicated GPU is installed, check GPU power connectors.",
+            "Test with another display cable."
+        ]
+    },
+
+    "slow":{
+        title:"Slow computer",
+        steps:[
+            "Check Task Manager CPU, RAM and disk usage.",
+            "Remove unnecessary startup applications.",
+            "Check available storage space.",
+            "Scan for malware.",
+            "Consider upgrading RAM or moving from HDD to SSD."
+        ]
+    },
+
+    "overheat":{
+        title:"Overheating",
+        steps:[
+            "Clean dust from fans and heatsinks.",
+            "Check whether CPU/GPU fans are working.",
+            "Check CPU temperatures.",
+            "Replace old thermal paste if necessary.",
+            "Improve cabinet airflow."
+        ]
+    },
+
+    "restart":{
+        title:"Random restart",
+        steps:[
+            "Check CPU and GPU temperatures.",
+            "Check PSU capacity and condition.",
+            "Run a RAM diagnostic.",
+            "Check motherboard power connections.",
+            "Look for Windows Event Viewer errors."
+        ]
+    },
+
+    "battery":{
+        title:"Laptop battery issue",
+        steps:[
+            "Check battery health.",
+            "Reduce unnecessary background applications.",
+            "Lower display brightness.",
+            "Check charger and charging port.",
+            "Replace the battery if its health is significantly degraded."
+        ]
+    },
+
+    "wifi":{
+        title:"Wi-Fi problem",
+        steps:[
+            "Restart the router and laptop.",
+            "Check Wi-Fi is enabled.",
+            "Update or reinstall the network driver.",
+            "Forget and reconnect to the network.",
+            "Test another network."
+        ]
+    }
+
+};
+
+
+document.getElementById("troubleshootButton").addEventListener("click", () => {
+
+    const key =
+        document.getElementById("problemSelect").value;
+
+    const problem = troubleshooting[key];
+
+    let html = `<strong>${problem.title}</strong><br><br>`;
+
+    problem.steps.forEach((step,index) => {
+
+        html += `${index + 1}. ${step}<br>`;
+
+    });
+
+    document.getElementById("troubleshootResult").innerHTML = html;
+
+});
+
+
+document.querySelectorAll(".ripple-btn").forEach(button => {
+
+    button.addEventListener("click", function(event){
+
+        const circle = document.createElement("span");
+
+        const diameter = Math.max(
+            this.clientWidth,
+            this.clientHeight
+        );
+
+        const rect = this.getBoundingClientRect();
+
+        circle.style.width = circle.style.height =
+            diameter + "px";
+
+        circle.style.left =
+            event.clientX - rect.left - diameter / 2 + "px";
+
+        circle.style.top =
+            event.clientY - rect.top - diameter / 2 + "px";
+
+        circle.classList.add("ripple");
+
+        const oldRipple =
+            this.querySelector(".ripple");
+
+        if(oldRipple){
+            oldRipple.remove();
+        }
+
+        this.appendChild(circle);
+
+    });
+
+});
+
+
+const topBtn = document.getElementById("topBtn");
+
+window.addEventListener("scroll", () => {
+
+    if(window.scrollY > 500){
+
+        topBtn.classList.add("show");
+
+    }else{
+
+        topBtn.classList.remove("show");
+
+    }
+
+});
+
+
+topBtn.addEventListener("click", () => {
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+});
+
+
+const infoSections =
+    document.querySelectorAll("#how-it-works,#about");
+
+const sectionObserver =
+    new IntersectionObserver(
+        entries => {
+
+            entries.forEach(entry => {
+
+                if(entry.isIntersecting){
+
+                    entry.target.classList.add("section-visible");
+
+                }
+
+            });
+
+        },
+        {
+            threshold:.15
+        }
+    );
+
+infoSections.forEach(section => {
+
+    sectionObserver.observe(section);
+
+});
+
+
+const navLinks =
+    document.querySelectorAll(".nav-links a");
+
+const sections = [
+    document.getElementById("parts"),
+    document.getElementById("how-it-works"),
+    document.getElementById("about")
+];
+
+
+window.addEventListener("scroll", () => {
+
+    let current = "parts";
+
+    sections.forEach(section => {
+
+        if(
+            window.scrollY >=
+            section.offsetTop - 150
+        ){
+
+            current = section.id;
+
+        }
+
+    });
+
+    navLinks.forEach(link => {
+
+        link.classList.remove("active");
+
+        const href = link.getAttribute("href");
+
+        if(href === "#" + current){
+
+            link.classList.add("active");
+
+        }
+
+    });
+
+});
+
+
+navLinks.forEach(link => {
+
+    link.addEventListener("click", event => {
+
+        const href = link.getAttribute("href");
+
+        if(!href.startsWith("#")) return;
+
+        const target =
+            document.querySelector(href);
+
+        if(target){
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+        }
+
+    });
+
+});
+
+
+document.querySelectorAll(".part-card").forEach(card => {
+
+    card.addEventListener("mousemove", event => {
+
+        const rect =
+            card.getBoundingClientRect();
+
+        const x =
+            event.clientX - rect.left;
+
+        const y =
+            event.clientY - rect.top;
+
+        const rotateY =
+            ((x / rect.width) - .5) * 4;
+
+        const rotateX =
+            ((y / rect.height) - .5) * -4;
+
+        card.style.transform =
+            `translateY(-8px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+    });
+
+    card.addEventListener("mouseleave", () => {
+
+        card.style.transform = "";
+
+    });
+
+});
+
+
+document.querySelectorAll(".tool-card").forEach(card => {
+
+    card.addEventListener("mousemove", event => {
+
+        const rect =
+            card.getBoundingClientRect();
+
+        const x =
+            ((event.clientX - rect.left) / rect.width) * 100;
+
+        const y =
+            ((event.clientY - rect.top) / rect.height) * 100;
+
+        card.style.background = `
+            radial-gradient(
+                circle at ${x}% ${y}%,
+                rgba(108,99,255,.12),
+                var(--card) 45%
+            )
+        `;
+
+    });
+
+    card.addEventListener("mouseleave", () => {
+
+        card.style.background =
+            "linear-gradient(145deg,var(--card),rgba(108,99,255,.04))";
+
+    });
+
+});
+
+
+</script>
+
+</body>
+</html>
