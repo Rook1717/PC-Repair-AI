@@ -1,64 +1,32 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
-```
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta
-    name="description"
-    content="AI PC and Laptop Repair Assistant for intelligent computer troubleshooting and hardware guidance."
->
-
-<title>AI PC & Laptop Repair Assistant</title>
-
-<link rel="stylesheet" href="style.css">
-```
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI PC and Laptop Repair Assistant for intelligent computer troubleshooting and hardware guidance.">
+    <title>AI PC & Laptop Repair Assistant</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header class="navbar">
 
-```
-<a href="index.html" class="logo">
-    ⚡ PC Repair AI
-</a>
-
-<nav>
-
-    <a href="index.html">
-        Home
+    <a href="index.html" class="logo">
+        ⚡ PC Repair AI
     </a>
 
-    <a href="parts.html">
-        Parts Explorer
-    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="parts.html">Parts Explorer</a>
+        <a href="#how">How It Works</a>
+        <a href="#about">About</a>
+    </nav>
 
-    <a href="#how">
-        How It Works
-    </a>
-
-    <a href="#about">
-        About
-    </a>
-
-</nav>
-
-<button
-    id="themeBtn"
-    class="theme-btn"
-    type="button"
-    aria-label="Toggle theme"
->
-    🌙
-</button>
-```
+    <button id="themeBtn" class="theme-btn" type="button" aria-label="Toggle theme">
+        🌙
+    </button>
 
 </header>
 
@@ -66,595 +34,358 @@
 
 <section class="hero">
 
-```
-<div class="hero-bg-circle circle-one"></div>
+    <div class="hero-bg-circle circle-one"></div>
+    <div class="hero-bg-circle circle-two"></div>
 
-<div class="hero-bg-circle circle-two"></div>
+    <div class="hero-content">
 
+        <div class="badge">
+            🤖 AI POWERED PC SUPPORT
+        </div>
 
-<div class="hero-content">
+        <h1>
+            Fix Your PC.<br>
+            <span>Understand Your Technology.</span>
+        </h1>
 
-    <div class="badge">
-        🤖 AI POWERED PC SUPPORT
-    </div>
+        <p>
+            Describe your PC or laptop problem and get intelligent
+            troubleshooting guidance, repair steps and useful recommendations.
+        </p>
 
+        <div class="repair-box">
 
-    <h1>
+            <label for="device">
+                💻 Device / Model
+            </label>
 
-        Fix Your PC.<br>
+            <input
+                id="device"
+                type="text"
+                autocomplete="off"
+                placeholder="Example: Dell Inspiron 15, HP Pavilion..."
+            >
 
-        <span>
-            Understand Your Technology.
-        </span>
+            <label for="problem">
+                ⚠️ Describe Your Problem
+            </label>
 
-    </h1>
+            <textarea
+                id="problem"
+                rows="5"
+                placeholder="Example: My laptop is very slow and gets hot..."
+            ></textarea>
 
-
-    <p>
-
-        Describe your PC or laptop problem and get intelligent
-        troubleshooting guidance, repair steps and useful recommendations.
-
-    </p>
-
-
-    <div class="repair-box">
-
-
-        <label for="device">
-
-            💻 Device / Model
-
-        </label>
-
-
-        <input
-            id="device"
-            type="text"
-            autocomplete="off"
-            placeholder="Example: Dell Inspiron 15, HP Pavilion..."
-        >
-
-
-        <label for="problem">
-
-            ⚠️ Describe Your Problem
-
-        </label>
-
-
-        <textarea
-            id="problem"
-            rows="5"
-            placeholder="Example: My laptop is very slow and gets hot..."
-        ></textarea>
-
-
-        <button
-            id="diagnoseButton"
-            class="primary-btn"
-            type="button"
-        >
-
-            Diagnose Problem
-
-            <span>
-                →
-            </span>
-
-        </button>
-
-
-    </div>
-
-
-    <div class="hero-stats">
-
-
-        <div>
-
-            <strong>
-                50+
-            </strong>
-
-            <span>
-                Common Problems
-            </span>
+            <button
+                id="diagnoseButton"
+                class="primary-btn"
+                type="button"
+            >
+                Diagnose Problem
+                <span>→</span>
+            </button>
 
         </div>
 
+        <div class="hero-stats">
 
-        <div>
+            <div>
+                <strong>50+</strong>
+                <span>Common Problems</span>
+            </div>
 
-            <strong>
-                100+
-            </strong>
+            <div>
+                <strong>100+</strong>
+                <span>PC Components</span>
+            </div>
 
-            <span>
-                PC Components
-            </span>
-
-        </div>
-
-
-        <div>
-
-            <strong>
-                AI
-            </strong>
-
-            <span>
-                Smart Guidance
-            </span>
-
-        </div>
-
-
-    </div>
-
-
-</div>
-
-
-
-<div class="floating-pc">
-
-
-    <div class="pc-screen">
-
-        <div class="screen-top"></div>
-
-
-        <div class="screen-content">
-
-            <span>
-                CPU
-            </span>
-
-            <span>
-                RAM
-            </span>
-
-            <span>
-                SSD
-            </span>
-
-
-            <div class="loading-bars">
-
-                <i></i>
-
-                <i></i>
-
-                <i></i>
-
+            <div>
+                <strong>AI</strong>
+                <span>Smart Guidance</span>
             </div>
 
         </div>
 
     </div>
 
+    <div class="floating-pc">
 
-    <div class="pc-base"></div>
+        <div class="pc-screen">
+
+            <div class="screen-top"></div>
+
+            <div class="screen-content">
+
+                <span>CPU</span>
+                <span>RAM</span>
+                <span>SSD</span>
+
+                <div class="loading-bars">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="pc-base"></div>
+
+    </div>
+
+</section>
 
 
-</div>
-```
+<section id="resultSection" class="result-section hidden">
+
+    <div class="section-title">
+
+        <span>AI ANALYSIS</span>
+
+        <h2>
+            Your Repair Guide
+        </h2>
+
+    </div>
+
+    <div id="resultContainer"></div>
 
 </section>
 
-<section
-    id="resultSection"
-    class="result-section hidden"
->
-
-```
-<div class="section-title">
-
-
-    <span>
-        AI ANALYSIS
-    </span>
-
-
-    <h2>
-
-        Your Repair Guide
-
-    </h2>
-
-
-</div>
-
-
-<div id="resultContainer"></div>
-```
-
-</section>
 
 <section class="parts-preview">
 
-```
-<div class="section-title">
+    <div class="section-title">
 
+        <span>HARDWARE KNOWLEDGE</span>
 
-    <span>
-        HARDWARE KNOWLEDGE
-    </span>
-
-
-    <h2>
-
-        Explore PC & Laptop Parts
-
-    </h2>
-
-
-    <p>
-
-        Learn about the components inside your computer.
-
-    </p>
-
-
-</div>
-
-
-
-<div class="preview-card">
-
-
-    <div class="preview-icon">
-
-        🔧
-
-    </div>
-
-
-    <div>
-
-
-        <h3>
-
-            PC & Laptop Parts Explorer
-
-        </h3>
-
+        <h2>
+            Explore PC & Laptop Parts
+        </h2>
 
         <p>
-
-            Explore RAM, SSD, HDD, CPU, GPU, motherboard,
-            battery, cooling fans and many more components.
-
+            Learn about the components inside your computer.
         </p>
-
 
     </div>
 
+    <div class="preview-card">
 
-    <a
-        href="parts.html"
-        class="preview-button"
-    >
+        <div class="preview-icon">
+            🔧
+        </div>
 
-        Explore Parts →
+        <div>
 
-    </a>
+            <h3>
+                PC & Laptop Parts Explorer
+            </h3>
 
+            <p>
+                Explore RAM, SSD, HDD, CPU, GPU, motherboard,
+                battery, cooling fans and many more components.
+            </p>
 
-</div>
-```
+        </div>
+
+        <a href="parts.html" class="preview-button">
+            Explore Parts →
+        </a>
+
+    </div>
 
 </section>
 
-<section
-    id="how"
-    class="how-section"
->
 
-```
-<div class="section-title">
+<section id="how" class="how-section">
 
+    <div class="section-title">
 
-    <span>
-        SIMPLE PROCESS
-    </span>
+        <span>SIMPLE PROCESS</span>
 
-
-    <h2>
-
-        How It Works
-
-    </h2>
-
-
-</div>
-
-
-
-<div class="how-grid">
-
-
-    <div class="how-card">
-
-
-        <div class="number">
-
-            01
-
-        </div>
-
-
-        <div class="how-icon">
-
-            💻
-
-        </div>
-
-
-        <h3>
-
-            Tell Us Your Device
-
-        </h3>
-
-
-        <p>
-
-            Enter your PC or laptop model and basic information.
-
-        </p>
-
+        <h2>
+            How It Works
+        </h2>
 
     </div>
 
+    <div class="how-grid">
 
+        <div class="how-card">
 
-    <div class="how-card">
+            <div class="number">
+                01
+            </div>
 
+            <div class="how-icon">
+                💻
+            </div>
 
-        <div class="number">
+            <h3>
+                Tell Us Your Device
+            </h3>
 
-            02
+            <p>
+                Enter your PC or laptop model and basic information.
+            </p>
 
         </div>
 
 
-        <div class="how-icon">
+        <div class="how-card">
 
-            ⚠️
+            <div class="number">
+                02
+            </div>
+
+            <div class="how-icon">
+                ⚠️
+            </div>
+
+            <h3>
+                Describe The Problem
+            </h3>
+
+            <p>
+                Explain what is happening with your device.
+            </p>
 
         </div>
 
 
-        <h3>
+        <div class="how-card">
 
-            Describe The Problem
+            <div class="number">
+                03
+            </div>
 
-        </h3>
+            <div class="how-icon">
+                🤖
+            </div>
+
+            <h3>
+                AI Diagnosis
+            </h3>
+
+            <p>
+                The system analyzes possible causes and solutions.
+            </p>
+
+        </div>
 
 
-        <p>
+        <div class="how-card">
 
-            Explain what is happening with your device.
+            <div class="number">
+                04
+            </div>
 
-        </p>
+            <div class="how-icon">
+                🛠️
+            </div>
 
+            <h3>
+                Repair & Learn
+            </h3>
+
+            <p>
+                Follow the recommended steps and understand the component.
+            </p>
+
+        </div>
 
     </div>
-
-
-
-    <div class="how-card">
-
-
-        <div class="number">
-
-            03
-
-        </div>
-
-
-        <div class="how-icon">
-
-            🤖
-
-        </div>
-
-
-        <h3>
-
-            AI Diagnosis
-
-        </h3>
-
-
-        <p>
-
-            The system analyzes possible causes and solutions.
-
-        </p>
-
-
-    </div>
-
-
-
-    <div class="how-card">
-
-
-        <div class="number">
-
-            04
-
-        </div>
-
-
-        <div class="how-icon">
-
-            🛠️
-
-        </div>
-
-
-        <h3>
-
-            Repair & Learn
-
-        </h3>
-
-
-        <p>
-
-            Follow the recommended steps and understand the component.
-
-        </p>
-
-
-    </div>
-
-
-</div>
-```
 
 </section>
 
-<section
-    id="about"
-    class="about-section"
->
 
-```
-<div class="about-content">
+<section id="about" class="about-section">
 
+    <div class="about-content">
 
-    <span>
+        <span>
+            ABOUT THE PROJECT
+        </span>
 
-        ABOUT THE PROJECT
+        <h2>
+            Smart PC Support With AI
+        </h2>
 
-    </span>
+        <p>
+            AI PC & Laptop Repair Assistant is designed to help users
+            understand common computer problems without immediately
+            depending on a technician.
+        </p>
 
+        <div class="about-points">
 
-    <h2>
+            <div>
+                ✓ Troubleshooting assistance
+            </div>
 
-        Smart PC Support With AI
+            <div>
+                ✓ Hardware knowledge
+            </div>
 
-    </h2>
+            <div>
+                ✓ Repair guidance
+            </div>
 
-
-    <p>
-
-        AI PC & Laptop Repair Assistant is designed to help users
-        understand common computer problems without immediately
-        depending on a technician.
-
-    </p>
-
-
-
-    <div class="about-points">
-
-
-        <div>
-
-            ✓ Troubleshooting assistance
+            <div>
+                ✓ Component exploration
+            </div>
 
         </div>
-
-
-        <div>
-
-            ✓ Hardware knowledge
-
-        </div>
-
-
-        <div>
-
-            ✓ Repair guidance
-
-        </div>
-
-
-        <div>
-
-            ✓ Component exploration
-
-        </div>
-
 
     </div>
-
-
-</div>
-```
 
 </section>
 
 </main>
 
+
 <footer>
 
-```
-<div>
+    <div>
 
+        <strong>
+            ⚡ PC Repair AI
+        </strong>
 
-    <strong>
+        <p>
+            AI-powered computer troubleshooting assistant.
+        </p>
 
-        ⚡ PC Repair AI
+    </div>
 
-    </strong>
-
-
-    <p>
-
-        AI-powered computer troubleshooting assistant.
-
-    </p>
-
-
-</div>
-
-
-<span>
-
-    © 2026 PC Repair AI
-
-</span>
-```
+    <span>
+        © 2026 PC Repair AI
+    </span>
 
 </footer>
 
+
 <button
-id="topBtn"
-class="top-btn"
-type="button"
-aria-label="Back to top"
-
+    id="topBtn"
+    class="top-btn"
+    type="button"
+    aria-label="Back to top"
 >
-
-```
-↑
-```
-
+    ↑
 </button>
+
 
 <script>
 
 const API_URL = "https://pc-repair-ai.onrender.com";
 
 const themeBtn = document.getElementById("themeBtn");
-
 const topBtn = document.getElementById("topBtn");
-
 const diagnoseButton = document.getElementById("diagnoseButton");
-
 const resultSection = document.getElementById("resultSection");
-
 const resultContainer = document.getElementById("resultContainer");
-
 const deviceInput = document.getElementById("device");
-
 const problemInput = document.getElementById("problem");
 
 
@@ -665,13 +396,11 @@ function applyTheme() {
     if (savedTheme === "dark") {
 
         document.body.classList.add("dark");
-
         themeBtn.textContent = "☀️";
 
     } else {
 
         document.body.classList.remove("dark");
-
         themeBtn.textContent = "🌙";
 
     }
@@ -689,13 +418,11 @@ themeBtn.addEventListener("click", function () {
     if (document.body.classList.contains("dark")) {
 
         themeBtn.textContent = "☀️";
-
         localStorage.setItem("theme", "dark");
 
     } else {
 
         themeBtn.textContent = "🌙";
-
         localStorage.setItem("theme", "light");
 
     }
@@ -721,11 +448,8 @@ window.addEventListener("scroll", function () {
 topBtn.addEventListener("click", function () {
 
     window.scrollTo({
-
         top: 0,
-
         behavior: "smooth"
-
     });
 
 });
@@ -740,9 +464,7 @@ document
             const targetId = link.getAttribute("href");
 
             if (!targetId || targetId === "#") {
-
                 return;
-
             }
 
             const target = document.querySelector(targetId);
@@ -752,11 +474,8 @@ document
                 event.preventDefault();
 
                 target.scrollIntoView({
-
                     behavior: "smooth",
-
                     block: "start"
-
                 });
 
             }
@@ -771,7 +490,6 @@ deviceInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
 
         event.preventDefault();
-
         problemInput.focus();
 
     }
@@ -784,7 +502,6 @@ problemInput.addEventListener("keydown", function (event) {
     if (event.ctrlKey && event.key === "Enter") {
 
         event.preventDefault();
-
         diagnoseButton.click();
 
     }
@@ -795,7 +512,6 @@ problemInput.addEventListener("keydown", function (event) {
 diagnoseButton.addEventListener("click", async function () {
 
     const device = deviceInput.value.trim();
-
     const problem = problemInput.value.trim();
 
 
@@ -837,16 +553,12 @@ diagnoseButton.addEventListener("click", async function () {
             <div class="ai-spinner"></div>
 
             <h3>
-
                 AI is analyzing your problem...
-
             </h3>
 
             <p>
-
                 Checking possible causes,
                 diagnosis steps and repair solutions.
-
             </p>
 
             <div class="loading-status">
@@ -863,42 +575,28 @@ diagnoseButton.addEventListener("click", async function () {
 
 
     resultSection.scrollIntoView({
-
         behavior: "smooth",
-
         block: "start"
-
     });
 
 
     try {
 
         const response = await fetch(
-
             `${API_URL}/diagnose`,
-
             {
-
                 method: "POST",
 
                 headers: {
-
                     "Content-Type": "application/json",
-
                     "Accept": "application/json"
-
                 },
 
                 body: JSON.stringify({
-
                     device: device,
-
                     problem: problem
-
                 })
-
             }
-
         );
 
 
@@ -997,24 +695,49 @@ function setLoadingState(isLoading) {
     if (isLoading) {
 
         diagnoseButton.innerHTML = `
-
             Analyzing
-
             <span class="button-loader"></span>
-
         `;
 
     } else {
 
         diagnoseButton.innerHTML = `
-
             Diagnose Problem
-
             <span>→</span>
-
         `;
 
     }
+
+}
+
+
+function cleanAIText(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    let text = String(value);
+
+
+    text = text.replace(/```[a-zA-Z0-9_-]*\s*/g, "");
+    text = text.replace(/```/g, "");
+    text = text.replace(/\*\*(.*?)\*\*/g, "$1");
+    text = text.replace(/__(.*?)__/g, "$1");
+    text = text.replace(/`([^`]*)`/g, "$1");
+
+
+    text = text.replace(/\r\n/g, "\n");
+    text = text.replace(/\n{3,}/g, "\n\n");
+
+
+    return text.trim();
 
 }
 
@@ -1032,15 +755,10 @@ function escapeHTML(value) {
 
 
     return String(value)
-
         .replace(/&/g, "&amp;")
-
         .replace(/</g, "&lt;")
-
         .replace(/>/g, "&gt;")
-
         .replace(/"/g, "&quot;")
-
         .replace(/'/g, "&#039;");
 
 }
@@ -1069,7 +787,7 @@ function getText(value) {
 
     if (typeof value === "string") {
 
-        return value;
+        return cleanAIText(value);
 
     }
 
@@ -1088,7 +806,9 @@ function getText(value) {
 
         try {
 
-            return JSON.stringify(value);
+            return cleanAIText(
+                JSON.stringify(value)
+            );
 
         } catch {
 
@@ -1099,7 +819,7 @@ function getText(value) {
     }
 
 
-    return String(value);
+    return cleanAIText(value);
 
 }
 
@@ -1107,9 +827,7 @@ function getText(value) {
 function normalizeUrl(url) {
 
     if (!url) {
-
         return "";
-
     }
 
 
@@ -1121,31 +839,21 @@ function normalizeUrl(url) {
 
 
     if (markdownMatch) {
-
         value = markdownMatch[1];
-
     }
 
 
     value = value
-
         .replace(/\\:/g, ":")
-
         .replace(/\\&/g, "&")
-
         .replace(/\\=/g, "=")
-
         .replace(/\\\?/g, "?")
-
         .replace(/\\\//g, "/")
-
         .replace(/&amp;/g, "&");
 
 
     if (value.startsWith("//")) {
-
         value = "https:" + value;
-
     }
 
 
@@ -1153,9 +861,7 @@ function normalizeUrl(url) {
         !value.startsWith("http://") &&
         !value.startsWith("https://")
     ) {
-
         return "";
-
     }
 
 
@@ -1181,23 +887,31 @@ function renderDiagnosis(data, device, problem) {
 
 
     const title =
-        diagnosis.title ||
-        "AI PC & Laptop Diagnosis";
+        getText(
+            diagnosis.title ||
+            "AI PC & Laptop Diagnosis"
+        );
 
 
     const summary =
-        diagnosis.summary ||
-        "The AI analyzed the reported problem.";
+        getText(
+            diagnosis.summary ||
+            "The AI analyzed the reported problem."
+        );
 
 
     const confidence =
-        diagnosis.confidence ||
-        "Not specified";
+        getText(
+            diagnosis.confidence ||
+            "Not specified"
+        );
 
 
     const difficulty =
-        diagnosis.difficulty ||
-        "Not specified";
+        getText(
+            diagnosis.difficulty ||
+            "Not specified"
+        );
 
 
     const possibleCauses =
@@ -1225,7 +939,9 @@ function renderDiagnosis(data, device, problem) {
 
 
     const professional =
-        getArray(diagnosis.when_to_visit_professional);
+        getArray(
+            diagnosis.when_to_visit_professional
+        );
 
 
     const products =
@@ -1236,59 +952,40 @@ function renderDiagnosis(data, device, problem) {
 
         <div class="ai-result-card diagnosis-shell">
 
-
             <div class="diagnosis-header">
-
 
                 <div class="diagnosis-header-left">
 
-
                     <div class="result-ai-icon">
-
                         🤖
-
                     </div>
-
 
                     <div>
 
-
                         <div class="diagnosis-label">
-
                             AI DIAGNOSIS
-
                         </div>
-
 
                         <h3 class="diagnosis-title">
-
                             ${escapeHTML(title)}
-
                         </h3>
 
-
                         <div class="diagnosis-device">
-
-                            💻 ${escapeHTML(device)}
-
+                            💻 ${escapeHTML(getText(device))}
                         </div>
 
-
                     </div>
-
 
                 </div>
 
 
                 <div class="diagnosis-meta">
 
-
                     <span class="confidence-badge">
 
                         <span>◉</span>
 
                         Confidence:
-
                         ${escapeHTML(confidence)}
 
                     </span>
@@ -1297,80 +994,53 @@ function renderDiagnosis(data, device, problem) {
                     <span class="difficulty-badge">
 
                         🛠️
-
                         ${escapeHTML(difficulty)}
 
                     </span>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="problem-box">
 
-
                 <div class="problem-box-icon">
-
                     ⚠️
-
                 </div>
-
 
                 <div>
 
-
                     <strong>
-
                         Reported Problem
-
                     </strong>
 
-
                     <p>
-
-                        ${escapeHTML(problem)}
-
+                        ${escapeHTML(getText(problem))}
                     </p>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="diagnosis-summary">
 
-
                 <div class="summary-icon">
-
                     💡
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         AI SUMMARY
-
                     </span>
 
-
                     <p>
-
                         ${escapeHTML(summary)}
-
                     </p>
 
-
                 </div>
-
 
             </div>
 
@@ -1394,24 +1064,16 @@ function renderDiagnosis(data, device, problem) {
 
             <div class="diagnosis-footer">
 
-
                 <span>
-
                     🤖 Generated by PC Repair AI
-
                 </span>
 
-
                 <span>
-
                     Always verify model-specific
                     instructions before hardware repair.
-
                 </span>
 
-
             </div>
-
 
         </div>
 
@@ -1423,9 +1085,7 @@ function renderDiagnosis(data, device, problem) {
 function renderCauses(causes) {
 
     if (!causes.length) {
-
         return "";
-
     }
 
 
@@ -1433,42 +1093,28 @@ function renderCauses(causes) {
 
         <section class="diagnosis-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon">
-
                     🔍
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         WHAT COULD BE WRONG?
-
                     </span>
 
-
                     <h3>
-
                         Possible Causes
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="causes-grid">
-
 
                 ${causes.map(function (cause, index) {
 
@@ -1498,34 +1144,22 @@ function renderCauses(causes) {
 
                         <div class="cause-card">
 
-
                             <div class="cause-number">
-
                                 ${String(index + 1).padStart(2, "0")}
-
                             </div>
-
 
                             <div class="cause-content">
 
-
                                 <strong>
-
                                     ${escapeHTML(text)}
-
                                 </strong>
 
-
                                 <p>
-
                                     Possible issue identified
                                     by the AI analysis.
-
                                 </p>
 
-
                             </div>
-
 
                         </div>
 
@@ -1533,9 +1167,7 @@ function renderCauses(causes) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -1547,9 +1179,7 @@ function renderCauses(causes) {
 function renderDiagnosisSteps(steps) {
 
     if (!steps.length) {
-
         return "";
-
     }
 
 
@@ -1557,42 +1187,28 @@ function renderDiagnosisSteps(steps) {
 
         <section class="diagnosis-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon">
-
                     🧪
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         CHECK FIRST
-
                     </span>
 
-
                     <h3>
-
                         Diagnosis Steps
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="steps-list">
-
 
                 ${steps.map(function (step, index) {
 
@@ -1623,33 +1239,21 @@ function renderDiagnosisSteps(steps) {
 
                         <div class="diagnosis-step">
 
-
                             <div class="step-number">
-
                                 ${index + 1}
-
                             </div>
-
 
                             <div class="step-content">
 
-
                                 <h4>
-
                                     Check ${index + 1}
-
                                 </h4>
 
-
                                 <p>
-
                                     ${escapeHTML(text)}
-
                                 </p>
 
-
                             </div>
-
 
                         </div>
 
@@ -1657,9 +1261,7 @@ function renderDiagnosisSteps(steps) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -1671,9 +1273,7 @@ function renderDiagnosisSteps(steps) {
 function renderRepairSteps(steps) {
 
     if (!steps.length) {
-
         return "";
-
     }
 
 
@@ -1681,42 +1281,28 @@ function renderRepairSteps(steps) {
 
         <section class="diagnosis-section repair-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon">
-
                     🛠️
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         STEP-BY-STEP SOLUTION
-
                     </span>
 
-
                     <h3>
-
                         Repair Steps
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="repair-steps">
-
 
                 ${steps.map(function (item, index) {
 
@@ -1763,53 +1349,33 @@ function renderRepairSteps(steps) {
 
                         <div class="repair-step">
 
-
                             <div class="repair-step-number">
-
                                 ${escapeHTML(stepNumber)}
-
                             </div>
-
 
                             <div class="repair-step-content">
 
-
                                 <div class="repair-step-top">
 
-
                                     <span>
-
                                         STEP ${escapeHTML(stepNumber)}
-
                                     </span>
 
-
                                     <div>
-
                                         ✓
-
                                     </div>
-
 
                                 </div>
 
-
                                 <h4>
-
-                                    ${escapeHTML(stepTitle)}
-
+                                    ${escapeHTML(getText(stepTitle))}
                                 </h4>
 
-
                                 <p>
-
-                                    ${escapeHTML(details)}
-
+                                    ${escapeHTML(getText(details))}
                                 </p>
 
-
                             </div>
-
 
                         </div>
 
@@ -1817,9 +1383,7 @@ function renderRepairSteps(steps) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -1831,9 +1395,7 @@ function renderRepairSteps(steps) {
 function renderTools(tools) {
 
     if (!tools.length) {
-
         return "";
-
     }
 
 
@@ -1841,42 +1403,28 @@ function renderTools(tools) {
 
         <section class="diagnosis-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon">
-
                     🔧
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         PREPARE BEFORE REPAIR
-
                     </span>
 
-
                     <h3>
-
                         Tools Required
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="tools-grid">
-
 
                 ${tools.map(function (tool, index) {
 
@@ -1905,33 +1453,21 @@ function renderTools(tools) {
 
                         <div class="tool-card">
 
-
                             <div class="tool-icon">
-
                                 🔧
-
                             </div>
-
 
                             <div>
 
-
                                 <span>
-
                                     TOOL ${index + 1}
-
                                 </span>
 
-
                                 <strong>
-
                                     ${escapeHTML(text)}
-
                                 </strong>
 
-
                             </div>
-
 
                         </div>
 
@@ -1939,9 +1475,7 @@ function renderTools(tools) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -1953,9 +1487,7 @@ function renderTools(tools) {
 function renderParts(parts) {
 
     if (!parts.length) {
-
         return "";
-
     }
 
 
@@ -1963,47 +1495,32 @@ function renderParts(parts) {
 
         <section class="diagnosis-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon">
-
                     📦
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         POSSIBLE REPLACEMENT COMPONENTS
-
                     </span>
 
-
                     <h3>
-
                         Parts Required
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="parts-required-grid">
 
-
                 ${parts.map(function (part, index) {
 
                     let name = "Required Component";
-
                     let searchQuery = "";
 
 
@@ -2027,7 +1544,6 @@ function renderParts(parts) {
                     } else {
 
                         name = getText(part);
-
                         searchQuery = getText(part);
 
                     }
@@ -2037,51 +1553,32 @@ function renderParts(parts) {
 
                         <div class="required-part-card">
 
-
                             <div class="required-part-icon">
-
                                 ⚙️
-
                             </div>
-
 
                             <div class="required-part-info">
 
-
                                 <span>
-
                                     COMPONENT ${index + 1}
-
                                 </span>
 
-
                                 <h4>
-
-                                    ${escapeHTML(name)}
-
+                                    ${escapeHTML(getText(name))}
                                 </h4>
-
 
                                 ${
                                     searchQuery
                                         ? `
-
                                             <p>
-
                                                 Search:
-
-                                                ${escapeHTML(searchQuery)}
-
+                                                ${escapeHTML(getText(searchQuery))}
                                             </p>
-
                                         `
                                         : ""
-
                                 }
 
-
                             </div>
-
 
                         </div>
 
@@ -2089,9 +1586,7 @@ function renderParts(parts) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -2103,9 +1598,7 @@ function renderParts(parts) {
 function renderSafety(items) {
 
     if (!items.length) {
-
         return "";
-
     }
 
 
@@ -2113,42 +1606,28 @@ function renderSafety(items) {
 
         <section class="diagnosis-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon safety-heading-icon">
-
                     🛡️
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         IMPORTANT BEFORE YOU START
-
                     </span>
 
-
                     <h3>
-
                         Safety Instructions
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="safety-list">
-
 
                 ${items.map(function (item) {
 
@@ -2177,20 +1656,13 @@ function renderSafety(items) {
 
                         <div class="safety-item">
 
-
                             <div>
-
                                 !
-
                             </div>
 
-
                             <p>
-
                                 ${escapeHTML(text)}
-
                             </p>
-
 
                         </div>
 
@@ -2198,9 +1670,7 @@ function renderSafety(items) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -2212,9 +1682,7 @@ function renderSafety(items) {
 function renderProfessional(items) {
 
     if (!items.length) {
-
         return "";
-
     }
 
 
@@ -2222,36 +1690,23 @@ function renderProfessional(items) {
 
         <section class="diagnosis-section">
 
-
             <div class="professional-box">
 
-
                 <div class="professional-icon">
-
                     👨‍🔧
-
                 </div>
-
 
                 <div class="professional-content">
 
-
                     <span>
-
                         KNOW WHEN TO STOP
-
                     </span>
 
-
                     <h3>
-
                         When To Visit A Professional
-
                     </h3>
 
-
                     <ul>
-
 
                         ${items.map(function (item) {
 
@@ -2277,26 +1732,18 @@ function renderProfessional(items) {
 
 
                             return `
-
                                 <li>
-
                                     ${escapeHTML(text)}
-
                                 </li>
-
                             `;
 
                         }).join("")}
 
-
                     </ul>
-
 
                 </div>
 
-
             </div>
-
 
         </section>
 
@@ -2308,9 +1755,7 @@ function renderProfessional(items) {
 function renderProducts(groups) {
 
     if (!groups.length) {
-
         return "";
-
     }
 
 
@@ -2318,65 +1763,44 @@ function renderProducts(groups) {
 
         <section class="diagnosis-section products-section">
 
-
             <div class="section-heading">
 
-
                 <div class="section-icon">
-
                     🛒
-
                 </div>
-
 
                 <div>
 
-
                     <span>
-
                         USEFUL HARDWARE
-
                     </span>
 
-
                     <h3>
-
                         Recommended Products
-
                     </h3>
 
-
                 </div>
-
 
             </div>
 
 
             <div class="product-note">
 
-
                 <span>
-
                     💡
-
                 </span>
 
-
                 <p>
-
                     Products are shown as recommendations related
                     to the diagnosed components. Always confirm
                     compatibility with your exact device model
                     before purchasing.
-
                 </p>
-
 
             </div>
 
 
             <div class="product-groups">
-
 
                 ${groups.map(function (group) {
 
@@ -2384,9 +1808,7 @@ function renderProducts(groups) {
 
                 }).join("")}
 
-
             </div>
-
 
         </section>
 
@@ -2424,78 +1846,53 @@ function renderProductGroup(group) {
 
             <div class="product-group">
 
-
                 <div class="product-group-header">
-
 
                     <div>
 
-
                         <span>
-
                             COMPONENT
-
                         </span>
 
-
                         <h4>
-
-                            ${escapeHTML(component)}
-
+                            ${escapeHTML(getText(component))}
                         </h4>
 
-
                     </div>
-
 
                 </div>
 
 
                 <div class="empty-products">
 
-
                     <div>
-
                         🔎
-
                     </div>
 
-
                     <strong>
-
                         No products found
-
                     </strong>
 
-
                     <p>
-
                         No matching products were returned
                         for this component.
-
                     </p>
 
 
                     ${
                         group.search_query
                             ? `
-
                                 <div class="search-query">
-
                                     Search:
-
-                                    ${escapeHTML(group.search_query)}
-
+                                    ${escapeHTML(
+                                        getText(group.search_query)
+                                    )}
                                 </div>
-
                             `
                             : ""
-
                     }
 
-
                 </div>
-
 
             </div>
 
@@ -2508,29 +1905,19 @@ function renderProductGroup(group) {
 
         <div class="product-group">
 
-
             <div class="product-group-header">
-
 
                 <div>
 
-
                     <span>
-
                         RECOMMENDED FOR
-
                     </span>
 
-
                     <h4>
-
-                        ${escapeHTML(component)}
-
+                        ${escapeHTML(getText(component))}
                     </h4>
 
-
                 </div>
-
 
                 <div class="product-count">
 
@@ -2540,12 +1927,10 @@ function renderProductGroup(group) {
 
                 </div>
 
-
             </div>
 
 
             <div class="product-grid">
-
 
                 ${items.map(function (product) {
 
@@ -2553,9 +1938,7 @@ function renderProductGroup(group) {
 
                 }).join("")}
 
-
             </div>
-
 
         </div>
 
@@ -2639,38 +2022,24 @@ function renderProduct(product) {
 
             <div class="product-rating">
 
-
                 <span>
-
                     ★
-
                 </span>
 
-
                 <strong>
-
-                    ${escapeHTML(rating)}
-
+                    ${escapeHTML(getText(rating))}
                 </strong>
-
 
                 ${
                     reviews
                         ? `
-
                             <small>
-
                                 ${formatNumber(reviews)}
-
                                 reviews
-
                             </small>
-
                         `
                         : ""
-
                 }
-
 
             </div>
 
@@ -2683,22 +2052,18 @@ function renderProduct(product) {
 
         <article class="product-card">
 
-
             <div class="product-image-wrap">
-
 
                 ${
                     image
                         ? `
-
                             <img
                                 class="product-image"
                                 src="${escapeHTML(image)}"
-                                alt="${escapeHTML(title)}"
+                                alt="${escapeHTML(getText(title))}"
                                 loading="lazy"
                                 onerror="handleProductImageError(this)"
                             >
-
 
                             <div
                                 class="product-placeholder"
@@ -2706,70 +2071,52 @@ function renderProduct(product) {
                             >
 
                                 <span>
-
                                     📦
-
                                 </span>
 
-
                                 <small>
-
                                     Image unavailable
-
                                 </small>
 
-
                             </div>
-
                         `
                         : `
-
                             <div class="product-placeholder">
 
                                 <span>
-
                                     📦
-
                                 </span>
 
-
                                 <small>
-
                                     Image unavailable
-
                                 </small>
 
-
                             </div>
-
                         `
-
                 }
 
 
                 <div class="product-source-badge">
 
-                    ${escapeHTML(source)}
+                    ${escapeHTML(getText(source))}
 
                 </div>
-
 
             </div>
 
 
             <div class="product-info">
 
-
                 <h4 class="product-title">
 
-                    ${escapeHTML(title)}
+                    ${escapeHTML(getText(title))}
 
                 </h4>
 
 
                 <div class="product-price">
 
-                    ${escapeHTML(price)}
+                    ${escapeHTML(getText(price))}
 
                 </div>
 
@@ -2779,11 +2126,9 @@ function renderProduct(product) {
 
                 <div class="product-actions">
 
-
                     ${
                         link
                             ? `
-
                                 <a
                                     class="product-link"
                                     href="${escapeHTML(link)}"
@@ -2798,26 +2143,17 @@ function renderProduct(product) {
                                     </span>
 
                                 </a>
-
                             `
                             : `
-
                                 <span class="product-link disabled-link">
-
                                     Product Link Unavailable
-
                                 </span>
-
                             `
-
                     }
-
 
                 </div>
 
-
             </div>
-
 
         </article>
 
@@ -2829,9 +2165,7 @@ function renderProduct(product) {
 function handleProductImageError(imageElement) {
 
     if (!imageElement) {
-
         return;
-
     }
 
 
@@ -2843,9 +2177,7 @@ function handleProductImageError(imageElement) {
 
 
     if (placeholder) {
-
         placeholder.style.display = "flex";
-
     }
 
 }
@@ -2860,9 +2192,7 @@ function formatNumber(value) {
 
 
     if (Number.isNaN(number)) {
-
         return escapeHTML(value);
-
     }
 
 
@@ -2896,58 +2226,38 @@ function renderConnectionError(error) {
 
             <div class="error-help">
 
-
                 <strong>
-
                     AI server connection checklist:
-
                 </strong>
-
 
                 <ul>
 
-
                     <li>
-
                         Make sure your internet connection is working.
-
                     </li>
 
-
                     <li>
-
                         The AI backend is hosted on Render.
-
                     </li>
 
-
                     <li>
-
                         Backend:
-
                         <code>
                             https://pc-repair-ai.onrender.com
                         </code>
-
                     </li>
-
 
                     <li>
-
-                        Try refreshing the page and running the diagnosis again.
-
+                        Try refreshing the page and running
+                        the diagnosis again.
                     </li>
-
 
                     <li>
-
-                        If the problem continues, check the Render service status.
-
+                        If the problem continues,
+                        check the Render service.
                     </li>
-
 
                 </ul>
-
 
             </div>
 
@@ -2959,29 +2269,19 @@ function renderConnectionError(error) {
 
             <div class="error-help">
 
-
                 <strong>
-
                     Server response:
-
                 </strong>
 
-
                 <p>
-
                     The AI server was reached,
                     but it returned an error while
                     processing the diagnosis.
-
                 </p>
-
 
                 <p>
-
                     Please try the diagnosis again.
-
                 </p>
-
 
             </div>
 
@@ -2994,30 +2294,19 @@ function renderConnectionError(error) {
 
         <div class="error-card">
 
-
             <div>
-
                 ⚠️
-
             </div>
 
-
             <h3>
-
                 Diagnosis Error
-
             </h3>
 
-
             <p>
-
-                ${escapeHTML(message)}
-
+                ${escapeHTML(getText(message))}
             </p>
 
-
             ${extraMessage}
-
 
         </div>
 
@@ -3035,27 +2324,17 @@ function showResult(message) {
 
         <div class="error-card">
 
-
             <div>
-
                 ⚠️
-
             </div>
 
-
             <h3>
-
                 Missing Information
-
             </h3>
 
-
             <p>
-
-                ${escapeHTML(message)}
-
+                ${escapeHTML(getText(message))}
             </p>
-
 
         </div>
 
@@ -3063,11 +2342,8 @@ function showResult(message) {
 
 
     resultSection.scrollIntoView({
-
         behavior: "smooth",
-
         block: "start"
-
     });
 
 }
