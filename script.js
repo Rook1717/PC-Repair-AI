@@ -2,7 +2,7 @@
 // CONFIGURATION
 // ==========================================
 
-const const API_URL = "https://pc-repair-ai.onrender.com";
+const API_URL = "https://pc-repair-ai.onrender.com";
 
 
 // ==========================================
