@@ -1,180 +1,575 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    <!-- Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="AI PC and Laptop Repair Assistant for intelligent computer troubleshooting and hardware guidance.">
+
+<title>AI PC & Laptop Repair Assistant</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- Google Analytics 4 -->
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TXNZC0SK5X"></script>
+
 <script>
 window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-TXNZC0SK5X');
-</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI PC and Laptop Repair Assistant for intelligent computer troubleshooting and hardware guidance.">
-    <title>AI PC & Laptop Repair Assistant</title>
-    <link rel="stylesheet" href="style.css">
 
-<!-- AI PC Repair Assistant - GA4 Analytics Layer -->
+function gtag() {
+    dataLayer.push(arguments);
+}
+
+gtag("js", new Date());
+
+gtag("config", "G-TXNZC0SK5X", {
+    send_page_view: true
+});
+</script>
+
+<!-- PC Repair AI Analytics -->
+
 <script>
+
 (function () {
+
     function track(name, params) {
+
         if (typeof gtag === "function") {
+
             gtag("event", name, params || {});
+
         }
+
     }
 
-    window.PCRepairAnalytics = { track: track };
+    window.PCRepairAnalytics = {
+
+        track: track,
+
+        aiDiagnosis: function (params) {
+
+            track("ai_diagnosis", params || {});
+
+        },
+
+        productClick: function (params) {
+
+            track("product_click", params || {});
+
+        },
+
+        healthCheck: function (params) {
+
+            track("pc_health_check", params || {});
+
+        },
+
+        partSearch: function (params) {
+
+            track("part_search", params || {});
+
+        }
+
+    };
+
+
+    /* PAGE LOADED */
 
     track("page_loaded", {
+
         page_name: document.title,
+
         page_path: window.location.pathname
+
     });
+
+
+    /* SCROLL DEPTH */
 
     const scrollMarks = [25, 50, 75, 90, 100];
+
     const sentScrollMarks = {};
 
-    function checkScrollDepth() {
-        const doc = document.documentElement;
-        const scrollable = doc.scrollHeight - window.innerHeight;
-        if (scrollable <= 0) return;
 
-        const percent = Math.min(100, Math.round((window.scrollY / scrollable) * 100));
+    function checkScrollDepth() {
+
+        const doc = document.documentElement;
+
+        const scrollable =
+            doc.scrollHeight - window.innerHeight;
+
+
+        if (scrollable <= 0) {
+
+            return;
+
+        }
+
+
+        const percent =
+            Math.min(
+                100,
+                Math.round(
+                    (window.scrollY / scrollable) * 100
+                )
+            );
+
 
         scrollMarks.forEach(function (mark) {
-            if (percent >= mark && !sentScrollMarks[mark]) {
+
+            if (
+                percent >= mark &&
+                !sentScrollMarks[mark]
+            ) {
+
                 sentScrollMarks[mark] = true;
+
+
                 track("scroll_depth", {
+
                     percent_scrolled: mark,
+
                     page_path: window.location.pathname
+
                 });
+
             }
+
         });
+
     }
 
-    window.addEventListener("scroll", checkScrollDepth, { passive: true });
 
-    document.addEventListener("click", function (event) {
-        const element = event.target.closest(
-            "a, button, input[type='submit'], input[type='button'], [role='button']"
-        );
-        if (!element) return;
+    window.addEventListener(
+        "scroll",
+        checkScrollDepth,
+        { passive: true }
+    );
 
-        const text = (
-            element.innerText ||
-            element.value ||
-            element.getAttribute("aria-label") ||
-            element.getAttribute("title") ||
-            ""
-        ).trim().replace(/\s+/g, " ").slice(0, 100);
 
-        track("user_action", {
-            element_type: element.tagName.toLowerCase(),
-            element_text: text,
-            element_id: element.id || "",
-            page_path: window.location.pathname
-        });
+    /* GENERAL CLICK TRACKING */
 
-        if (element.tagName.toLowerCase() === "a" && element.href) {
-            try {
-                const url = new URL(element.href, window.location.href);
+    document.addEventListener(
+        "click",
+        function (event) {
 
-                if (url.origin !== window.location.origin) {
-                    track("outbound_click", {
-                        link_domain: url.hostname,
-                        link_path: url.pathname
-                    });
-                }
+            const element =
+                event.target.closest(
+                    "a, button, input[type='submit'], input[type='button'], [role='button']"
+                );
 
-                if (url.hostname.includes("youtube.com") ||
-                    url.hostname.includes("youtu.be")) {
-                    track("youtube_click", {
-                        video_domain: url.hostname
-                    });
-                }
 
-                if (url.hostname.includes("amazon.") ||
-                    url.hostname.includes("flipkart.") ||
-                    url.hostname.includes("mdcomputers.") ||
-                    url.hostname.includes("primeabgb.") ||
-                    url.hostname.includes("vedant.")) {
-                    track("product_link_click", {
-                        store_domain: url.hostname
-                    });
-                }
-            } catch (e) {}
-        }
-    }, true);
+            if (!element) {
 
-    document.addEventListener("submit", function (event) {
-        const form = event.target;
-        track("form_submit", {
-            form_id: form.id || "",
-            form_name: form.getAttribute("name") || "",
-            page_path: window.location.pathname
-        });
-    }, true);
+                return;
 
-    document.addEventListener("change", function (event) {
-        const element = event.target;
-        if (!element || !["SELECT", "INPUT"].includes(element.tagName)) return;
+            }
 
-        track("form_interaction", {
-            field_type: element.type || element.tagName.toLowerCase(),
-            field_name: element.name || element.id || "",
-            page_path: window.location.pathname
-        });
-    }, true);
 
-    const observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
+            const text = (
 
-            const section = entry.target;
-            if (section.dataset.analyticsTracked === "true") return;
+                element.innerText ||
 
-            section.dataset.analyticsTracked = "true";
+                element.value ||
 
-            track("section_view", {
-                section_name: (
-                    section.getAttribute("data-analytics-section") ||
-                    section.id ||
-                    section.getAttribute("aria-label") ||
-                    section.tagName.toLowerCase()
-                ).slice(0, 100),
-                page_path: window.location.pathname
+                element.getAttribute("aria-label") ||
+
+                element.getAttribute("title") ||
+
+                ""
+
+            )
+                .trim()
+                .replace(/\s+/g, " ")
+                .slice(0, 100);
+
+
+            track("user_action", {
+
+                element_type:
+                    element.tagName.toLowerCase(),
+
+                element_text: text,
+
+                element_id:
+                    element.id || "",
+
+                page_path:
+                    window.location.pathname
+
             });
-        });
-    }, { threshold: 0.35 });
 
-    document.querySelectorAll("section, main > div, [data-section]").forEach(function (element) {
-        observer.observe(element);
-    });
 
-    window.addEventListener("error", function () {
-        track("javascript_error", {
-            error_type: "window_error",
-            page_path: window.location.pathname
-        });
-    });
+            /* PC HEALTH CHECK */
 
-    window.addEventListener("unhandledrejection", function () {
-        track("javascript_error", {
-            error_type: "promise_rejection",
-            page_path: window.location.pathname
-        });
-    });
+            const healthButton =
+                element.id === "healthCheckBtn" ||
+                element.id === "pcHealthCheckBtn" ||
+                element.dataset.analytics === "pc_health_check";
 
-    window.addEventListener("load", function () {
-        track("page_ready", {
-            page_name: document.title,
-            page_path: window.location.pathname
-        });
-    });
+
+            if (healthButton) {
+
+                track("pc_health_check", {
+
+                    action: "open",
+
+                    page_path:
+                        window.location.pathname
+
+                });
+
+            }
+
+
+            /* PRODUCT CLICK */
+
+            if (
+                element.classList.contains("product-link")
+            ) {
+
+                track("product_click", {
+
+                    product_name:
+                        element.dataset.productName || "",
+
+                    store:
+                        element.dataset.productSource || "",
+
+                    page_path:
+                        window.location.pathname
+
+                });
+
+            }
+
+
+            /* LINKS */
+
+            if (
+                element.tagName.toLowerCase() === "a" &&
+                element.href
+            ) {
+
+                try {
+
+                    const url =
+                        new URL(
+                            element.href,
+                            window.location.href
+                        );
+
+
+                    if (
+                        url.origin !==
+                        window.location.origin
+                    ) {
+
+                        track("outbound_click", {
+
+                            link_domain:
+                                url.hostname,
+
+                            link_path:
+                                url.pathname
+
+                        });
+
+                    }
+
+
+                    if (
+                        url.hostname.includes("youtube.com") ||
+                        url.hostname.includes("youtu.be")
+                    ) {
+
+                        track("youtube_click", {
+
+                            video_domain:
+                                url.hostname
+
+                        });
+
+                    }
+
+
+                    if (
+                        url.hostname.includes("amazon.") ||
+                        url.hostname.includes("flipkart.") ||
+                        url.hostname.includes("mdcomputers.") ||
+                        url.hostname.includes("primeabgb.") ||
+                        url.hostname.includes("vedant.")
+                    ) {
+
+                        track("product_link_click", {
+
+                            store_domain:
+                                url.hostname
+
+                        });
+
+                    }
+
+                } catch (error) {}
+
+            }
+
+        },
+        true
+    );
+
+
+    /* FORM TRACKING */
+
+    document.addEventListener(
+        "submit",
+        function (event) {
+
+            const form = event.target;
+
+
+            track("form_submit", {
+
+                form_id:
+                    form.id || "",
+
+                form_name:
+                    form.getAttribute("name") || "",
+
+                page_path:
+                    window.location.pathname
+
+            });
+
+        },
+        true
+    );
+
+
+    /* INPUT TRACKING */
+
+    document.addEventListener(
+        "change",
+        function (event) {
+
+            const element = event.target;
+
+
+            if (
+                !element ||
+                !["SELECT", "INPUT"].includes(
+                    element.tagName
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            track("form_interaction", {
+
+                field_type:
+                    element.type ||
+                    element.tagName.toLowerCase(),
+
+                field_name:
+                    element.name ||
+                    element.id ||
+                    "",
+
+                page_path:
+                    window.location.pathname
+
+            });
+
+        },
+        true
+    );
+
+
+    /* SECTION VIEW */
+
+    function setupSectionTracking() {
+
+        if (
+            typeof IntersectionObserver ===
+            "undefined"
+        ) {
+
+            return;
+
+        }
+
+
+        const observer =
+            new IntersectionObserver(
+                function (entries) {
+
+                    entries.forEach(
+                        function (entry) {
+
+                            if (
+                                !entry.isIntersecting
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            const section =
+                                entry.target;
+
+
+                            if (
+                                section.dataset
+                                    .analyticsTracked ===
+                                "true"
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            section.dataset
+                                .analyticsTracked =
+                                "true";
+
+
+                            track(
+                                "section_view",
+                                {
+
+                                    section_name: (
+
+                                        section.getAttribute(
+                                            "data-analytics-section"
+                                        ) ||
+
+                                        section.id ||
+
+                                        section.getAttribute(
+                                            "aria-label"
+                                        ) ||
+
+                                        section.tagName.toLowerCase()
+
+                                    )
+                                        .slice(0, 100),
+
+                                    page_path:
+                                        window.location.pathname
+
+                                }
+                            );
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.35
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                "section, main > div, [data-section]"
+            )
+            .forEach(
+                function (element) {
+
+                    observer.observe(element);
+
+                }
+            );
+
+    }
+
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            setupSectionTracking
+        );
+
+    } else {
+
+        setupSectionTracking();
+
+    }
+
+
+    /* JAVASCRIPT ERRORS */
+
+    window.addEventListener(
+        "error",
+        function () {
+
+            track("javascript_error", {
+
+                error_type: "window_error",
+
+                page_path:
+                    window.location.pathname
+
+            });
+
+        }
+    );
+
+
+    window.addEventListener(
+        "unhandledrejection",
+        function () {
+
+            track("javascript_error", {
+
+                error_type:
+                    "promise_rejection",
+
+                page_path:
+                    window.location.pathname
+
+            });
+
+        }
+    );
+
+
+    /* PAGE READY */
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            track("page_ready", {
+
+                page_name: document.title,
+
+                page_path:
+                    window.location.pathname
+
+            });
+
+        }
+    );
+
 })();
+
 </script>
-<!-- End AI PC Repair Assistant - GA4 Analytics Layer -->
 
 </head>
 
@@ -182,20 +577,42 @@ gtag('config', 'G-TXNZC0SK5X');
 
 <header class="navbar">
 
-    <a href="index.html" class="logo">
-        ⚡ PC Repair AI
+```
+<a href="index.html" class="logo">
+    ⚡ PC Repair AI
+</a>
+
+
+<nav>
+
+    <a href="index.html">
+        Home
     </a>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="parts.html">Parts Explorer</a>
-        <a href="#how">How It Works</a>
-        <a href="#about">About</a>
-    </nav>
+    <a href="parts.html">
+        Parts Explorer
+    </a>
 
-    <button id="themeBtn" class="theme-btn" type="button" aria-label="Toggle theme">
-        🌙
-    </button>
+    <a href="#how">
+        How It Works
+    </a>
+
+    <a href="#about">
+        About
+    </a>
+
+</nav>
+
+
+<button
+    id="themeBtn"
+    class="theme-btn"
+    type="button"
+    aria-label="Toggle theme"
+>
+    🌙
+</button>
+```
 
 </header>
 
@@ -203,373 +620,518 @@ gtag('config', 'G-TXNZC0SK5X');
 
 <section class="hero">
 
-    <div class="hero-bg-circle circle-one"></div>
-    <div class="hero-bg-circle circle-two"></div>
+```
+<div class="hero-bg-circle circle-one"></div>
 
-    <div class="hero-content">
+<div class="hero-bg-circle circle-two"></div>
 
-        <div class="badge">
-            🤖 AI POWERED PC SUPPORT
-        </div>
 
-        <h1>
-            Fix Your PC.<br>
-            <span>Understand Your Technology.</span>
-        </h1>
+<div class="hero-content">
 
-        <p>
-            Describe your PC or laptop problem and get intelligent
-            troubleshooting guidance, repair steps and useful recommendations.
-        </p>
 
-        <div class="repair-box">
+    <div class="badge">
+        🤖 AI POWERED PC SUPPORT
+    </div>
 
-            <label for="device">
-                💻 Device / Model
-            </label>
 
-            <input
-                id="device"
-                type="text"
-                autocomplete="off"
-                placeholder="Example: Dell Inspiron 15, HP Pavilion..."
-            >
+    <h1>
 
-            <label for="problem">
-                ⚠️ Describe Your Problem
-            </label>
+        Fix Your PC.<br>
 
-            <textarea
-                id="problem"
-                rows="5"
-                placeholder="Example: My laptop is very slow and gets hot..."
-            ></textarea>
+        <span>
+            Understand Your Technology.
+        </span>
 
-            <button
-                id="diagnoseButton"
-                class="primary-btn"
-                type="button"
-            >
-                Diagnose Problem
-                <span>→</span>
-            </button>
+    </h1>
 
-        </div>
 
-        <div class="hero-stats">
+    <p>
 
-            <div>
-                <strong>50+</strong>
-                <span>Common Problems</span>
-            </div>
+        Describe your PC or laptop problem and get intelligent
+        troubleshooting guidance, repair steps and useful recommendations.
 
-            <div>
-                <strong>100+</strong>
-                <span>PC Components</span>
-            </div>
+    </p>
 
-            <div>
-                <strong>AI</strong>
-                <span>Smart Guidance</span>
-            </div>
 
-        </div>
+    <div class="repair-box">
+
+
+        <label for="device">
+            💻 Device / Model
+        </label>
+
+
+        <input
+            id="device"
+            type="text"
+            autocomplete="off"
+            placeholder="Example: Dell Inspiron 15, HP Pavilion..."
+        >
+
+
+        <label for="problem">
+            ⚠️ Describe Your Problem
+        </label>
+
+
+        <textarea
+            id="problem"
+            rows="5"
+            placeholder="Example: My laptop is very slow and gets hot..."
+        ></textarea>
+
+
+        <button
+            id="diagnoseButton"
+            class="primary-btn"
+            type="button"
+        >
+
+            Diagnose Problem
+
+            <span>
+                →
+            </span>
+
+        </button>
+
 
     </div>
 
-    <div class="floating-pc">
 
-        <div class="pc-screen">
+    <div class="hero-stats">
 
-            <div class="screen-top"></div>
-
-            <div class="screen-content">
-
-                <span>CPU</span>
-                <span>RAM</span>
-                <span>SSD</span>
-
-                <div class="loading-bars">
-                    <i></i>
-                    <i></i>
-                    <i></i>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="pc-base"></div>
-
-    </div>
-
-</section>
-
-
-<section id="resultSection" class="result-section hidden">
-
-    <div class="section-title">
-
-        <span>AI ANALYSIS</span>
-
-        <h2>
-            Your Repair Guide
-        </h2>
-
-    </div>
-
-    <div id="resultContainer"></div>
-
-</section>
-
-
-<section class="parts-preview">
-
-    <div class="section-title">
-
-        <span>HARDWARE KNOWLEDGE</span>
-
-        <h2>
-            Explore PC & Laptop Parts
-        </h2>
-
-        <p>
-            Learn about the components inside your computer.
-        </p>
-
-    </div>
-
-    <div class="preview-card">
-
-        <div class="preview-icon">
-            🔧
-        </div>
 
         <div>
 
-            <h3>
-                PC & Laptop Parts Explorer
-            </h3>
+            <strong>
+                50+
+            </strong>
 
-            <p>
-                Explore RAM, SSD, HDD, CPU, GPU, motherboard,
-                battery, cooling fans and many more components.
-            </p>
+            <span>
+                Common Problems
+            </span>
 
         </div>
 
-        <a href="parts.html" class="preview-button">
-            Explore Parts →
-        </a>
+
+        <div>
+
+            <strong>
+                100+
+            </strong>
+
+            <span>
+                PC Components
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                AI
+            </strong>
+
+            <span>
+                Smart Guidance
+            </span>
+
+        </div>
+
 
     </div>
+
+
+</div>
+
+
+<div class="floating-pc">
+
+
+    <div class="pc-screen">
+
+        <div class="screen-top"></div>
+
+
+        <div class="screen-content">
+
+            <span>
+                CPU
+            </span>
+
+            <span>
+                RAM
+            </span>
+
+            <span>
+                SSD
+            </span>
+
+
+            <div class="loading-bars">
+
+                <i></i>
+                <i></i>
+                <i></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="pc-base"></div>
+
+</div>
+```
 
 </section>
 
+<section
+    id="resultSection"
+    class="result-section hidden"
+>
 
-<section id="how" class="how-section">
+```
+<div class="section-title">
 
-    <div class="section-title">
+    <span>
+        AI ANALYSIS
+    </span>
 
-        <span>SIMPLE PROCESS</span>
+    <h2>
+        Your Repair Guide
+    </h2>
 
-        <h2>
-            How It Works
-        </h2>
-
-    </div>
-
-    <div class="how-grid">
-
-        <div class="how-card">
-
-            <div class="number">
-                01
-            </div>
-
-            <div class="how-icon">
-                💻
-            </div>
-
-            <h3>
-                Tell Us Your Device
-            </h3>
-
-            <p>
-                Enter your PC or laptop model and basic information.
-            </p>
-
-        </div>
+</div>
 
 
-        <div class="how-card">
-
-            <div class="number">
-                02
-            </div>
-
-            <div class="how-icon">
-                ⚠️
-            </div>
-
-            <h3>
-                Describe The Problem
-            </h3>
-
-            <p>
-                Explain what is happening with your device.
-            </p>
-
-        </div>
-
-
-        <div class="how-card">
-
-            <div class="number">
-                03
-            </div>
-
-            <div class="how-icon">
-                🤖
-            </div>
-
-            <h3>
-                AI Diagnosis
-            </h3>
-
-            <p>
-                The system analyzes possible causes and solutions.
-            </p>
-
-        </div>
-
-
-        <div class="how-card">
-
-            <div class="number">
-                04
-            </div>
-
-            <div class="how-icon">
-                🛠️
-            </div>
-
-            <h3>
-                Repair & Learn
-            </h3>
-
-            <p>
-                Follow the recommended steps and understand the component.
-            </p>
-
-        </div>
-
-    </div>
+<div id="resultContainer"></div>
+```
 
 </section>
 
+<section class="parts-preview">
 
-<section id="about" class="about-section">
+```
+<div class="section-title">
 
-    <div class="about-content">
+    <span>
+        HARDWARE KNOWLEDGE
+    </span>
 
-        <span>
-            ABOUT THE PROJECT
-        </span>
 
-        <h2>
-            Smart PC Support With AI
-        </h2>
+    <h2>
+        Explore PC & Laptop Parts
+    </h2>
+
+
+    <p>
+        Learn about the components inside your computer.
+    </p>
+
+</div>
+
+
+<div class="preview-card">
+
+
+    <div class="preview-icon">
+        🔧
+    </div>
+
+
+    <div>
+
+        <h3>
+            PC & Laptop Parts Explorer
+        </h3>
+
 
         <p>
-            AI PC & Laptop Repair Assistant is designed to help users
-            understand common computer problems without immediately
-            depending on a technician.
+            Explore RAM, SSD, HDD, CPU, GPU, motherboard,
+            battery, cooling fans and many more components.
         </p>
 
-        <div class="about-points">
+    </div>
 
-            <div>
-                ✓ Troubleshooting assistance
-            </div>
 
-            <div>
-                ✓ Hardware knowledge
-            </div>
+    <a
+        href="parts.html"
+        class="preview-button"
+    >
+        Explore Parts →
+    </a>
 
-            <div>
-                ✓ Repair guidance
-            </div>
 
-            <div>
-                ✓ Component exploration
-            </div>
+</div>
+```
 
+</section>
+
+<section
+    id="how"
+    class="how-section"
+>
+
+```
+<div class="section-title">
+
+    <span>
+        SIMPLE PROCESS
+    </span>
+
+    <h2>
+        How It Works
+    </h2>
+
+</div>
+
+
+<div class="how-grid">
+
+
+    <div class="how-card">
+
+        <div class="number">
+            01
         </div>
 
+        <div class="how-icon">
+            💻
+        </div>
+
+        <h3>
+            Tell Us Your Device
+        </h3>
+
+        <p>
+            Enter your PC or laptop model and basic information.
+        </p>
+
     </div>
+
+
+    <div class="how-card">
+
+        <div class="number">
+            02
+        </div>
+
+        <div class="how-icon">
+            ⚠️
+        </div>
+
+        <h3>
+            Describe The Problem
+        </h3>
+
+        <p>
+            Explain what is happening with your device.
+        </p>
+
+    </div>
+
+
+    <div class="how-card">
+
+        <div class="number">
+            03
+        </div>
+
+        <div class="how-icon">
+            🤖
+        </div>
+
+        <h3>
+            AI Diagnosis
+        </h3>
+
+        <p>
+            The system analyzes possible causes and solutions.
+        </p>
+
+    </div>
+
+
+    <div class="how-card">
+
+        <div class="number">
+            04
+        </div>
+
+        <div class="how-icon">
+            🛠️
+        </div>
+
+        <h3>
+            Repair & Learn
+        </h3>
+
+        <p>
+            Follow the recommended steps and understand the component.
+        </p>
+
+    </div>
+
+
+</div>
+```
+
+</section>
+
+<section
+    id="about"
+    class="about-section"
+>
+
+```
+<div class="about-content">
+
+
+    <span>
+        ABOUT THE PROJECT
+    </span>
+
+
+    <h2>
+        Smart PC Support With AI
+    </h2>
+
+
+    <p>
+        AI PC & Laptop Repair Assistant is designed to help users
+        understand common computer problems without immediately
+        depending on a technician.
+    </p>
+
+
+    <div class="about-points">
+
+
+        <div>
+            ✓ Troubleshooting assistance
+        </div>
+
+
+        <div>
+            ✓ Hardware knowledge
+        </div>
+
+
+        <div>
+            ✓ Repair guidance
+        </div>
+
+
+        <div>
+            ✓ Component exploration
+        </div>
+
+
+    </div>
+
+
+</div>
+```
 
 </section>
 
 </main>
 
-
 <footer>
 
-    <div>
+```
+<div>
 
-        <strong>
-            ⚡ PC Repair AI
-        </strong>
+    <strong>
+        ⚡ PC Repair AI
+    </strong>
 
-        <p>
-            AI-powered computer troubleshooting assistant.
-        </p>
 
-    </div>
+    <p>
+        AI-powered computer troubleshooting assistant.
+    </p>
 
-    <span>
-        © 2026 PC Repair AI
-    </span>
+</div>
+
+
+<span>
+    © 2026 PC Repair AI
+</span>
+```
 
 </footer>
 
-
 <button
-    id="topBtn"
-    class="top-btn"
-    type="button"
-    aria-label="Back to top"
->
-    ↑
-</button>
+id="topBtn"
+class="top-btn"
+type="button"
+aria-label="Back to top"
 
+>
+
+```
+↑
+```
+
+</button>
 
 <script>
 
-const API_URL = "https://pc-repair-ai.onrender.com";
+const API_URL =
+    "https://pc-repair-ai.onrender.com";
 
-const themeBtn = document.getElementById("themeBtn");
-const topBtn = document.getElementById("topBtn");
-const diagnoseButton = document.getElementById("diagnoseButton");
-const resultSection = document.getElementById("resultSection");
-const resultContainer = document.getElementById("resultContainer");
-const deviceInput = document.getElementById("device");
-const problemInput = document.getElementById("problem");
 
+const themeBtn =
+    document.getElementById("themeBtn");
+
+
+const topBtn =
+    document.getElementById("topBtn");
+
+
+const diagnoseButton =
+    document.getElementById("diagnoseButton");
+
+
+const resultSection =
+    document.getElementById("resultSection");
+
+
+const resultContainer =
+    document.getElementById("resultContainer");
+
+
+const deviceInput =
+    document.getElementById("device");
+
+
+const problemInput =
+    document.getElementById("problem");
+
+
+/* THEME */
 
 function applyTheme() {
 
-    const savedTheme = localStorage.getItem("theme");
+    const savedTheme =
+        localStorage.getItem("theme");
+
 
     if (savedTheme === "dark") {
 
         document.body.classList.add("dark");
+
         themeBtn.textContent = "☀️";
 
     } else {
 
         document.body.classList.remove("dark");
+
         themeBtn.textContent = "🌙";
 
     }
@@ -580,305 +1142,459 @@ function applyTheme() {
 applyTheme();
 
 
-themeBtn.addEventListener("click", function () {
+themeBtn.addEventListener(
+    "click",
+    function () {
 
-    document.body.classList.toggle("dark");
+        document.body.classList.toggle("dark");
 
-    if (document.body.classList.contains("dark")) {
 
-        themeBtn.textContent = "☀️";
-        localStorage.setItem("theme", "dark");
+        if (
+            document.body.classList.contains("dark")
+        ) {
 
-    } else {
+            themeBtn.textContent = "☀️";
 
-        themeBtn.textContent = "🌙";
-        localStorage.setItem("theme", "light");
-
-    }
-
-});
-
-
-window.addEventListener("scroll", function () {
-
-    if (window.scrollY > 400) {
-
-        topBtn.classList.add("show");
-
-    } else {
-
-        topBtn.classList.remove("show");
-
-    }
-
-});
-
-
-topBtn.addEventListener("click", function () {
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-});
-
-
-document
-    .querySelectorAll('a[href^="#"]')
-    .forEach(function (link) {
-
-        link.addEventListener("click", function (event) {
-
-            const targetId = link.getAttribute("href");
-
-            if (!targetId || targetId === "#") {
-                return;
-            }
-
-            const target = document.querySelector(targetId);
-
-            if (target) {
-
-                event.preventDefault();
-
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-
-            }
-
-        });
-
-    });
-
-
-deviceInput.addEventListener("keydown", function (event) {
-
-    if (event.key === "Enter") {
-
-        event.preventDefault();
-        problemInput.focus();
-
-    }
-
-});
-
-
-problemInput.addEventListener("keydown", function (event) {
-
-    if (event.ctrlKey && event.key === "Enter") {
-
-        event.preventDefault();
-        diagnoseButton.click();
-
-    }
-
-});
-
-
-diagnoseButton.addEventListener("click", async function () {
-
-    const device = deviceInput.value.trim();
-    const problem = problemInput.value.trim();
-
-
-    if (!device) {
-
-        showResult(
-            "Please enter your PC or laptop device model."
-        );
-
-        deviceInput.focus();
-
-        return;
-
-    }
-
-
-    if (!problem) {
-
-        showResult(
-            "Please describe the problem with your PC or laptop."
-        );
-
-        problemInput.focus();
-
-        return;
-
-    }
-
-
-    setLoadingState(true);
-
-    resultSection.classList.remove("hidden");
-
-
-    resultContainer.innerHTML = `
-
-        <div class="ai-loading">
-
-            <div class="ai-spinner"></div>
-
-            <h3>
-                AI is analyzing your problem...
-            </h3>
-
-            <p>
-                Checking possible causes,
-                diagnosis steps and repair solutions.
-            </p>
-
-            <div class="loading-status">
-
-                <span></span>
-
-                Analyzing hardware symptoms...
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    resultSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-
-
-    try {
-
-        const response = await fetch(
-            `${API_URL}/diagnose`,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-
-                body: JSON.stringify({
-                    device: device,
-                    problem: problem
-                })
-            }
-        );
-
-
-        const contentType =
-            response.headers.get("content-type") || "";
-
-
-        let data;
-
-
-        if (contentType.includes("application/json")) {
-
-            data = await response.json();
+            localStorage.setItem(
+                "theme",
+                "dark"
+            );
 
         } else {
 
-            const text = await response.text();
+            themeBtn.textContent = "🌙";
 
-            throw new Error(
-                text || "The server returned an invalid response."
+            localStorage.setItem(
+                "theme",
+                "light"
             );
 
         }
-
-
-        console.log(
-            "Diagnosis API response:",
-            data
-        );
-
-
-        if (!response.ok) {
-
-            const serverMessage =
-                data?.detail ||
-                data?.message ||
-                data?.error ||
-                "The diagnosis server returned an error.";
-
-            throw new Error(
-                getText(serverMessage)
-            );
-
-        }
-
-
-        if (!data || typeof data !== "object") {
-
-            throw new Error(
-                "The server returned empty or invalid diagnosis data."
-            );
-
-        }
-
-
-        if (data.error && !data.diagnosis) {
-
-            throw new Error(
-                getText(data.error)
-            );
-
-        }
-
-
-        resultContainer.innerHTML =
-            renderDiagnosis(
-                data,
-                device,
-                problem
-            );
-
-
-    } catch (error) {
-
-        console.error(
-            "Diagnosis error:",
-            error
-        );
-
-        renderConnectionError(error);
-
-    } finally {
-
-        setLoadingState(false);
 
     }
+);
 
-});
+
+/* BACK TO TOP */
+
+window.addEventListener(
+    "scroll",
+    function () {
+
+        if (window.scrollY > 400) {
+
+            topBtn.classList.add("show");
+
+        } else {
+
+            topBtn.classList.remove("show");
+
+        }
+
+    }
+);
 
 
-function setLoadingState(isLoading) {
+topBtn.addEventListener(
+    "click",
+    function () {
 
-    diagnoseButton.disabled = isLoading;
+        window.scrollTo({
+
+            top: 0,
+
+            behavior: "smooth"
+
+        });
+
+    }
+);
+
+
+/* SMOOTH INTERNAL LINKS */
+
+document
+    .querySelectorAll('a[href^="#"]')
+    .forEach(
+        function (link) {
+
+            link.addEventListener(
+                "click",
+                function (event) {
+
+                    const targetId =
+                        link.getAttribute("href");
+
+
+                    if (
+                        !targetId ||
+                        targetId === "#"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const target =
+                        document.querySelector(
+                            targetId
+                        );
+
+
+                    if (target) {
+
+                        event.preventDefault();
+
+
+                        target.scrollIntoView({
+
+                            behavior: "smooth",
+
+                            block: "start"
+
+                        });
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* DEVICE ENTER */
+
+deviceInput.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            problemInput.focus();
+
+        }
+
+    }
+);
+
+
+/* CTRL + ENTER */
+
+problemInput.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.ctrlKey &&
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            diagnoseButton.click();
+
+        }
+
+    }
+);
+
+
+/* AI DIAGNOSIS */
+
+diagnoseButton.addEventListener(
+    "click",
+    async function () {
+
+        const device =
+            deviceInput.value.trim();
+
+
+        const problem =
+            problemInput.value.trim();
+
+
+        if (!device) {
+
+            showResult(
+                "Please enter your PC or laptop device model."
+            );
+
+            deviceInput.focus();
+
+            return;
+
+        }
+
+
+        if (!problem) {
+
+            showResult(
+                "Please describe the problem with your PC or laptop."
+            );
+
+            problemInput.focus();
+
+            return;
+
+        }
+
+
+        setLoadingState(true);
+
+
+        resultSection.classList.remove(
+            "hidden"
+        );
+
+
+        resultContainer.innerHTML = `
+
+            <div class="ai-loading">
+
+                <div class="ai-spinner"></div>
+
+                <h3>
+                    AI is analyzing your problem...
+                </h3>
+
+                <p>
+                    Checking possible causes,
+                    diagnosis steps and repair solutions.
+                </p>
+
+                <div class="loading-status">
+
+                    <span></span>
+
+                    Analyzing hardware symptoms...
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        resultSection.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+
+        /* Track diagnosis started */
+
+        PCRepairAnalytics.aiDiagnosis({
+
+            action: "started"
+
+        });
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/diagnose`,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            device:
+                                device,
+
+                            problem:
+                                problem
+
+                        })
+
+                    }
+                );
+
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            let data;
+
+
+            if (
+                contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                data =
+                    await response.json();
+
+            } else {
+
+                const text =
+                    await response.text();
+
+
+                throw new Error(
+                    text ||
+                    "The server returned an invalid response."
+                );
+
+            }
+
+
+            console.log(
+                "Diagnosis API response:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                const serverMessage =
+                    data?.detail ||
+                    data?.message ||
+                    data?.error ||
+                    "The diagnosis server returned an error.";
+
+
+                throw new Error(
+                    getText(serverMessage)
+                );
+
+            }
+
+
+            if (
+                !data ||
+                typeof data !== "object"
+            ) {
+
+                throw new Error(
+                    "The server returned empty or invalid diagnosis data."
+                );
+
+            }
+
+
+            if (
+                data.error &&
+                !data.diagnosis
+            ) {
+
+                throw new Error(
+                    getText(data.error)
+                );
+
+            }
+
+
+            resultContainer.innerHTML =
+                renderDiagnosis(
+                    data,
+                    device,
+                    problem
+                );
+
+
+            /* Track successful diagnosis */
+
+            PCRepairAnalytics.aiDiagnosis({
+
+                action: "completed",
+
+                device: device
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Diagnosis error:",
+                error
+            );
+
+
+            PCRepairAnalytics.aiDiagnosis({
+
+                action: "failed"
+
+            });
+
+
+            renderConnectionError(
+                error
+            );
+
+
+        } finally {
+
+            setLoadingState(false);
+
+        }
+
+    }
+);
+
+
+/* LOADING STATE */
+
+function setLoadingState(
+    isLoading
+) {
+
+    diagnoseButton.disabled =
+        isLoading;
 
 
     if (isLoading) {
 
         diagnoseButton.innerHTML = `
+
             Analyzing
+
             <span class="button-loader"></span>
+
         `;
 
     } else {
 
         diagnoseButton.innerHTML = `
+
             Diagnose Problem
-            <span>→</span>
+
+            <span>
+                →
+            </span>
+
         `;
 
     }
 
 }
 
+
+/* TEXT CLEANING */
 
 function cleanAIText(value) {
 
@@ -892,24 +1608,65 @@ function cleanAIText(value) {
     }
 
 
-    let text = String(value);
+    let text =
+        String(value);
 
 
-    text = text.replace(/```[a-zA-Z0-9_-]*\s*/g, "");
-    text = text.replace(/```/g, "");
-    text = text.replace(/\*\*(.*?)\*\*/g, "$1");
-    text = text.replace(/__(.*?)__/g, "$1");
-    text = text.replace(/`([^`]*)`/g, "$1");
+    text =
+        text.replace(
+            /```[a-zA-Z0-9_-]*\s*/g,
+            ""
+        );
 
 
-    text = text.replace(/\r\n/g, "\n");
-    text = text.replace(/\n{3,}/g, "\n\n");
+    text =
+        text.replace(
+            /```/g,
+            ""
+        );
+
+
+    text =
+        text.replace(
+            /\*\*(.*?)\*\*/g,
+            "$1"
+        );
+
+
+    text =
+        text.replace(
+            /__(.*?)__/g,
+            "$1"
+        );
+
+
+    text =
+        text.replace(
+            /`([^`]*)`/g,
+            "$1"
+        );
+
+
+    text =
+        text.replace(
+            /\r\n/g,
+            "\n"
+        );
+
+
+    text =
+        text.replace(
+            /\n{3,}/g,
+            "\n\n"
+        );
 
 
     return text.trim();
 
 }
 
+
+/* ESCAPE HTML */
 
 function escapeHTML(value) {
 
@@ -924,14 +1681,36 @@ function escapeHTML(value) {
 
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
+
+/* ARRAY */
 
 function getArray(value) {
 
@@ -941,6 +1720,8 @@ function getArray(value) {
 
 }
 
+
+/* TEXT */
 
 function getText(value) {
 
@@ -954,9 +1735,13 @@ function getText(value) {
     }
 
 
-    if (typeof value === "string") {
+    if (
+        typeof value === "string"
+    ) {
 
-        return cleanAIText(value);
+        return cleanAIText(
+            value
+        );
 
     }
 
@@ -971,7 +1756,9 @@ function getText(value) {
     }
 
 
-    if (typeof value === "object") {
+    if (
+        typeof value === "object"
+    ) {
 
         try {
 
@@ -993,44 +1780,66 @@ function getText(value) {
 }
 
 
+/* URL */
+
 function normalizeUrl(url) {
 
     if (!url) {
+
         return "";
+
     }
 
 
-    let value = String(url).trim();
+    let value =
+        String(url).trim();
 
 
     const markdownMatch =
-        value.match(/\]\((.*?)\)/);
+        value.match(
+            /\]\((.*?)\)/
+        );
 
 
     if (markdownMatch) {
-        value = markdownMatch[1];
+
+        value =
+            markdownMatch[1];
+
     }
 
 
-    value = value
-        .replace(/\\:/g, ":")
-        .replace(/\\&/g, "&")
-        .replace(/\\=/g, "=")
-        .replace(/\\\?/g, "?")
-        .replace(/\\\//g, "/")
-        .replace(/&amp;/g, "&");
+    value =
+        value
+            .replace(/\\:/g, ":")
+            .replace(/\\&/g, "&")
+            .replace(/\\=/g, "=")
+            .replace(/\\\?/g, "?")
+            .replace(/\\\//g, "/")
+            .replace(/&amp;/g, "&");
 
 
-    if (value.startsWith("//")) {
-        value = "https:" + value;
+    if (
+        value.startsWith("//")
+    ) {
+
+        value =
+            "https:" + value;
+
     }
 
 
     if (
-        !value.startsWith("http://") &&
-        !value.startsWith("https://")
+        !value.startsWith(
+            "http://"
+        ) &&
+        !value.startsWith(
+            "https://"
+        )
     ) {
+
         return "";
+
     }
 
 
@@ -1039,7 +1848,13 @@ function normalizeUrl(url) {
 }
 
 
-function renderDiagnosis(data, device, problem) {
+/* DIAGNOSIS */
+
+function renderDiagnosis(
+    data,
+    device,
+    problem
+) {
 
     let diagnosis = {};
 
@@ -1050,7 +1865,8 @@ function renderDiagnosis(data, device, problem) {
         !Array.isArray(data.diagnosis)
     ) {
 
-        diagnosis = data.diagnosis;
+        diagnosis =
+            data.diagnosis;
 
     }
 
@@ -1084,27 +1900,39 @@ function renderDiagnosis(data, device, problem) {
 
 
     const possibleCauses =
-        getArray(diagnosis.possible_causes);
+        getArray(
+            diagnosis.possible_causes
+        );
 
 
     const diagnosisSteps =
-        getArray(diagnosis.diagnosis_steps);
+        getArray(
+            diagnosis.diagnosis_steps
+        );
 
 
     const repairSteps =
-        getArray(diagnosis.repair_steps);
+        getArray(
+            diagnosis.repair_steps
+        );
 
 
     const toolsRequired =
-        getArray(diagnosis.tools_required);
+        getArray(
+            diagnosis.tools_required
+        );
 
 
     const partsRequired =
-        getArray(diagnosis.parts_required);
+        getArray(
+            diagnosis.parts_required
+        );
 
 
     const safety =
-        getArray(diagnosis.safety);
+        getArray(
+            diagnosis.safety
+        );
 
 
     const professional =
@@ -1114,7 +1942,9 @@ function renderDiagnosis(data, device, problem) {
 
 
     const products =
-        getArray(data.products);
+        getArray(
+            data.products
+        );
 
 
     return `
@@ -1152,7 +1982,9 @@ function renderDiagnosis(data, device, problem) {
 
                     <span class="confidence-badge">
 
-                        <span>◉</span>
+                        <span>
+                            ◉
+                        </span>
 
                         Confidence:
                         ${escapeHTML(confidence)}
@@ -1251,10 +2083,14 @@ function renderDiagnosis(data, device, problem) {
 }
 
 
+/* CAUSES */
+
 function renderCauses(causes) {
 
     if (!causes.length) {
+
         return "";
+
     }
 
 
@@ -1285,56 +2121,59 @@ function renderCauses(causes) {
 
             <div class="causes-grid">
 
-                ${causes.map(function (cause, index) {
+                ${causes.map(
+                    function (cause, index) {
 
-                    let text;
+                        let text;
 
 
-                    if (
-                        typeof cause === "object" &&
-                        cause !== null
-                    ) {
+                        if (
+                            typeof cause === "object" &&
+                            cause !== null
+                        ) {
 
-                        text =
-                            cause.description ||
-                            cause.name ||
-                            cause.cause ||
-                            cause.title ||
-                            getText(cause);
+                            text =
+                                cause.description ||
+                                cause.name ||
+                                cause.cause ||
+                                cause.title ||
+                                getText(cause);
 
-                    } else {
+                        } else {
 
-                        text = getText(cause);
+                            text =
+                                getText(cause);
+
+                        }
+
+
+                        return `
+
+                            <div class="cause-card">
+
+                                <div class="cause-number">
+                                    ${String(index + 1).padStart(2, "0")}
+                                </div>
+
+                                <div class="cause-content">
+
+                                    <strong>
+                                        ${escapeHTML(text)}
+                                    </strong>
+
+                                    <p>
+                                        Possible issue identified
+                                        by the AI analysis.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        `;
 
                     }
-
-
-                    return `
-
-                        <div class="cause-card">
-
-                            <div class="cause-number">
-                                ${String(index + 1).padStart(2, "0")}
-                            </div>
-
-                            <div class="cause-content">
-
-                                <strong>
-                                    ${escapeHTML(text)}
-                                </strong>
-
-                                <p>
-                                    Possible issue identified
-                                    by the AI analysis.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }).join("")}
+                ).join("")}
 
             </div>
 
@@ -1345,10 +2184,16 @@ function renderCauses(causes) {
 }
 
 
-function renderDiagnosisSteps(steps) {
+/* DIAGNOSIS STEPS */
+
+function renderDiagnosisSteps(
+    steps
+) {
 
     if (!steps.length) {
+
         return "";
+
     }
 
 
@@ -1379,56 +2224,59 @@ function renderDiagnosisSteps(steps) {
 
             <div class="steps-list">
 
-                ${steps.map(function (step, index) {
+                ${steps.map(
+                    function (step, index) {
 
-                    let text;
+                        let text;
 
 
-                    if (
-                        typeof step === "object" &&
-                        step !== null
-                    ) {
+                        if (
+                            typeof step === "object" &&
+                            step !== null
+                        ) {
 
-                        text =
-                            step.details ||
-                            step.description ||
-                            step.step_description ||
-                            step.instruction ||
-                            step.title ||
-                            getText(step);
+                            text =
+                                step.details ||
+                                step.description ||
+                                step.step_description ||
+                                step.instruction ||
+                                step.title ||
+                                getText(step);
 
-                    } else {
+                        } else {
 
-                        text = getText(step);
+                            text =
+                                getText(step);
+
+                        }
+
+
+                        return `
+
+                            <div class="diagnosis-step">
+
+                                <div class="step-number">
+                                    ${index + 1}
+                                </div>
+
+                                <div class="step-content">
+
+                                    <h4>
+                                        Check ${index + 1}
+                                    </h4>
+
+                                    <p>
+                                        ${escapeHTML(text)}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        `;
 
                     }
-
-
-                    return `
-
-                        <div class="diagnosis-step">
-
-                            <div class="step-number">
-                                ${index + 1}
-                            </div>
-
-                            <div class="step-content">
-
-                                <h4>
-                                    Check ${index + 1}
-                                </h4>
-
-                                <p>
-                                    ${escapeHTML(text)}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }).join("")}
+                ).join("")}
 
             </div>
 
@@ -1439,10 +2287,16 @@ function renderDiagnosisSteps(steps) {
 }
 
 
-function renderRepairSteps(steps) {
+/* REPAIR STEPS */
+
+function renderRepairSteps(
+    steps
+) {
 
     if (!steps.length) {
+
         return "";
+
     }
 
 
@@ -1473,84 +2327,92 @@ function renderRepairSteps(steps) {
 
             <div class="repair-steps">
 
-                ${steps.map(function (item, index) {
+                ${steps.map(
+                    function (item, index) {
 
-                    let stepNumber = index + 1;
-
-                    let stepTitle =
-                        "Repair Step " + stepNumber;
-
-                    let details = "";
+                        let stepNumber =
+                            index + 1;
 
 
-                    if (
-                        typeof item === "object" &&
-                        item !== null
-                    ) {
-
-                        stepNumber =
-                            item.step ||
-                            item.number ||
+                        let stepTitle =
+                            "Repair Step " +
                             stepNumber;
 
 
-                        stepTitle =
-                            item.title ||
-                            item.name ||
-                            "Repair Step " + stepNumber;
+                        let details = "";
 
 
-                        details =
-                            item.details ||
-                            item.description ||
-                            item.instructions ||
-                            item.instruction ||
-                            "";
+                        if (
+                            typeof item === "object" &&
+                            item !== null
+                        ) {
 
-                    } else {
-
-                        details = getText(item);
-
-                    }
+                            stepNumber =
+                                item.step ||
+                                item.number ||
+                                stepNumber;
 
 
-                    return `
+                            stepTitle =
+                                item.title ||
+                                item.name ||
+                                "Repair Step " +
+                                stepNumber;
 
-                        <div class="repair-step">
 
-                            <div class="repair-step-number">
-                                ${escapeHTML(stepNumber)}
-                            </div>
+                            details =
+                                item.details ||
+                                item.description ||
+                                item.instructions ||
+                                item.instruction ||
+                                "";
 
-                            <div class="repair-step-content">
+                        } else {
 
-                                <div class="repair-step-top">
+                            details =
+                                getText(item);
 
-                                    <span>
-                                        STEP ${escapeHTML(stepNumber)}
-                                    </span>
+                        }
 
-                                    <div>
-                                        ✓
+
+                        return `
+
+                            <div class="repair-step">
+
+                                <div class="repair-step-number">
+                                    ${escapeHTML(stepNumber)}
+                                </div>
+
+                                <div class="repair-step-content">
+
+                                    <div class="repair-step-top">
+
+                                        <span>
+                                            STEP ${escapeHTML(stepNumber)}
+                                        </span>
+
+                                        <div>
+                                            ✓
+                                        </div>
+
                                     </div>
+
+                                    <h4>
+                                        ${escapeHTML(getText(stepTitle))}
+                                    </h4>
+
+                                    <p>
+                                        ${escapeHTML(getText(details))}
+                                    </p>
 
                                 </div>
 
-                                <h4>
-                                    ${escapeHTML(getText(stepTitle))}
-                                </h4>
-
-                                <p>
-                                    ${escapeHTML(getText(details))}
-                                </p>
-
                             </div>
 
-                        </div>
+                        `;
 
-                    `;
-
-                }).join("")}
+                    }
+                ).join("")}
 
             </div>
 
@@ -1561,10 +2423,16 @@ function renderRepairSteps(steps) {
 }
 
 
-function renderTools(tools) {
+/* TOOLS */
+
+function renderTools(
+    tools
+) {
 
     if (!tools.length) {
+
         return "";
+
     }
 
 
@@ -1595,54 +2463,57 @@ function renderTools(tools) {
 
             <div class="tools-grid">
 
-                ${tools.map(function (tool, index) {
+                ${tools.map(
+                    function (tool, index) {
 
-                    let text;
+                        let text;
 
 
-                    if (
-                        typeof tool === "object" &&
-                        tool !== null
-                    ) {
+                        if (
+                            typeof tool === "object" &&
+                            tool !== null
+                        ) {
 
-                        text =
-                            tool.name ||
-                            tool.title ||
-                            tool.tool ||
-                            getText(tool);
+                            text =
+                                tool.name ||
+                                tool.title ||
+                                tool.tool ||
+                                getText(tool);
 
-                    } else {
+                        } else {
 
-                        text = getText(tool);
+                            text =
+                                getText(tool);
+
+                        }
+
+
+                        return `
+
+                            <div class="tool-card">
+
+                                <div class="tool-icon">
+                                    🔧
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        TOOL ${index + 1}
+                                    </span>
+
+                                    <strong>
+                                        ${escapeHTML(text)}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        `;
 
                     }
-
-
-                    return `
-
-                        <div class="tool-card">
-
-                            <div class="tool-icon">
-                                🔧
-                            </div>
-
-                            <div>
-
-                                <span>
-                                    TOOL ${index + 1}
-                                </span>
-
-                                <strong>
-                                    ${escapeHTML(text)}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }).join("")}
+                ).join("")}
 
             </div>
 
@@ -1653,10 +2524,16 @@ function renderTools(tools) {
 }
 
 
-function renderParts(parts) {
+/* PARTS */
+
+function renderParts(
+    parts
+) {
 
     if (!parts.length) {
+
         return "";
+
     }
 
 
@@ -1687,73 +2564,82 @@ function renderParts(parts) {
 
             <div class="parts-required-grid">
 
-                ${parts.map(function (part, index) {
+                ${parts.map(
+                    function (part, index) {
 
-                    let name = "Required Component";
-                    let searchQuery = "";
-
-
-                    if (
-                        typeof part === "object" &&
-                        part !== null
-                    ) {
-
-                        name =
-                            part.name ||
-                            part.title ||
-                            part.component ||
+                        let name =
                             "Required Component";
 
 
-                        searchQuery =
-                            part.search_query ||
-                            part.query ||
+                        let searchQuery =
                             "";
 
-                    } else {
 
-                        name = getText(part);
-                        searchQuery = getText(part);
+                        if (
+                            typeof part === "object" &&
+                            part !== null
+                        ) {
+
+                            name =
+                                part.name ||
+                                part.title ||
+                                part.component ||
+                                "Required Component";
+
+
+                            searchQuery =
+                                part.search_query ||
+                                part.query ||
+                                "";
+
+                        } else {
+
+                            name =
+                                getText(part);
+
+                            searchQuery =
+                                getText(part);
+
+                        }
+
+
+                        return `
+
+                            <div class="required-part-card">
+
+                                <div class="required-part-icon">
+                                    ⚙️
+                                </div>
+
+                                <div class="required-part-info">
+
+                                    <span>
+                                        COMPONENT ${index + 1}
+                                    </span>
+
+                                    <h4>
+                                        ${escapeHTML(getText(name))}
+                                    </h4>
+
+                                    ${
+                                        searchQuery
+                                            ? `
+                                                <p>
+                                                    Search:
+                                                    ${escapeHTML(getText(searchQuery))}
+                                                </p>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        `;
 
                     }
-
-
-                    return `
-
-                        <div class="required-part-card">
-
-                            <div class="required-part-icon">
-                                ⚙️
-                            </div>
-
-                            <div class="required-part-info">
-
-                                <span>
-                                    COMPONENT ${index + 1}
-                                </span>
-
-                                <h4>
-                                    ${escapeHTML(getText(name))}
-                                </h4>
-
-                                ${
-                                    searchQuery
-                                        ? `
-                                            <p>
-                                                Search:
-                                                ${escapeHTML(getText(searchQuery))}
-                                            </p>
-                                        `
-                                        : ""
-                                }
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }).join("")}
+                ).join("")}
 
             </div>
 
@@ -1764,10 +2650,16 @@ function renderParts(parts) {
 }
 
 
-function renderSafety(items) {
+/* SAFETY */
+
+function renderSafety(
+    items
+) {
 
     if (!items.length) {
+
         return "";
+
     }
 
 
@@ -1798,46 +2690,49 @@ function renderSafety(items) {
 
             <div class="safety-list">
 
-                ${items.map(function (item) {
+                ${items.map(
+                    function (item) {
 
-                    let text;
-
-
-                    if (
-                        typeof item === "object" &&
-                        item !== null
-                    ) {
-
-                        text =
-                            item.text ||
-                            item.description ||
-                            item.instruction ||
-                            getText(item);
-
-                    } else {
-
-                        text = getText(item);
-
-                    }
+                        let text;
 
 
-                    return `
+                        if (
+                            typeof item === "object" &&
+                            item !== null
+                        ) {
 
-                        <div class="safety-item">
+                            text =
+                                item.text ||
+                                item.description ||
+                                item.instruction ||
+                                getText(item);
 
-                            <div>
-                                !
+                        } else {
+
+                            text =
+                                getText(item);
+
+                        }
+
+
+                        return `
+
+                            <div class="safety-item">
+
+                                <div>
+                                    !
+                                </div>
+
+                                <p>
+                                    ${escapeHTML(text)}
+                                </p>
+
                             </div>
 
-                            <p>
-                                ${escapeHTML(text)}
-                            </p>
+                        `;
 
-                        </div>
-
-                    `;
-
-                }).join("")}
+                    }
+                ).join("")}
 
             </div>
 
@@ -1848,10 +2743,16 @@ function renderSafety(items) {
 }
 
 
-function renderProfessional(items) {
+/* PROFESSIONAL */
+
+function renderProfessional(
+    items
+) {
 
     if (!items.length) {
+
         return "";
+
     }
 
 
@@ -1877,36 +2778,39 @@ function renderProfessional(items) {
 
                     <ul>
 
-                        ${items.map(function (item) {
+                        ${items.map(
+                            function (item) {
 
-                            let text;
+                                let text;
 
 
-                            if (
-                                typeof item === "object" &&
-                                item !== null
-                            ) {
+                                if (
+                                    typeof item === "object" &&
+                                    item !== null
+                                ) {
 
-                                text =
-                                    item.text ||
-                                    item.description ||
-                                    item.reason ||
-                                    getText(item);
+                                    text =
+                                        item.text ||
+                                        item.description ||
+                                        item.reason ||
+                                        getText(item);
 
-                            } else {
+                                } else {
 
-                                text = getText(item);
+                                    text =
+                                        getText(item);
+
+                                }
+
+
+                                return `
+                                    <li>
+                                        ${escapeHTML(text)}
+                                    </li>
+                                `;
 
                             }
-
-
-                            return `
-                                <li>
-                                    ${escapeHTML(text)}
-                                </li>
-                            `;
-
-                        }).join("")}
+                        ).join("")}
 
                     </ul>
 
@@ -1921,10 +2825,16 @@ function renderProfessional(items) {
 }
 
 
-function renderProducts(groups) {
+/* PRODUCTS */
+
+function renderProducts(
+    groups
+) {
 
     if (!groups.length) {
+
         return "";
+
     }
 
 
@@ -1971,11 +2881,15 @@ function renderProducts(groups) {
 
             <div class="product-groups">
 
-                ${groups.map(function (group) {
+                ${groups.map(
+                    function (group) {
 
-                    return renderProductGroup(group);
+                        return renderProductGroup(
+                            group
+                        );
 
-                }).join("")}
+                    }
+                ).join("")}
 
             </div>
 
@@ -1986,7 +2900,11 @@ function renderProducts(groups) {
 }
 
 
-function renderProductGroup(group) {
+/* PRODUCT GROUP */
+
+function renderProductGroup(
+    group
+) {
 
     if (
         !group ||
@@ -2054,7 +2972,9 @@ function renderProductGroup(group) {
                                 <div class="search-query">
                                     Search:
                                     ${escapeHTML(
-                                        getText(group.search_query)
+                                        getText(
+                                            group.search_query
+                                        )
                                     )}
                                 </div>
                             `
@@ -2101,11 +3021,15 @@ function renderProductGroup(group) {
 
             <div class="product-grid">
 
-                ${items.map(function (product) {
+                ${items.map(
+                    function (product) {
 
-                    return renderProduct(product);
+                        return renderProduct(
+                            product
+                        );
 
-                }).join("")}
+                    }
+                ).join("")}
 
             </div>
 
@@ -2116,7 +3040,11 @@ function renderProductGroup(group) {
 }
 
 
-function renderProduct(product) {
+/* PRODUCT */
+
+function renderProduct(
+    product
+) {
 
     if (
         !product ||
@@ -2196,14 +3124,18 @@ function renderProduct(product) {
                 </span>
 
                 <strong>
-                    ${escapeHTML(getText(rating))}
+                    ${escapeHTML(
+                        getText(rating)
+                    )}
                 </strong>
 
                 ${
                     reviews
                         ? `
                             <small>
-                                ${formatNumber(reviews)}
+                                ${formatNumber(
+                                    reviews
+                                )}
                                 reviews
                             </small>
                         `
@@ -2229,7 +3161,9 @@ function renderProduct(product) {
                             <img
                                 class="product-image"
                                 src="${escapeHTML(image)}"
-                                alt="${escapeHTML(getText(title))}"
+                                alt="${escapeHTML(
+                                    getText(title)
+                                )}"
                                 loading="lazy"
                                 onerror="handleProductImageError(this)"
                             >
@@ -2267,7 +3201,9 @@ function renderProduct(product) {
 
                 <div class="product-source-badge">
 
-                    ${escapeHTML(getText(source))}
+                    ${escapeHTML(
+                        getText(source)
+                    )}
 
                 </div>
 
@@ -2278,14 +3214,18 @@ function renderProduct(product) {
 
                 <h4 class="product-title">
 
-                    ${escapeHTML(getText(title))}
+                    ${escapeHTML(
+                        getText(title)
+                    )}
 
                 </h4>
 
 
                 <div class="product-price">
 
-                    ${escapeHTML(getText(price))}
+                    ${escapeHTML(
+                        getText(price)
+                    )}
 
                 </div>
 
@@ -2303,6 +3243,12 @@ function renderProduct(product) {
                                     href="${escapeHTML(link)}"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    data-product-name="${escapeHTML(
+                                        getText(title)
+                                    )}"
+                                    data-product-source="${escapeHTML(
+                                        getText(source)
+                                    )}"
                                 >
 
                                     View Product
@@ -2331,14 +3277,21 @@ function renderProduct(product) {
 }
 
 
-function handleProductImageError(imageElement) {
+/* PRODUCT IMAGE ERROR */
+
+function handleProductImageError(
+    imageElement
+) {
 
     if (!imageElement) {
+
         return;
+
     }
 
 
-    imageElement.style.display = "none";
+    imageElement.style.display =
+        "none";
 
 
     const placeholder =
@@ -2346,31 +3299,51 @@ function handleProductImageError(imageElement) {
 
 
     if (placeholder) {
-        placeholder.style.display = "flex";
+
+        placeholder.style.display =
+            "flex";
+
     }
 
 }
 
 
-function formatNumber(value) {
+/* NUMBER */
+
+function formatNumber(
+    value
+) {
 
     const number =
         Number(
-            String(value).replace(/,/g, "")
+            String(value).replace(
+                /,/g,
+                ""
+            )
         );
 
 
     if (Number.isNaN(number)) {
-        return escapeHTML(value);
+
+        return escapeHTML(
+            value
+        );
+
     }
 
 
-    return number.toLocaleString("en-IN");
+    return number.toLocaleString(
+        "en-IN"
+    );
 
 }
 
 
-function renderConnectionError(error) {
+/* CONNECTION ERROR */
+
+function renderConnectionError(
+    error
+) {
 
     const message =
         error && error.message
@@ -2382,13 +3355,20 @@ function renderConnectionError(error) {
         message.toLowerCase();
 
 
-    let extraMessage = "";
+    let extraMessage =
+        "";
 
 
     if (
-        lowerMessage.includes("failed to fetch") ||
-        lowerMessage.includes("networkerror") ||
-        lowerMessage.includes("connection")
+        lowerMessage.includes(
+            "failed to fetch"
+        ) ||
+        lowerMessage.includes(
+            "networkerror"
+        ) ||
+        lowerMessage.includes(
+            "connection"
+        )
     ) {
 
         extraMessage = `
@@ -2472,7 +3452,9 @@ function renderConnectionError(error) {
             </h3>
 
             <p>
-                ${escapeHTML(getText(message))}
+                ${escapeHTML(
+                    getText(message)
+                )}
             </p>
 
             ${extraMessage}
@@ -2484,9 +3466,15 @@ function renderConnectionError(error) {
 }
 
 
-function showResult(message) {
+/* MISSING INFORMATION */
 
-    resultSection.classList.remove("hidden");
+function showResult(
+    message
+) {
+
+    resultSection.classList.remove(
+        "hidden"
+    );
 
 
     resultContainer.innerHTML = `
@@ -2502,7 +3490,9 @@ function showResult(message) {
             </h3>
 
             <p>
-                ${escapeHTML(getText(message))}
+                ${escapeHTML(
+                    getText(message)
+                )}
             </p>
 
         </div>
@@ -2511,8 +3501,11 @@ function showResult(message) {
 
 
     resultSection.scrollIntoView({
+
         behavior: "smooth",
+
         block: "start"
+
     });
 
 }
