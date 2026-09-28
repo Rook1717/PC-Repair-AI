@@ -7,38 +7,21 @@ from google import genai
 from google.genai import types
 
 
-# ============================================================
-# LOAD ENVIRONMENT VARIABLES
-# ============================================================
-
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-
-# ============================================================
-# CHECK API KEY
-# ============================================================
-
 if not GEMINI_API_KEY:
     raise RuntimeError(
         "GEMINI_API_KEY is missing. "
-        "Please add your Gemini API key to C:\\PC-Repair-AI\\back\\.env"
+        "Please add your Gemini API key to the Render Environment Variables."
     )
 
-
-# ============================================================
-# GEMINI CLIENT
-# ============================================================
 
 client = genai.Client(
     api_key=GEMINI_API_KEY
 )
 
-
-# ============================================================
-# SYSTEM PROMPT
-# ============================================================
 
 SYSTEM_PROMPT = """
 You are an expert PC and laptop troubleshooting assistant.
@@ -141,10 +124,6 @@ Use exactly this structure:
 """
 
 
-# ============================================================
-# JSON PARSER
-# ============================================================
-
 def parse_json_response(text: str):
 
     if not text:
@@ -154,13 +133,12 @@ def parse_json_response(text: str):
 
     text = text.strip()
 
-    # Try direct JSON
     try:
         return json.loads(text)
+
     except json.JSONDecodeError:
         pass
 
-    # Try extracting JSON object
     start = text.find("{")
     end = text.rfind("}")
 
@@ -170,6 +148,7 @@ def parse_json_response(text: str):
 
         try:
             return json.loads(json_text)
+
         except json.JSONDecodeError:
             pass
 
@@ -177,10 +156,6 @@ def parse_json_response(text: str):
         "Gemini returned invalid JSON."
     )
 
-
-# ============================================================
-# CALL GEMINI
-# ============================================================
 
 def call_gemini(model_name: str, user_prompt: str):
 
@@ -191,11 +166,8 @@ def call_gemini(model_name: str, user_prompt: str):
 
     config = types.GenerateContentConfig(
         system_instruction=SYSTEM_PROMPT,
-
         response_mime_type="application/json",
-
         temperature=0.2,
-
         max_output_tokens=4096
     )
 
@@ -207,13 +179,31 @@ def call_gemini(model_name: str, user_prompt: str):
             config=config
         )
 
-        result = parse_json_response(
-            response.text
+        response_text = getattr(
+            response,
+            "text",
+            None
         )
+
+        if not response_text:
+            raise ValueError(
+                "Gemini returned an empty response."
+            )
+
+        result = parse_json_response(
+            response_text
+        )
+
+        if not isinstance(result, dict):
+            raise ValueError(
+                "Gemini returned an invalid diagnosis format."
+            )
 
         print()
         print("=" * 60)
-        print(f"SUCCESS: Diagnosis generated using {model_name}")
+        print(
+            f"SUCCESS: Diagnosis generated using {model_name}"
+        )
         print("=" * 60)
 
         return result
@@ -221,21 +211,38 @@ def call_gemini(model_name: str, user_prompt: str):
     except Exception as error:
 
         print()
+        print("=" * 60)
         print(f"ERROR using {model_name}")
         print(str(error))
+        print("=" * 60)
 
         raise
 
 
-# ============================================================
-# MAIN DIAGNOSIS FUNCTION
-# ============================================================
+def is_temporary_error(error):
+
+    error_text = str(error).upper()
+
+    temporary_errors = [
+        "503",
+        "UNAVAILABLE",
+        "429",
+        "RESOURCE_EXHAUSTED",
+        "HIGH DEMAND",
+        "TEMPORARILY",
+        "TIMEOUT",
+        "DEADLINE",
+        "INTERNAL",
+        "SERVICE UNAVAILABLE"
+    ]
+
+    return any(
+        error_code in error_text
+        for error_code in temporary_errors
+    )
+
 
 def diagnose_problem(problem: str, device: str = ""):
-
-    # --------------------------------------------------------
-    # Validate problem
-    # --------------------------------------------------------
 
     if not problem or not problem.strip():
 
@@ -243,43 +250,35 @@ def diagnose_problem(problem: str, device: str = ""):
             "Please describe your computer problem."
         )
 
-    # --------------------------------------------------------
-    # Create user prompt
-    # --------------------------------------------------------
-
     user_prompt = f"""
 Analyze this computer problem.
 
 USER PROBLEM:
-{problem}
+{problem.strip()}
 
 DEVICE / MODEL:
-{device if device.strip() else "Not provided"}
+{device.strip() if device.strip() else "Not provided"}
 
 Give a practical diagnosis and repair guide.
 
 If a replacement component might be required,
 include it in parts_required and provide a useful search_query.
 
+Do not invent product prices, product links, or product images.
+
 Return ONLY the required JSON.
 """
 
-    # --------------------------------------------------------
-    # CURRENT GEMINI MODELS
-    # --------------------------------------------------------
-
+    # Start with the model that previously worked reliably
+    # and use other models only as fallbacks.
     models_to_try = [
+        "gemini-3.5-flash-lite",
         "gemini-3.8-flash",
         "gemini-3.7-flash",
-        "gemini-3.6-flash",
-        "gemini-3.5-flash-lite"
+        "gemini-3.6-flash"
     ]
 
     last_error = None
-
-    # --------------------------------------------------------
-    # Try each model
-    # --------------------------------------------------------
 
     for model_name in models_to_try:
 
@@ -296,25 +295,23 @@ Return ONLY the required JSON.
 
                 last_error = error
 
-                error_text = str(error).upper()
+                if not is_temporary_error(error):
 
-                # Temporary Gemini errors
-                temporary_error = (
-                    "503" in error_text
-                    or "UNAVAILABLE" in error_text
-                    or "429" in error_text
-                    or "RESOURCE_EXHAUSTED" in error_text
-                    or "HIGH DEMAND" in error_text
-                    or "TEMPORARILY" in error_text
-                )
+                    print(
+                        f"Non-temporary error with {model_name}. "
+                        "Trying next model."
+                    )
 
-                if temporary_error and attempt < 2:
+                    break
 
-                    wait_time = attempt + 1
+                if attempt < 2:
+
+                    wait_time = 2 ** attempt
 
                     print()
                     print(
-                        f"Temporary Gemini error."
+                        f"Temporary Gemini error with "
+                        f"{model_name}."
                     )
 
                     print(
@@ -325,19 +322,24 @@ Return ONLY the required JSON.
 
                     continue
 
-                # Try next model
-                break
+                print()
+                print(
+                    f"{model_name} failed after "
+                    f"3 attempts."
+                )
 
-    # --------------------------------------------------------
-    # All models failed
-    # --------------------------------------------------------
+                break
 
     print()
     print("=" * 60)
     print("ALL GEMINI MODELS FAILED")
     print("=" * 60)
 
-    print(last_error)
+    if last_error:
+        print(type(last_error).__name__)
+        print(str(last_error))
+
+    print("=" * 60)
 
     raise RuntimeError(
         "Unable to generate diagnosis. "
