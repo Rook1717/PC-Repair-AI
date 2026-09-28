@@ -1147,6 +1147,178 @@ body.light .header{
     }
 }
 </style>
+
+<!-- Google Analytics 4 - Added without changing existing website code -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TXNZC0SK5X"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-TXNZC0SK5X", {
+    send_page_view: true
+});
+</script>
+
+<!-- AI PC Repair Assistant - GA4 Analytics Layer -->
+<script>
+(function () {
+    function track(name, params) {
+        if (typeof gtag === "function") {
+            gtag("event", name, params || {});
+        }
+    }
+
+    window.PCRepairAnalytics = { track: track };
+
+    track("page_loaded", {
+        page_name: document.title,
+        page_path: window.location.pathname
+    });
+
+    const scrollMarks = [25, 50, 75, 90, 100];
+    const sentScrollMarks = {};
+
+    function checkScrollDepth() {
+        const doc = document.documentElement;
+        const scrollable = doc.scrollHeight - window.innerHeight;
+        if (scrollable <= 0) return;
+
+        const percent = Math.min(100, Math.round((window.scrollY / scrollable) * 100));
+
+        scrollMarks.forEach(function (mark) {
+            if (percent >= mark && !sentScrollMarks[mark]) {
+                sentScrollMarks[mark] = true;
+                track("scroll_depth", {
+                    percent_scrolled: mark,
+                    page_path: window.location.pathname
+                });
+            }
+        });
+    }
+
+    window.addEventListener("scroll", checkScrollDepth, { passive: true });
+
+    document.addEventListener("click", function (event) {
+        const element = event.target.closest(
+            "a, button, input[type='submit'], input[type='button'], [role='button']"
+        );
+        if (!element) return;
+
+        const text = (
+            element.innerText ||
+            element.value ||
+            element.getAttribute("aria-label") ||
+            element.getAttribute("title") ||
+            ""
+        ).trim().replace(/\s+/g, " ").slice(0, 100);
+
+        track("user_action", {
+            element_type: element.tagName.toLowerCase(),
+            element_text: text,
+            element_id: element.id || "",
+            page_path: window.location.pathname
+        });
+
+        if (element.tagName.toLowerCase() === "a" && element.href) {
+            try {
+                const url = new URL(element.href, window.location.href);
+
+                if (url.origin !== window.location.origin) {
+                    track("outbound_click", {
+                        link_domain: url.hostname,
+                        link_path: url.pathname
+                    });
+                }
+
+                if (url.hostname.includes("youtube.com") ||
+                    url.hostname.includes("youtu.be")) {
+                    track("youtube_click", {
+                        video_domain: url.hostname
+                    });
+                }
+
+                if (url.hostname.includes("amazon.") ||
+                    url.hostname.includes("flipkart.") ||
+                    url.hostname.includes("mdcomputers.") ||
+                    url.hostname.includes("primeabgb.") ||
+                    url.hostname.includes("vedant.")) {
+                    track("product_link_click", {
+                        store_domain: url.hostname
+                    });
+                }
+            } catch (e) {}
+        }
+    }, true);
+
+    document.addEventListener("submit", function (event) {
+        const form = event.target;
+        track("form_submit", {
+            form_id: form.id || "",
+            form_name: form.getAttribute("name") || "",
+            page_path: window.location.pathname
+        });
+    }, true);
+
+    document.addEventListener("change", function (event) {
+        const element = event.target;
+        if (!element || !["SELECT", "INPUT"].includes(element.tagName)) return;
+
+        track("form_interaction", {
+            field_type: element.type || element.tagName.toLowerCase(),
+            field_name: element.name || element.id || "",
+            page_path: window.location.pathname
+        });
+    }, true);
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+
+            const section = entry.target;
+            if (section.dataset.analyticsTracked === "true") return;
+
+            section.dataset.analyticsTracked = "true";
+
+            track("section_view", {
+                section_name: (
+                    section.getAttribute("data-analytics-section") ||
+                    section.id ||
+                    section.getAttribute("aria-label") ||
+                    section.tagName.toLowerCase()
+                ).slice(0, 100),
+                page_path: window.location.pathname
+            });
+        });
+    }, { threshold: 0.35 });
+
+    document.querySelectorAll("section, main > div, [data-section]").forEach(function (element) {
+        observer.observe(element);
+    });
+
+    window.addEventListener("error", function () {
+        track("javascript_error", {
+            error_type: "window_error",
+            page_path: window.location.pathname
+        });
+    });
+
+    window.addEventListener("unhandledrejection", function () {
+        track("javascript_error", {
+            error_type: "promise_rejection",
+            page_path: window.location.pathname
+        });
+    });
+
+    window.addEventListener("load", function () {
+        track("page_ready", {
+            page_name: document.title,
+            page_path: window.location.pathname
+        });
+    });
+})();
+</script>
+<!-- End AI PC Repair Assistant - GA4 Analytics Layer -->
+
 </head>
 
 <body>
