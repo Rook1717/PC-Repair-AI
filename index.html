@@ -4,21 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="AI PC and Laptop Repair Assistant for intelligent computer troubleshooting, hardware diagnosis and repair guidance.">
-<meta name="theme-color" content="#07111f">
+<meta name="description" content="AI PC and Laptop Repair Assistant for intelligent computer troubleshooting and hardware guidance.">
 
 <title>AI PC & Laptop Repair Assistant</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 
+<!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TXNZC0SK5X"></script>
 
 <script>
 window.dataLayer = window.dataLayer || [];
 
-function gtag(){
+function gtag() {
     dataLayer.push(arguments);
 }
 
@@ -27,1275 +25,257 @@ gtag("js", new Date());
 gtag("config", "G-TXNZC0SK5X", {
     send_page_view: true
 });
+
+if (new URLSearchParams(window.location.search).get("ga_debug") === "1") {
+    gtag("config", "G-TXNZC0SK5X", {
+        debug_mode: true
+    });
+}
+
+window.PCRepairAnalytics = {
+    track: function(eventName, params = {}) {
+        try {
+            gtag("event", eventName, params);
+        } catch (error) {
+            console.warn("Analytics error:", error);
+        }
+    },
+
+    pageLoaded: function() {
+        this.track("page_loaded");
+    },
+
+    diagnosisStarted: function() {
+        this.track("ai_diagnosis", {
+            status: "started"
+        });
+    },
+
+    diagnosisSuccess: function(productCount = 0) {
+        this.track("ai_diagnosis", {
+            status: "success",
+            product_count: productCount,
+            has_products: productCount > 0
+        });
+    },
+
+    diagnosisValidationError: function() {
+        this.track("ai_diagnosis", {
+            status: "validation_error"
+        });
+    },
+
+    diagnosisError: function(errorType = "unknown") {
+        this.track("ai_diagnosis", {
+            status: "error",
+            error_type: errorType
+        });
+    },
+
+    productClick: function(productName, store, domain) {
+        this.track("product_click", {
+            product_name: productName || "unknown",
+            store: store || "unknown",
+            domain: domain || "unknown"
+        });
+    },
+
+    partExplorerClick: function() {
+        this.track("parts_explorer_click");
+    },
+
+    healthCheck: function(action) {
+        this.track("pc_health_check", {
+            action: action
+        });
+    },
+
+    themeChange: function(theme) {
+        this.track("theme_change", {
+            theme: theme
+        });
+    }
+};
+
+window.PCRepairAnalytics.pageLoaded();
 </script>
-
-<style>
-:root {
-    --bg: #07111f;
-    --bg2: #0b1728;
-    --card: rgba(15,29,48,.82);
-    --card-solid: #0f1d30;
-    --text: #f5f7fb;
-    --muted: #91a0b6;
-    --border: rgba(255,255,255,.09);
-    --primary: #6c63ff;
-    --primary2: #8d85ff;
-    --cyan: #00d9ff;
-    --green: #21e6a0;
-    --red: #ff5d73;
-    --yellow: #ffd166;
-    --shadow: 0 25px 70px rgba(0,0,0,.28);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: "Inter", sans-serif;
-    background:
-        radial-gradient(circle at 10% 10%, rgba(108,99,255,.12), transparent 30%),
-        radial-gradient(circle at 90% 20%, rgba(0,217,255,.08), transparent 28%),
-        var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
-    transition: background .3s ease, color .3s ease;
-}
-
-body.light {
-    --bg: #f4f7fb;
-    --bg2: #ffffff;
-    --card: rgba(255,255,255,.9);
-    --card-solid: #ffffff;
-    --text: #101828;
-    --muted: #667085;
-    --border: rgba(16,24,40,.1);
-    --shadow: 0 20px 50px rgba(16,24,40,.1);
-
-    background:
-        radial-gradient(circle at 10% 10%, rgba(108,99,255,.08), transparent 30%),
-        radial-gradient(circle at 90% 20%, rgba(0,217,255,.06), transparent 28%),
-        var(--bg);
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-button,
-input,
-textarea,
-select {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-.container {
-    width: min(1180px, calc(100% - 40px));
-    margin: auto;
-}
-
-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    backdrop-filter: blur(18px);
-    background: rgba(7,17,31,.72);
-    border-bottom: 1px solid var(--border);
-}
-
-body.light header {
-    background: rgba(255,255,255,.75);
-}
-
-.navbar {
-    min-height: 74px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 25px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: -.5px;
-    white-space: nowrap;
-}
-
-.logo-mark {
-    width: 39px;
-    height: 39px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: linear-gradient(135deg,var(--primary),var(--cyan));
-    box-shadow: 0 8px 30px rgba(108,99,255,.3);
-}
-
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.nav-links a {
-    padding: 9px 13px;
-    color: var(--muted);
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 9px;
-    transition: .25s ease;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-    color: var(--text);
-    background: rgba(108,99,255,.12);
-}
-
-.theme-btn {
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--card);
-    color: var(--text);
-    font-size: 18px;
-    transition: .25s ease;
-}
-
-.theme-btn:hover {
-    transform: translateY(-2px);
-    border-color: rgba(108,99,255,.5);
-}
-
-.hero {
-    min-height: 650px;
-    display: grid;
-    grid-template-columns: 1.05fr .95fr;
-    align-items: center;
-    gap: 50px;
-    padding: 85px 0 75px;
-}
-
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 13px;
-    border: 1px solid rgba(108,99,255,.3);
-    border-radius: 999px;
-    background: rgba(108,99,255,.08);
-    color: var(--primary2);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1.2px;
-}
-
-.hero h1 {
-    margin-top: 22px;
-    font-size: clamp(42px,6vw,76px);
-    line-height: .98;
-    letter-spacing: -4px;
-    max-width: 760px;
-}
-
-.gradient-text {
-    background: linear-gradient(90deg,var(--primary2),var(--cyan));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.hero p {
-    margin-top: 24px;
-    max-width: 650px;
-    color: var(--muted);
-    font-size: 17px;
-}
-
-.hero-stats {
-    display: flex;
-    gap: 30px;
-    margin-top: 35px;
-    flex-wrap: wrap;
-}
-
-.stat strong {
-    display: block;
-    font-size: 25px;
-}
-
-.stat span {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.orbit-wrap {
-    min-height: 470px;
-    position: relative;
-    display: grid;
-    place-items: center;
-}
-
-.orbit {
-    width: min(410px,80vw);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 1px solid rgba(108,99,255,.22);
-    position: relative;
-    animation: rotate 20s linear infinite;
-}
-
-.orbit::before,
-.orbit::after {
-    content: "";
-    position: absolute;
-    inset: 12%;
-    border: 1px dashed rgba(0,217,255,.18);
-    border-radius: 50%;
-}
-
-.orbit::after {
-    inset: 26%;
-    border-color: rgba(33,230,160,.18);
-}
-
-.center-chip {
-    position: absolute;
-    inset: 50%;
-    transform: translate(-50%,-50%);
-    width: 145px;
-    height: 145px;
-    border-radius: 35px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(145deg,rgba(108,99,255,.24),rgba(0,217,255,.12));
-    border: 1px solid rgba(108,99,255,.35);
-    box-shadow: 0 0 70px rgba(108,99,255,.2);
-    font-size: 58px;
-    animation: counterRotate 20s linear infinite;
-}
-
-.orbit-item {
-    position: absolute;
-    width: 68px;
-    height: 68px;
-    display: grid;
-    place-items: center;
-    border-radius: 20px;
-    background: var(--card-solid);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    font-size: 28px;
-    animation: counterRotate 20s linear infinite;
-}
-
-.orbit-item:nth-child(1) {
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.orbit-item:nth-child(2) {
-    right: -25px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.orbit-item:nth-child(3) {
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.orbit-item:nth-child(4) {
-    left: -25px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-@keyframes rotate {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes counterRotate {
-    to {
-        transform: rotate(-360deg);
-    }
-}
-
-.section {
-    padding: 90px 0;
-}
-
-.section-heading {
-    margin-bottom: 35px;
-}
-
-.eyebrow {
-    color: var(--cyan);
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-
-.section-heading h2 {
-    margin-top: 8px;
-    font-size: clamp(30px,4vw,48px);
-    line-height: 1.1;
-    letter-spacing: -2px;
-}
-
-.section-heading p {
-    margin-top: 12px;
-    color: var(--muted);
-    max-width: 720px;
-}
-
-.repair-layout {
-    display: grid;
-    grid-template-columns: 1.1fr .9fr;
-    gap: 20px;
-    align-items: stretch;
-}
-
-.repair-card {
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    background: var(--card);
-    padding: 26px;
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-}
-
-.repair-card::before {
-    content: "";
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    background: rgba(108,99,255,.08);
-    top: -120px;
-    right: -80px;
-    filter: blur(20px);
-}
-
-.repair-card-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 22px;
-}
-
-.repair-icon {
-    width: 50px;
-    height: 50px;
-    display: grid;
-    place-items: center;
-    border-radius: 15px;
-    background: rgba(108,99,255,.1);
-    font-size: 25px;
-}
-
-.repair-card-header h3 {
-    font-size: 20px;
-}
-
-.repair-card-header p {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.form-field {
-    margin-top: 16px;
-}
-
-.form-field label {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.form-field input,
-.form-field textarea {
-    width: 100%;
-    border: 1px solid var(--border);
-    background: rgba(0,0,0,.12);
-    color: var(--text);
-    padding: 14px;
-    border-radius: 12px;
-    outline: none;
-    transition: .2s ease;
-}
-
-body.light .form-field input,
-body.light .form-field textarea {
-    background: #f8fafc;
-}
-
-.form-field input:focus,
-.form-field textarea:focus {
-    border-color: rgba(108,99,255,.55);
-    box-shadow: 0 0 0 3px rgba(108,99,255,.08);
-}
-
-.form-field textarea {
-    min-height: 150px;
-    resize: vertical;
-}
-
-.diagnose-btn {
-    width: 100%;
-    margin-top: 18px;
-    border: 0;
-    border-radius: 13px;
-    padding: 14px 18px;
-    background: linear-gradient(135deg,var(--primary),#5147ff);
-    color: white;
-    font-weight: 900;
-    box-shadow: 0 12px 30px rgba(108,99,255,.25);
-    transition: .25s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.diagnose-btn:hover {
-    transform: translateY(-2px);
-}
-
-.button-loader {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.diagnose-btn.loading .button-text {
-    display: none;
-}
-
-.diagnose-btn.loading .button-loader {
-    display: flex;
-}
-
-.mini-spinner {
-    width: 17px;
-    height: 17px;
-    border: 2px solid rgba(255,255,255,.35);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.hero-info {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 14px;
-}
-
-.info-mini {
-    padding: 22px;
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    background: var(--card);
-    transition: .25s ease;
-}
-
-.info-mini:hover {
-    transform: translateY(-4px);
-    border-color: rgba(108,99,255,.35);
-}
-
-.info-mini-icon {
-    font-size: 27px;
-}
-
-.info-mini h3 {
-    margin-top: 10px;
-    font-size: 16px;
-}
-
-.info-mini p {
-    margin-top: 5px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.result-section {
-    display: none;
-}
-
-.result-section.show {
-    display: block;
-}
-
-.ai-result-card {
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    background: var(--card);
-    padding: 28px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-}
-
-.diagnosis-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    padding-bottom: 22px;
-    border-bottom: 1px solid var(--border);
-}
-
-.diagnosis-header-left {
-    display: flex;
-    gap: 15px;
-}
-
-.result-ai-icon {
-    width: 55px;
-    height: 55px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    border-radius: 16px;
-    background: linear-gradient(135deg,rgba(108,99,255,.18),rgba(0,217,255,.1));
-    font-size: 28px;
-}
-
-.diagnosis-label {
-    color: var(--cyan);
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
-}
-
-.diagnosis-title {
-    margin-top: 4px;
-    font-size: 25px;
-    line-height: 1.2;
-}
-
-.diagnosis-device {
-    margin-top: 5px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.diagnosis-meta {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.confidence-badge,
-.difficulty-badge {
-    padding: 7px 10px;
-    border-radius: 9px;
-    font-size: 11px;
-    font-weight: 800;
-}
-
-.confidence-badge {
-    background: rgba(33,230,160,.1);
-    color: var(--green);
-}
-
-.difficulty-badge {
-    background: rgba(108,99,255,.1);
-    color: var(--primary2);
-}
-
-.problem-box {
-    margin-top: 20px;
-    padding: 17px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: rgba(108,99,255,.05);
-}
-
-.problem-box-icon {
-    display: inline-block;
-    margin-right: 6px;
-}
-
-.diagnosis-summary {
-    margin-top: 18px;
-    color: var(--muted);
-    font-size: 14px;
-}
-
-.summary-icon {
-    margin-right: 5px;
-}
-
-.diagnosis-section {
-    margin-top: 28px;
-}
-
-.section-heading-small {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 14px;
-    font-size: 18px;
-}
-
-.section-icon {
-    width: 33px;
-    height: 33px;
-    display: grid;
-    place-items: center;
-    border-radius: 10px;
-    background: rgba(108,99,255,.1);
-    font-size: 16px;
-}
-
-.causes-grid {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 12px;
-}
-
-.cause-card {
-    display: flex;
-    gap: 12px;
-    padding: 16px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: rgba(255,255,255,.02);
-}
-
-.cause-number {
-    width: 28px;
-    height: 28px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    border-radius: 9px;
-    background: rgba(108,99,255,.12);
-    color: var(--primary2);
-    font-weight: 900;
-    font-size: 12px;
-}
-
-.cause-content {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.steps-list {
-    display: grid;
-    gap: 10px;
-}
-
-.diagnosis-step {
-    display: flex;
-    gap: 12px;
-    padding: 15px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-}
-
-.step-number {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    border-radius: 9px;
-    background: rgba(0,217,255,.09);
-    color: var(--cyan);
-    font-weight: 900;
-    font-size: 12px;
-}
-
-.step-content {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.repair-section {
-    margin-top: 28px;
-}
-
-.repair-steps {
-    display: grid;
-    gap: 11px;
-}
-
-.repair-step {
-    display: flex;
-    gap: 13px;
-    padding: 16px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: rgba(33,230,160,.03);
-}
-
-.repair-step-number {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    border-radius: 9px;
-    background: rgba(33,230,160,.1);
-    color: var(--green);
-    font-weight: 900;
-    font-size: 12px;
-}
-
-.repair-step-content {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.repair-step-top {
-    color: var(--text);
-    font-weight: 800;
-    margin-bottom: 3px;
-}
-
-.tools-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 15px;
-}
-
-.tool-card {
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    background: var(--card);
-    overflow: hidden;
-}
-
-.tool-icon {
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    border-radius: 14px;
-    background: rgba(108,99,255,.1);
-    font-size: 23px;
-}
-
-.tool-card-content {
-    padding: 23px;
-}
-
-.tool-card h3 {
-    margin-top: 13px;
-    font-size: 17px;
-}
-
-.tool-card p {
-    margin-top: 6px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.parts-preview {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 25px;
-    padding: 28px;
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    background:
-        radial-gradient(circle at 90% 20%,rgba(0,217,255,.08),transparent 30%),
-        var(--card);
-}
-
-.parts-preview h3 {
-    font-size: 24px;
-}
-
-.parts-preview p {
-    margin-top: 7px;
-    color: var(--muted);
-    max-width: 650px;
-}
-
-.btn {
-    border: 0;
-    border-radius: 13px;
-    padding: 13px 19px;
-    font-weight: 800;
-    transition: .25s ease;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg,var(--primary),#5147ff);
-    color: white;
-    box-shadow: 0 12px 30px rgba(108,99,255,.25);
-}
-
-.btn-secondary {
-    background: var(--card);
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 16px;
-}
-
-.info-card {
-    padding: 25px;
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    background: var(--card);
-}
-
-.info-card span {
-    font-size: 30px;
-}
-
-.info-card h3 {
-    margin-top: 15px;
-}
-
-.info-card p {
-    margin-top: 8px;
-    color: var(--muted);
-    font-size: 14px;
-}
-
-.products-section {
-    margin-top: 30px;
-}
-
-.product-note {
-    margin-bottom: 15px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.product-groups {
-    display: grid;
-    gap: 20px;
-}
-
-.product-group {
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 20px;
-    background: rgba(255,255,255,.015);
-}
-
-.product-group-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.product-group-header h4 {
-    font-size: 17px;
-}
-
-.product-count {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 14px;
-}
-
-.product-card {
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    overflow: hidden;
-    background: var(--card);
-}
-
-.product-image-wrap {
-    height: 170px;
-    display: grid;
-    place-items: center;
-    background: rgba(0,0,0,.08);
-}
-
-.product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 10px;
-}
-
-.product-placeholder {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.product-source-badge {
-    display: inline-block;
-    margin: 12px 12px 0;
-    padding: 5px 8px;
-    border-radius: 7px;
-    background: rgba(108,99,255,.1);
-    color: var(--primary2);
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.product-info {
-    padding: 12px;
-}
-
-.product-title {
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.product-price {
-    margin-top: 5px;
-    color: var(--green);
-    font-weight: 900;
-}
-
-.product-rating {
-    margin-top: 4px;
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.product-actions {
-    margin-top: 12px;
-}
-
-.product-link {
-    display: block;
-    text-align: center;
-    padding: 9px;
-    border-radius: 9px;
-    background: var(--primary);
-    color: white;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.disabled-link {
-    background: rgba(255,255,255,.05);
-    color: var(--muted);
-}
-
-.error-card {
-    padding: 22px;
-    border: 1px solid rgba(255,93,115,.2);
-    border-radius: 16px;
-    background: rgba(255,93,115,.05);
-}
-
-.error-card h3 {
-    color: var(--red);
-}
-
-.error-card p {
-    margin-top: 7px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.ai-loading {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 25px;
-}
-
-.ai-spinner {
-    width: 35px;
-    height: 35px;
-    border: 3px solid rgba(108,99,255,.2);
-    border-top-color: var(--primary2);
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
-}
-
-.loading-status {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.diagnosis-footer {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-}
-
-.error-help {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.hidden {
-    display: none !important;
-}
-
-footer {
-    border-top: 1px solid var(--border);
-    padding: 30px 0;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.footer-inner {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-#backTop {
-    position: fixed;
-    right: 22px;
-    bottom: 22px;
-    width: 45px;
-    height: 45px;
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    background: var(--card-solid);
-    color: var(--text);
-    display: none;
-    place-items: center;
-    z-index: 900;
-    box-shadow: var(--shadow);
-}
-
-#backTop.show {
-    display: grid;
-}
-
-.reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity .6s ease, transform .6s ease;
-}
-
-.reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@media (max-width:1100px) {
-    .hero {
-        grid-template-columns: 1fr;
-    }
-
-    .repair-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .tools-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .product-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .orbit-wrap {
-        min-height: 420px;
-    }
-}
-
-@media (max-width:850px) {
-    .nav-links {
-        display: none;
-    }
-
-    .tools-grid,
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .causes-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width:650px) {
-    .container {
-        width: min(100% - 26px,1180px);
-    }
-
-    .hero {
-        padding: 60px 0;
-    }
-
-    .hero h1 {
-        font-size: 43px;
-        letter-spacing: -2.5px;
-    }
-
-    .hero p {
-        font-size: 15px;
-    }
-
-    .hero-stats {
-        gap: 18px;
-    }
-
-    .orbit-wrap {
-        min-height: 330px;
-    }
-
-    .orbit {
-        width: 290px;
-    }
-
-    .center-chip {
-        width: 105px;
-        height: 105px;
-        font-size: 43px;
-    }
-
-    .orbit-item {
-        width: 52px;
-        height: 52px;
-        font-size: 22px;
-    }
-
-    .section {
-        padding: 65px 0;
-    }
-
-    .parts-preview {
-        grid-template-columns: 1fr;
-    }
-
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .diagnosis-header {
-        flex-direction: column;
-    }
-
-    .ai-result-card {
-        padding: 20px;
-    }
-}
-</style>
 </head>
 
 <body>
 
-<header>
-    <div class="container navbar">
+<header class="navbar">
 
-        <a href="index.html" class="logo" data-track-name="home_logo">
-            <span class="logo-mark">🖥️</span>
+    <div class="nav-container">
+
+        <a href="index.html" class="logo">
+            <span class="logo-icon">⚙️</span>
             <span>PC Repair AI</span>
         </a>
 
         <nav class="nav-links">
-            <a href="index.html" class="active" data-track-name="nav_home">Home</a>
-            <a href="parts.html" data-track-name="nav_parts">Parts Explorer</a>
-            <a href="#how-it-works" data-track-name="nav_how_it_works">How It Works</a>
-            <a href="#about" data-track-name="nav_about">About</a>
+            <a href="index.html" class="active">Home</a>
+            <a href="parts.html" id="partsExplorerLink">Parts Explorer</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
         </nav>
 
-        <button id="themeBtn" class="theme-btn" type="button" aria-label="Change theme">🌙</button>
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle theme">
+            🌙
+        </button>
 
     </div>
+
 </header>
+
 
 <main>
 
-<section class="hero container" id="home" data-analytics-section="hero">
+<section class="hero" id="home">
 
-    <div class="reveal">
+    <div class="hero-content">
 
-        <span class="hero-badge">⚡ AI-POWERED PC DIAGNOSIS</span>
+        <div class="hero-badge">
+            🤖 AI-Powered Computer Repair
+        </div>
 
         <h1>
-            Fix Smarter.
-            <span class="gradient-text">Repair With AI.</span>
+            Fix Your PC & Laptop
+            <span>Smarter With AI</span>
         </h1>
 
-        <p>
-            Describe your PC or laptop problem and get structured troubleshooting,
-            possible causes, repair steps, required parts and professional guidance
-            from one intelligent assistant.
+        <p class="hero-description">
+            Describe your computer problem and let AI analyze the issue,
+            identify possible causes, provide repair steps, and recommend
+            useful parts.
         </p>
+
+
+        <div class="repair-box">
+
+            <div class="repair-box-header">
+                <div>
+                    <h2>🔧 Diagnose Your Problem</h2>
+                    <p>Enter your device and describe what is happening.</p>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="deviceInput">
+                    Device
+                </label>
+
+                <input
+                    type="text"
+                    id="deviceInput"
+                    placeholder="Example: HP Laptop, Dell PC, Lenovo ThinkPad..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="problemInput">
+                    Problem
+                </label>
+
+                <textarea
+                    id="problemInput"
+                    rows="5"
+                    placeholder="Example: My laptop is very slow and storage is almost full..."
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="diagnose-btn"
+                id="diagnoseButton"
+            >
+                <span class="button-text">
+                    🔍 Diagnose Problem
+                </span>
+
+                <span class="button-loader" hidden>
+                    <span class="button-spinner"></span>
+                    Analyzing...
+                </span>
+            </button>
+
+
+            <div class="quick-tips">
+
+                <span>💡 Try:</span>
+
+                <button type="button" data-example="Laptop is very slow and freezes frequently">
+                    Slow laptop
+                </button>
+
+                <button type="button" data-example="My PC turns on but there is no display">
+                    No display
+                </button>
+
+                <button type="button" data-example="Laptop becomes very hot and shuts down">
+                    Overheating
+                </button>
+
+                <button type="button" data-example="My computer storage is full">
+                    Storage issue
+                </button>
+
+            </div>
+
+        </div>
+
 
         <div class="hero-stats">
 
             <div class="stat">
                 <strong>AI</strong>
-                <span>Smart Diagnosis</span>
+                <span>Diagnosis</span>
             </div>
 
             <div class="stat">
                 <strong>24/7</strong>
-                <span>Available Assistant</span>
+                <span>Available</span>
             </div>
 
             <div class="stat">
-                <strong>PC + Laptop</strong>
-                <span>Hardware Support</span>
+                <strong>PC</strong>
+                <span>& Laptop</span>
             </div>
 
         </div>
 
     </div>
 
-    <div class="orbit-wrap reveal">
 
-        <div class="orbit">
+    <div class="hero-visual">
 
-            <div class="center-chip">🤖</div>
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
 
-            <div class="orbit-item">🧠</div>
-            <div class="orbit-item">💾</div>
-            <div class="orbit-item">🔧</div>
-            <div class="orbit-item">💻</div>
+        <div class="pc-illustration">
+
+            <div class="monitor">
+                <div class="monitor-screen">
+                    <div class="screen-glow">
+                        <span>AI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monitor-stand"></div>
+            <div class="monitor-base"></div>
+
+            <div class="keyboard"></div>
+
+            <div class="floating-chip">⚡</div>
+            <div class="floating-settings">⚙️</div>
 
         </div>
 
@@ -1304,118 +284,169 @@ footer {
 </section>
 
 
-<section class="section container" id="diagnose" data-analytics-section="ai_diagnosis">
+<section
+    id="resultSection"
+    class="result-section hidden"
+>
 
-    <div class="section-heading reveal">
+    <div class="section-container">
 
-        <span class="eyebrow">AI Repair Assistant</span>
-
-        <h2>What's Wrong With Your Computer?</h2>
-
-        <p>
-            Enter your device and describe the problem. The AI will analyze the issue
-            and provide practical first-step repair guidance.
-        </p>
+        <div id="resultContainer"></div>
 
     </div>
 
+</section>
 
-    <div class="repair-layout">
 
-        <div class="repair-card reveal">
+<section class="parts-preview-section">
 
-            <div class="repair-card-header">
+    <div class="section-container">
 
-                <div class="repair-icon">🛠️</div>
+        <div class="section-title">
+
+            <span class="section-badge">
+                🧩 Explore Hardware
+            </span>
+
+            <h2>
+                Explore PC & Laptop Parts
+            </h2>
+
+            <p>
+                Learn about RAM, SSD, CPU, GPU, motherboard,
+                battery, cooling systems and more.
+            </p>
+
+        </div>
+
+
+        <div class="parts-preview-card">
+
+            <div class="parts-preview-content">
+
+                <div class="parts-preview-icon">
+                    🖥️
+                </div>
 
                 <div>
-                    <h3>Start Diagnosis</h3>
-                    <p>Describe your hardware problem below.</p>
+
+                    <h3>
+                        PC & Laptop Parts Explorer
+                    </h3>
+
+                    <p>
+                        Explore computer components, understand
+                        their functions and find the right hardware
+                        for your system.
+                    </p>
+
                 </div>
 
             </div>
 
 
-            <div class="form-field">
-
-                <label for="deviceInput">Device</label>
-
-                <input
-                    id="deviceInput"
-                    type="text"
-                    placeholder="Example: Dell Inspiron 15 laptop"
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <div class="form-field">
-
-                <label for="problemInput">Problem Description</label>
-
-                <textarea
-                    id="problemInput"
-                    placeholder="Example: Laptop turns on but screen remains black and fan is running."
-                ></textarea>
-
-            </div>
-
-
-            <button
-                id="diagnoseButton"
-                class="diagnose-btn"
-                type="button"
+            <a
+                href="parts.html"
+                class="primary-link"
+                id="partsPreviewLink"
             >
+                Explore Parts →
+            </a>
 
-                <span class="button-text">🔍 Diagnose Problem</span>
+        </div>
 
-                <span class="button-loader">
-                    <span class="mini-spinner"></span>
-                    Analyzing Problem...
-                </span>
+    </div>
 
-            </button>
+</section>
+
+
+<section
+    id="how-it-works"
+    class="info-section"
+>
+
+    <div class="section-container">
+
+        <div class="section-title">
+
+            <span class="section-badge">
+                ⚡ Simple Process
+            </span>
+
+            <h2>
+                How It Works
+            </h2>
+
+            <p>
+                Get a practical diagnosis in three simple steps.
+            </p>
 
         </div>
 
 
-        <div class="hero-info">
+        <div class="steps-grid">
 
-            <div class="info-mini reveal">
+            <div class="info-card">
 
-                <div class="info-mini-icon">🧠</div>
+                <div class="info-card-number">
+                    01
+                </div>
 
-                <h3>Possible Causes</h3>
+                <div class="info-card-icon">
+                    📝
+                </div>
+
+                <h3>
+                    Describe
+                </h3>
 
                 <p>
-                    Understand what could be causing the problem before replacing hardware.
+                    Enter your device name and explain the problem
+                    you are experiencing.
                 </p>
 
             </div>
 
 
-            <div class="info-mini reveal">
+            <div class="info-card">
 
-                <div class="info-mini-icon">🔧</div>
+                <div class="info-card-number">
+                    02
+                </div>
 
-                <h3>Repair Steps</h3>
+                <div class="info-card-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    AI Analysis
+                </h3>
 
                 <p>
-                    Receive structured troubleshooting steps from basic checks to repair guidance.
+                    Our AI analyzes your problem and identifies
+                    possible causes and solutions.
                 </p>
 
             </div>
 
 
-            <div class="info-mini reveal">
+            <div class="info-card">
 
-                <div class="info-mini-icon">🛒</div>
+                <div class="info-card-number">
+                    03
+                </div>
 
-                <h3>Required Parts</h3>
+                <div class="info-card-icon">
+                    🛠️
+                </div>
+
+                <h3>
+                    Repair
+                </h3>
 
                 <p>
-                    When applicable, the assistant can identify hardware that may be required.
+                    Follow the recommended troubleshooting steps
+                    and hardware guidance.
                 </p>
 
             </div>
@@ -1428,184 +459,58 @@ footer {
 
 
 <section
-    class="section container result-section"
-    id="resultSection"
-    data-analytics-section="diagnosis_result"
+    id="about"
+    class="info-section about-section"
 >
 
-    <div class="section-heading">
+    <div class="section-container">
 
-        <span class="eyebrow">AI Analysis</span>
+        <div class="section-title">
 
-        <h2>Diagnosis Result</h2>
+            <span class="section-badge">
+                💻 About
+            </span>
 
-        <p>
-            Review the AI-generated diagnosis and troubleshooting guidance below.
-        </p>
-
-    </div>
-
-    <div id="resultContainer"></div>
-
-</section>
-
-
-<section class="section container" id="parts-preview" data-analytics-section="parts_preview">
-
-    <div class="section-heading reveal">
-
-        <span class="eyebrow">Hardware Library</span>
-
-        <h2>Explore PC & Laptop Parts</h2>
-
-        <p>
-            Learn about CPUs, RAM, SSDs, GPUs, batteries, cooling systems,
-            motherboards and other computer components.
-        </p>
-
-    </div>
-
-
-    <div class="parts-preview reveal">
-
-        <div>
-
-            <h3>🧩 Parts Explorer</h3>
+            <h2>
+                AI PC & Laptop Repair Assistant
+            </h2>
 
             <p>
-                Search hardware by category, understand compatibility and use
-                interactive tools for building and troubleshooting.
-            </p>
-
-        </div>
-
-        <a
-            href="parts.html"
-            class="btn btn-primary"
-            data-track-name="parts_explorer"
-            id="partsExplorerButton"
-        >
-            Explore Parts →
-        </a>
-
-    </div>
-
-</section>
-
-
-<section class="section container" id="how-it-works" data-analytics-section="how_it_works">
-
-    <div class="section-heading reveal">
-
-        <span class="eyebrow">Simple Process</span>
-
-        <h2>How It Works</h2>
-
-        <p>
-            Get computer troubleshooting guidance through a simple three-step process.
-        </p>
-
-    </div>
-
-
-    <div class="info-grid">
-
-        <div class="info-card reveal">
-
-            <span>📝</span>
-
-            <h3>1. Describe</h3>
-
-            <p>
-                Tell the assistant your device type and explain exactly what problem you are experiencing.
+                A smart troubleshooting assistant designed to help
+                users understand computer problems and possible
+                solutions.
             </p>
 
         </div>
 
 
-        <div class="info-card reveal">
+        <div class="about-grid">
 
-            <span>🧠</span>
+            <div class="about-card">
+                <span>🤖</span>
+                <h3>AI Diagnosis</h3>
+                <p>
+                    Analyze computer symptoms and identify possible
+                    causes.
+                </p>
+            </div>
 
-            <h3>2. Analyze</h3>
+            <div class="about-card">
+                <span>🔧</span>
+                <h3>Repair Guidance</h3>
+                <p>
+                    Get structured troubleshooting and repair steps.
+                </p>
+            </div>
 
-            <p>
-                The AI analyzes the information and identifies possible causes and useful troubleshooting steps.
-            </p>
-
-        </div>
-
-
-        <div class="info-card reveal">
-
-            <span>🔧</span>
-
-            <h3>3. Repair</h3>
-
-            <p>
-                Follow the suggested checks and repair steps carefully or use the information when visiting a technician.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="section container" id="about" data-analytics-section="about">
-
-    <div class="section-heading reveal">
-
-        <span class="eyebrow">About The Project</span>
-
-        <h2>AI PC & Laptop Repair Assistant</h2>
-
-        <p>
-            A practical project designed to combine AI-based troubleshooting,
-            hardware information and useful computer tools in one interface.
-        </p>
-
-    </div>
-
-
-    <div class="info-grid">
-
-        <div class="info-card reveal">
-
-            <span>🤖</span>
-
-            <h3>AI Diagnosis</h3>
-
-            <p>
-                Describe a computer problem and receive structured diagnostic guidance.
-            </p>
-
-        </div>
-
-
-        <div class="info-card reveal">
-
-            <span>💻</span>
-
-            <h3>Hardware Knowledge</h3>
-
-            <p>
-                Explore common PC and laptop components and understand their purpose.
-            </p>
-
-        </div>
-
-
-        <div class="info-card reveal">
-
-            <span>🛠️</span>
-
-            <h3>Repair Guidance</h3>
-
-            <p>
-                Get practical first-step troubleshooting before considering professional repair.
-            </p>
+            <div class="about-card">
+                <span>🧩</span>
+                <h3>Hardware Guidance</h3>
+                <p>
+                    Understand which computer components may be
+                    useful for your problem.
+                </p>
+            </div>
 
         </div>
 
@@ -1616,661 +521,1471 @@ footer {
 </main>
 
 
-<footer>
+<footer class="footer">
 
-    <div class="container footer-inner">
+    <div class="footer-container">
 
-        <span>© 2026 PC Repair AI. All rights reserved.</span>
+        <div class="footer-brand">
 
-        <span>Built for smarter PC troubleshooting and hardware decisions.</span>
+            <div class="logo">
+                <span class="logo-icon">⚙️</span>
+                <span>PC Repair AI</span>
+            </div>
+
+            <p>
+                Intelligent computer troubleshooting and hardware
+                guidance.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="parts.html">
+                Parts Explorer
+            </a>
+
+            <a href="#how-it-works">
+                How It Works
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 PC Repair AI. Built for smarter troubleshooting.
+        </p>
 
     </div>
 
 </footer>
 
 
-<button id="backTop" type="button" aria-label="Back to top">↑</button>
+<button
+    id="topBtn"
+    class="top-btn"
+    type="button"
+    aria-label="Back to top"
+>
+    ↑
+</button>
 
 
 <script>
 
-(function () {
+"use strict";
 
-    function track(name, params) {
 
-        if (typeof gtag === "function") {
-            gtag("event", name, params || {});
+const API_URL = "https://pc-repair-ai.onrender.com";
+
+
+const themeBtn = document.getElementById("themeBtn");
+const topBtn = document.getElementById("topBtn");
+const diagnoseButton = document.getElementById("diagnoseButton");
+const resultSection = document.getElementById("resultSection");
+const resultContainer = document.getElementById("resultContainer");
+const deviceInput = document.getElementById("deviceInput");
+const problemInput = document.getElementById("problemInput");
+
+
+/* ================================
+   THEME
+================================ */
+
+function applyTheme(theme) {
+
+    if (theme === "dark") {
+
+        document.body.classList.add("dark");
+
+        if (themeBtn) {
+            themeBtn.textContent = "☀️";
         }
 
+    } else {
+
+        document.body.classList.remove("dark");
+
+        if (themeBtn) {
+            themeBtn.textContent = "🌙";
+        }
     }
+}
 
 
-    window.PCRepairAnalytics = {
-        track: track,
+const savedTheme = localStorage.getItem("pc_repair_theme") || "light";
 
-        pageLoaded: function () {
-            track("page_loaded", {
-                page_name: document.title,
-                page_path: window.location.pathname
-            });
-        },
+applyTheme(savedTheme);
 
-        diagnosisStarted: function () {
-            track("ai_diagnosis", {
-                status: "started"
-            });
-        },
 
-        diagnosisSuccess: function (productCount) {
-            track("ai_diagnosis", {
-                status: "success",
-                product_count: productCount,
-                has_products: productCount > 0
-            });
-        },
+if (themeBtn) {
 
-        diagnosisValidationError: function () {
-            track("ai_diagnosis", {
-                status: "validation_error"
-            });
-        },
+    themeBtn.addEventListener("click", function() {
 
-        diagnosisError: function (errorType) {
-            track("ai_diagnosis", {
-                status: "error",
-                error_type: errorType
-            });
-        },
+        const isDark = document.body.classList.contains("dark");
 
-        productClick: function (productName, store, domain) {
-            track("product_click", {
-                product_name: productName || "",
-                store: store || "",
-                domain: domain || ""
-            });
-        },
+        const newTheme = isDark ? "light" : "dark";
 
-        partExplorerClick: function () {
-            track("parts_explorer_click");
-        },
+        localStorage.setItem("pc_repair_theme", newTheme);
 
-        healthCheck: function (action) {
-            track("pc_health_check", {
-                action: action
-            });
-        },
+        applyTheme(newTheme);
 
-        themeChange: function (theme) {
-            track("theme_change", {
-                theme: theme
-            });
+        if (window.PCRepairAnalytics) {
+            window.PCRepairAnalytics.themeChange(newTheme);
         }
-    };
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        window.PCRepairAnalytics.pageLoaded();
-
-
-        const scrollMarks = [25,50,75,90,100];
-        const sentScrollMarks = {};
-
-        function checkScrollDepth() {
-
-            const doc = document.documentElement;
-
-            const scrollable =
-                doc.scrollHeight - window.innerHeight;
-
-            if (scrollable <= 0) {
-                return;
-            }
-
-            const percent = Math.min(
-                100,
-                Math.round((window.scrollY / scrollable) * 100)
-            );
-
-            scrollMarks.forEach(function (mark) {
-
-                if (
-                    percent >= mark &&
-                    !sentScrollMarks[mark]
-                ) {
-
-                    sentScrollMarks[mark] = true;
-
-                    track("scroll_depth", {
-                        percent_scrolled: mark,
-                        page_path: window.location.pathname
-                    });
-
-                }
-
-            });
-
-        }
-
-        window.addEventListener(
-            "scroll",
-            checkScrollDepth,
-            { passive: true }
-        );
-
-
-        document.addEventListener(
-            "click",
-            function (event) {
-
-                const element =
-                    event.target.closest(
-                        "a, button, input[type='submit'], input[type='button'], [role='button']"
-                    );
-
-                if (!element) {
-                    return;
-                }
-
-
-                const text = (
-                    element.innerText ||
-                    element.value ||
-                    element.getAttribute("aria-label") ||
-                    element.getAttribute("title") ||
-                    ""
-                )
-                .trim()
-                .replace(/\s+/g," ")
-                .slice(0,100);
-
-
-                const trackingName =
-                    element.getAttribute("data-track-name") ||
-                    element.id ||
-                    text;
-
-
-                track("user_action", {
-
-                    element_type:
-                        element.tagName.toLowerCase(),
-
-                    element_text:
-                        text,
-
-                    element_id:
-                        element.id || "",
-
-                    tracking_name:
-                        trackingName,
-
-                    page_path:
-                        window.location.pathname
-
-                });
-
-
-                if (
-                    element.tagName.toLowerCase() === "a" &&
-                    element.href
-                ) {
-
-                    try {
-
-                        const url =
-                            new URL(
-                                element.href,
-                                window.location.href
-                            );
-
-
-                        if (
-                            url.origin !==
-                            window.location.origin
-                        ) {
-
-                            track("outbound_click", {
-                                link_domain:
-                                    url.hostname,
-
-                                link_path:
-                                    url.pathname
-                            });
-
-                        }
-
-
-                        if (
-                            url.hostname.includes("youtube.com") ||
-                            url.hostname.includes("youtu.be")
-                        ) {
-
-                            track("youtube_click", {
-                                video_domain:
-                                    url.hostname
-                            });
-
-                        }
-
-
-                        if (
-                            url.hostname.includes("amazon.") ||
-                            url.hostname.includes("flipkart.") ||
-                            url.hostname.includes("mdcomputers.") ||
-                            url.hostname.includes("primeabgb.") ||
-                            url.hostname.includes("vedant.")
-                        ) {
-
-                            track("product_link_click", {
-                                store_domain:
-                                    url.hostname
-                            });
-
-                        }
-
-                    } catch (error) {}
-
-                }
-
-            },
-            true
-        );
-
-
-        document.addEventListener(
-            "change",
-            function (event) {
-
-                const element = event.target;
-
-                if (
-                    !element ||
-                    ![
-                        "SELECT",
-                        "INPUT",
-                        "TEXTAREA"
-                    ].includes(element.tagName)
-                ) {
-                    return;
-                }
-
-
-                track("form_interaction", {
-
-                    field_type:
-                        element.type ||
-                        element.tagName.toLowerCase(),
-
-                    field_name:
-                        element.name ||
-                        element.id ||
-                        "",
-
-                    page_path:
-                        window.location.pathname
-
-                });
-
-            },
-            true
-        );
-
-
-        const sections =
-            document.querySelectorAll(
-                "section, [data-analytics-section]"
-            );
-
-
-        if ("IntersectionObserver" in window) {
-
-            const observer =
-                new IntersectionObserver(
-                    function (entries) {
-
-                        entries.forEach(
-                            function (entry) {
-
-                                if (!entry.isIntersecting) {
-                                    return;
-                                }
-
-                                const section =
-                                    entry.target;
-
-
-                                if (
-                                    section.dataset.analyticsTracked === "true"
-                                ) {
-                                    return;
-                                }
-
-
-                                section.dataset.analyticsTracked =
-                                    "true";
-
-
-                                track("section_view", {
-
-                                    section_name: (
-                                        section.getAttribute(
-                                            "data-analytics-section"
-                                        ) ||
-                                        section.id ||
-                                        "section"
-                                    ).slice(0,100),
-
-                                    page_path:
-                                        window.location.pathname
-
-                                });
-
-                            }
-                        );
-
-                    },
-                    {
-                        threshold: .35
-                    }
-                );
-
-
-            sections.forEach(function (section) {
-                observer.observe(section);
-            });
-
-        }
-
-
-        window.addEventListener(
-            "error",
-            function () {
-
-                track("javascript_error", {
-                    error_type: "window_error",
-                    page_path: window.location.pathname
-                });
-
-            }
-        );
-
-
-        window.addEventListener(
-            "unhandledrejection",
-            function () {
-
-                track("javascript_error", {
-                    error_type: "promise_rejection",
-                    page_path: window.location.pathname
-                });
-
-            }
-        );
-
-
-        window.addEventListener(
-            "load",
-            function () {
-
-                track("page_ready", {
-                    page_name: document.title,
-                    page_path: window.location.pathname
-                });
-
-            }
-        );
-
-
-        window.addEventListener(
-            "beforeunload",
-            function () {
-
-                track("page_exit", {
-                    page_path: window.location.pathname
-                });
-
-            }
-        );
 
     });
 
-})();
+}
 
 
-document.addEventListener("DOMContentLoaded", function () {
+/* ================================
+   BACK TO TOP
+================================ */
 
+window.addEventListener("scroll", function() {
 
-    const themeBtn =
-        document.getElementById("themeBtn");
-
-
-    const savedTheme =
-        localStorage.getItem("pcRepairTheme");
-
-
-    if (savedTheme === "light") {
-
-        document.body.classList.add("light");
-
-        themeBtn.textContent = "☀️";
-
+    if (!topBtn) {
+        return;
     }
 
-
-    themeBtn.addEventListener(
-        "click",
-        function () {
-
-            document.body.classList.toggle("light");
-
-
-            const light =
-                document.body.classList.contains("light");
-
-
-            localStorage.setItem(
-                "pcRepairTheme",
-                light ? "light" : "dark"
-            );
-
-
-            themeBtn.textContent =
-                light ? "☀️" : "🌙";
-
-
-            if (window.PCRepairAnalytics) {
-
-                window.PCRepairAnalytics.themeChange(
-                    light ? "light" : "dark"
-                );
-
-            }
-
-        }
-    );
-
-
-    const diagnoseButton =
-        document.getElementById("diagnoseButton");
-
-    const resultSection =
-        document.getElementById("resultSection");
-
-    const resultContainer =
-        document.getElementById("resultContainer");
-
-    const deviceInput =
-        document.getElementById("deviceInput");
-
-    const problemInput =
-        document.getElementById("problemInput");
-
-
-    const API_URL =
-        "https://pc-repair-ai.onrender.com";
-
-
-    function escapeHTML(value) {
-
-        return String(value || "")
-            .replace(/&/g,"&amp;")
-            .replace(/</g,"&lt;")
-            .replace(/>/g,"&gt;")
-            .replace(/"/g,"&quot;")
-            .replace(/'/g,"&#039;");
-
+    if (window.scrollY > 500) {
+        topBtn.classList.add("show");
+    } else {
+        topBtn.classList.remove("show");
     }
 
+});
 
-    function cleanAIText(value) {
 
-        if (value === null || value === undefined) {
-            return "";
+if (topBtn) {
+
+    topBtn.addEventListener("click", function() {
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    });
+
+}
+
+
+/* ================================
+   SMOOTH LINKS
+================================ */
+
+document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+
+    link.addEventListener("click", function(event) {
+
+        const targetId = this.getAttribute("href");
+
+        if (!targetId || targetId === "#") {
+            return;
         }
 
-        return String(value)
-            .replace(/\*\*(.*?)\*\*/g,"$1")
-            .replace(/__(.*?)__/g,"$1")
-            .replace(/`(.*?)`/g,"$1")
-            .trim();
+        const target = document.querySelector(targetId);
 
-    }
-
-
-    function getArray(value) {
-
-        if (Array.isArray(value)) {
-            return value;
+        if (!target) {
+            return;
         }
 
-        if (typeof value === "string") {
+        event.preventDefault();
 
-            return value
-                .split(/\n|•|;/)
-                .map(item => item.trim())
-                .filter(Boolean);
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    });
+
+});
+
+
+/* ================================
+   PARTS EXPLORER ANALYTICS
+================================ */
+
+document.querySelectorAll(
+    "#partsExplorerLink, #partsPreviewLink"
+).forEach(function(link) {
+
+    link.addEventListener("click", function() {
+
+        if (window.PCRepairAnalytics) {
+            window.PCRepairAnalytics.partExplorerClick();
+        }
+
+    });
+
+});
+
+
+/* ================================
+   QUICK EXAMPLES
+================================ */
+
+document.querySelectorAll("[data-example]").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        const example = this.getAttribute("data-example");
+
+        problemInput.value = example;
+
+        problemInput.focus();
+
+    });
+
+});
+
+
+/* ================================
+   KEYBOARD
+================================ */
+
+if (deviceInput) {
+
+    deviceInput.addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            problemInput.focus();
 
         }
 
-        return [];
+    });
 
-    }
+}
 
 
-    function getText(value) {
+if (problemInput) {
+
+    problemInput.addEventListener("keydown", function(event) {
 
         if (
-            typeof value === "string" ||
-            typeof value === "number"
+            event.key === "Enter" &&
+            event.ctrlKey
         ) {
-            return cleanAIText(value);
+
+            event.preventDefault();
+
+            diagnose();
+
         }
+
+    });
+
+}
+
+
+/* ================================
+   SAFE VALUE CONVERTER
+================================ */
+
+function safeString(value, fallback = "") {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return fallback;
+    }
+
+
+    if (typeof value === "string") {
+        return value;
+    }
+
+
+    if (
+        typeof value === "number" ||
+        typeof value === "boolean"
+    ) {
+        return String(value);
+    }
+
+
+    if (Array.isArray(value)) {
+
+        return value
+            .map(function(item) {
+                return safeString(item);
+            })
+            .filter(Boolean)
+            .join(", ");
+
+    }
+
+
+    if (typeof value === "object") {
+
+        if (value.text !== undefined) {
+            return safeString(value.text);
+        }
+
+        if (value.description !== undefined) {
+            return safeString(value.description);
+        }
+
+        if (value.name !== undefined) {
+            return safeString(value.name);
+        }
+
+        if (value.title !== undefined) {
+            return safeString(value.title);
+        }
+
+        if (value.message !== undefined) {
+            return safeString(value.message);
+        }
+
+        if (value.value !== undefined) {
+            return safeString(value.value);
+        }
+
+        try {
+
+            return Object.values(value)
+                .map(function(item) {
+                    return safeString(item);
+                })
+                .filter(Boolean)
+                .join(" ");
+
+        } catch (error) {
+
+            return fallback;
+        }
+    }
+
+
+    return fallback;
+}
+
+
+/* ================================
+   GET FIELD
+================================ */
+
+function getField(object, names, fallback = "") {
+
+    if (!object || typeof object !== "object") {
+        return fallback;
+    }
+
+    for (const name of names) {
+
+        if (
+            object[name] !== undefined &&
+            object[name] !== null
+        ) {
+
+            return object[name];
+
+        }
+
+    }
+
+    return fallback;
+}
+
+
+/* ================================
+   ARRAY NORMALIZER
+================================ */
+
+function toArray(value) {
+
+    if (value === null || value === undefined) {
+        return [];
+    }
+
+    if (Array.isArray(value)) {
+        return value;
+    }
+
+    return [value];
+}
+
+
+/* ================================
+   HTML ESCAPE
+================================ */
+
+function escapeHTML(value) {
+
+    const text = safeString(value);
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ================================
+   URL NORMALIZER
+================================ */
+
+function normalizeUrl(value) {
+
+    const url = safeString(value).trim();
+
+    if (!url) {
+        return "";
+    }
+
+
+    if (
+        url === "#" ||
+        url.toLowerCase() === "n/a" ||
+        url.toLowerCase() === "na" ||
+        url.toLowerCase() === "none" ||
+        url.toLowerCase() === "null" ||
+        url.toLowerCase().includes("unavailable")
+    ) {
 
         return "";
 
     }
 
 
-    function normalizeUrl(value) {
-
-        if (!value) {
-            return "";
-        }
-
-        let url =
-            String(value).trim();
-
-
-        if (
-            !url.startsWith("http://") &&
-            !url.startsWith("https://")
-        ) {
-
-            url =
-                "https://" + url;
-
-        }
-
+    if (
+        url.startsWith("http://") ||
+        url.startsWith("https://")
+    ) {
 
         return url;
 
     }
 
 
-    function countProducts(data) {
+    if (url.startsWith("www.")) {
 
-        let count = 0;
-
-
-        if (
-            Array.isArray(data.products)
-        ) {
-
-            count += data.products.length;
-
-        }
-
-
-        if (
-            data.products &&
-            typeof data.products === "object" &&
-            !Array.isArray(data.products)
-        ) {
-
-            Object.values(data.products)
-                .forEach(function (group) {
-
-                    if (Array.isArray(group)) {
-                        count += group.length;
-                    }
-
-                });
-
-        }
-
-
-        if (
-            Array.isArray(data.recommended_products)
-        ) {
-
-            count +=
-                data.recommended_products.length;
-
-        }
-
-
-        return count;
+        return "https://" + url;
 
     }
 
 
-    function renderCauses(causes) {
+    return "";
 
-        const items =
-            getArray(causes);
+}
 
 
-        if (!items.length) {
-            return "";
+/* ================================
+   STORE NAME
+================================ */
+
+function getStoreName(product, url) {
+
+    const store = getField(
+        product,
+        [
+            "store",
+            "source",
+            "seller",
+            "retailer",
+            "merchant",
+            "site",
+            "website"
+        ],
+        ""
+    );
+
+
+    const storeText = safeString(store).trim();
+
+    if (storeText) {
+        return storeText;
+    }
+
+
+    try {
+
+        if (url) {
+
+            const hostname = new URL(url).hostname
+                .replace(/^www\./, "");
+
+            return hostname;
+
+        }
+
+    } catch (error) {}
+
+    return "Product Store";
+}
+
+
+/* ================================
+   PRODUCT NORMALIZER
+================================ */
+
+function normalizeProduct(product) {
+
+    if (!product) {
+        return null;
+    }
+
+
+    if (typeof product === "string") {
+
+        return {
+            name: product,
+            price: "",
+            rating: "",
+            url: "",
+            image: "",
+            store: "Product Store"
+        };
+
+    }
+
+
+    if (typeof product !== "object") {
+        return null;
+    }
+
+
+    const url = normalizeUrl(
+        getField(
+            product,
+            [
+                "url",
+                "link",
+                "product_url",
+                "product_link",
+                "buy_url",
+                "purchase_url",
+                "href"
+            ],
+            ""
+        )
+    );
+
+
+    const name = safeString(
+        getField(
+            product,
+            [
+                "name",
+                "title",
+                "product_name",
+                "productTitle",
+                "part_name"
+            ],
+            ""
+        )
+    ).trim();
+
+
+    const price = safeString(
+        getField(
+            product,
+            [
+                "price",
+                "cost",
+                "amount",
+                "display_price"
+            ],
+            ""
+        )
+    ).trim();
+
+
+    const rating = safeString(
+        getField(
+            product,
+            [
+                "rating",
+                "stars",
+                "review_rating"
+            ],
+            ""
+        )
+    ).trim();
+
+
+    const image = normalizeUrl(
+        getField(
+            product,
+            [
+                "image",
+                "image_url",
+                "thumbnail",
+                "thumbnail_url",
+                "photo"
+            ],
+            ""
+        )
+    );
+
+
+    const store = getStoreName(product, url);
+
+
+    return {
+        name: name || "Recommended Part",
+        price: price,
+        rating: rating,
+        url: url,
+        image: image,
+        store: store
+    };
+
+}
+
+
+/* ================================
+   PRODUCT COLLECTION
+================================ */
+
+function extractProducts(data) {
+
+    if (!data || typeof data !== "object") {
+        return [];
+    }
+
+
+    let rawProducts =
+        getField(
+            data,
+            [
+                "products",
+                "product_recommendations",
+                "recommendations",
+                "recommended_products",
+                "shopping_results",
+                "items"
+            ],
+            []
+        );
+
+
+    if (
+        rawProducts &&
+        typeof rawProducts === "object" &&
+        !Array.isArray(rawProducts)
+    ) {
+
+        const groups = Object.values(rawProducts);
+
+        if (
+            groups.length &&
+            groups.every(function(item) {
+                return Array.isArray(item);
+            })
+        ) {
+
+            rawProducts = groups.flat();
+
+        } else {
+
+            rawProducts = [rawProducts];
+
+        }
+
+    }
+
+
+    const products = toArray(rawProducts)
+        .map(normalizeProduct)
+        .filter(Boolean);
+
+
+    return products;
+
+}
+
+
+/* ================================
+   TEXT NORMALIZER
+================================ */
+
+function normalizeText(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+
+    if (typeof value === "string") {
+        return value.trim();
+    }
+
+
+    if (Array.isArray(value)) {
+
+        return value
+            .map(function(item) {
+                return normalizeText(item);
+            })
+            .filter(Boolean)
+            .join("\n");
+
+    }
+
+
+    if (typeof value === "object") {
+
+        const preferredFields = [
+            "text",
+            "description",
+            "summary",
+            "message",
+            "diagnosis",
+            "content",
+            "value",
+            "answer"
+        ];
+
+
+        for (const field of preferredFields) {
+
+            if (
+                value[field] !== undefined &&
+                value[field] !== null
+            ) {
+
+                const result = normalizeText(value[field]);
+
+                if (result) {
+                    return result;
+                }
+
+            }
+
         }
 
 
-        return `
+        return Object.values(value)
+            .map(function(item) {
+                return normalizeText(item);
+            })
+            .filter(Boolean)
+            .join("\n");
 
-            <div class="diagnosis-section">
+    }
 
-                <div class="section-heading-small">
 
-                    <span class="section-icon">⚠️</span>
+    return String(value);
+}
 
-                    <span>Possible Causes</span>
+
+/* ================================
+   CLEAN AI TEXT
+================================ */
+
+function cleanAIText(value) {
+
+    let text = normalizeText(value);
+
+    text = text.replace(/\r\n/g, "\n");
+
+    text = text.replace(
+        /^\s*(AI DIAGNOSIS|Diagnosis)\s*:?\s*/i,
+        ""
+    );
+
+    return text.trim();
+
+}
+
+
+/* ================================
+   LOADING STATE
+================================ */
+
+function setLoadingState(isLoading) {
+
+    if (!diagnoseButton) {
+        return;
+    }
+
+
+    const buttonText =
+        diagnoseButton.querySelector(".button-text");
+
+    const loader =
+        diagnoseButton.querySelector(".button-loader");
+
+
+    diagnoseButton.disabled = isLoading;
+
+
+    if (buttonText) {
+        buttonText.hidden = isLoading;
+    }
+
+
+    if (loader) {
+        loader.hidden = !isLoading;
+    }
+
+}
+
+
+/* ================================
+   ERROR TYPE
+================================ */
+
+function getErrorType(error) {
+
+    const message =
+        error && error.message
+            ? error.message.toLowerCase()
+            : "";
+
+
+    if (
+        message.includes("failed to fetch") ||
+        message.includes("network") ||
+        message.includes("fetch")
+    ) {
+
+        return "network";
+
+    }
+
+
+    if (message.includes("timeout")) {
+        return "timeout";
+    }
+
+
+    if (message.includes("500")) {
+        return "server";
+    }
+
+
+    return "unknown";
+
+}
+
+
+/* ================================
+   DIAGNOSIS
+================================ */
+
+async function diagnose() {
+
+    const device =
+        deviceInput.value.trim();
+
+    const problem =
+        problemInput.value.trim();
+
+
+    if (!device || !problem) {
+
+        showValidationError();
+
+        if (window.PCRepairAnalytics) {
+            window.PCRepairAnalytics.diagnosisValidationError();
+        }
+
+        return;
+    }
+
+
+    setLoadingState(true);
+
+    showLoading();
+
+
+    if (window.PCRepairAnalytics) {
+        window.PCRepairAnalytics.diagnosisStarted();
+    }
+
+
+    try {
+
+        const response = await fetch(
+            API_URL + "/diagnose",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    device: device,
+                    problem: problem
+                })
+            }
+        );
+
+
+        const rawText = await response.text();
+
+
+        let data;
+
+
+        try {
+
+            data = rawText
+                ? JSON.parse(rawText)
+                : {};
+
+        } catch (jsonError) {
+
+            throw new Error(
+                "Server returned an invalid response."
+            );
+
+        }
+
+
+        if (!response.ok) {
+
+            const serverMessage =
+                cleanAIText(
+                    getField(
+                        data,
+                        [
+                            "detail",
+                            "message",
+                            "error"
+                        ],
+                        ""
+                    )
+                );
+
+
+            throw new Error(
+                serverMessage ||
+                "The AI server returned an error."
+            );
+
+        }
+
+
+        renderDiagnosis(
+            data,
+            device,
+            problem
+        );
+
+
+        const productCount =
+            extractProducts(data).length;
+
+
+        if (window.PCRepairAnalytics) {
+            window.PCRepairAnalytics.diagnosisSuccess(
+                productCount
+            );
+        }
+
+
+    } catch (error) {
+
+        console.error("Diagnosis error:", error);
+
+        renderConnectionError(error);
+
+
+        if (window.PCRepairAnalytics) {
+
+            window.PCRepairAnalytics.diagnosisError(
+                getErrorType(error)
+            );
+
+        }
+
+    } finally {
+
+        setLoadingState(false);
+
+    }
+
+}
+
+
+/* ================================
+   DIAGNOSE BUTTON
+================================ */
+
+if (diagnoseButton) {
+
+    diagnoseButton.addEventListener(
+        "click",
+        diagnose
+    );
+
+}
+
+
+/* ================================
+   SHOW LOADING
+================================ */
+
+function showLoading() {
+
+    resultSection.classList.remove("hidden");
+
+    resultContainer.innerHTML = `
+        <div class="ai-result-card ai-loading">
+
+            <div class="ai-spinner"></div>
+
+            <h3>Analyzing Your Problem...</h3>
+
+            <p>
+                AI is checking possible causes,
+                repair steps and hardware recommendations.
+            </p>
+
+            <div class="loading-status">
+                Please wait...
+            </div>
+
+        </div>
+    `;
+
+
+    resultSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+/* ================================
+   VALIDATION ERROR
+================================ */
+
+function showValidationError() {
+
+    resultSection.classList.remove("hidden");
+
+
+    resultContainer.innerHTML = `
+        <div class="error-card">
+
+            <div class="error-icon">
+                ⚠️
+            </div>
+
+            <h3>Missing Information</h3>
+
+            <p>
+                Please enter both your device and the problem
+                before starting the diagnosis.
+            </p>
+
+        </div>
+    `;
+
+
+    resultSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+/* ================================
+   RENDER DIAGNOSIS
+================================ */
+
+function renderDiagnosis(
+    data,
+    device,
+    problem
+) {
+
+    console.log("AI API Response:", data);
+
+
+    const diagnosisValue =
+        getField(
+            data,
+            [
+                "diagnosis",
+                "ai_diagnosis",
+                "result",
+                "answer",
+                "analysis"
+            ],
+            ""
+        );
+
+
+    const diagnosisText =
+        cleanAIText(diagnosisValue) ||
+        "The AI could not provide a detailed diagnosis.";
+
+
+    const summaryValue =
+        getField(
+            data,
+            [
+                "summary",
+                "explanation",
+                "description",
+                "overview"
+            ],
+            ""
+        );
+
+
+    const summary =
+        cleanAIText(summaryValue);
+
+
+    const confidence =
+        safeString(
+            getField(
+                data,
+                [
+                    "confidence",
+                    "confidence_score"
+                ],
+                ""
+            )
+        );
+
+
+    const difficulty =
+        safeString(
+            getField(
+                data,
+                [
+                    "difficulty",
+                    "repair_difficulty"
+                ],
+                ""
+            )
+        );
+
+
+    const causes =
+        toArray(
+            getField(
+                data,
+                [
+                    "causes",
+                    "possible_causes",
+                    "root_causes"
+                ],
+                []
+            )
+        );
+
+
+    const diagnosisSteps =
+        toArray(
+            getField(
+                data,
+                [
+                    "diagnosis_steps",
+                    "diagnostic_steps",
+                    "troubleshooting"
+                ],
+                []
+            )
+        );
+
+
+    const repairSteps =
+        toArray(
+            getField(
+                data,
+                [
+                    "repair_steps",
+                    "solutions",
+                    "solution_steps",
+                    "steps"
+                ],
+                []
+            )
+        );
+
+
+    const tools =
+        toArray(
+            getField(
+                data,
+                [
+                    "tools",
+                    "required_tools"
+                ],
+                []
+            )
+        );
+
+
+    const parts =
+        toArray(
+            getField(
+                data,
+                [
+                    "parts_required",
+                    "required_parts",
+                    "parts"
+                ],
+                []
+            )
+        );
+
+
+    const safety =
+        toArray(
+            getField(
+                data,
+                [
+                    "safety",
+                    "safety_notes",
+                    "warnings"
+                ],
+                []
+            )
+        );
+
+
+    const professional =
+        cleanAIText(
+            getField(
+                data,
+                [
+                    "professional_help",
+                    "professional_advice",
+                    "when_to_visit_professional"
+                ],
+                ""
+            )
+        );
+
+
+    const products =
+        extractProducts(data);
+
+
+    resultContainer.innerHTML = `
+
+        <div class="ai-result-card diagnosis-shell">
+
+            <div class="diagnosis-header">
+
+                <div class="diagnosis-header-left">
+
+                    <div class="result-ai-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <div class="diagnosis-label">
+                            AI DIAGNOSIS
+                        </div>
+
+                        <h2 class="diagnosis-title">
+                            ${escapeHTML(diagnosisText)}
+                        </h2>
+
+                        <div class="diagnosis-device">
+                            🖥️ ${escapeHTML(device)}
+                        </div>
+
+                    </div>
 
                 </div>
 
-                <div class="causes-grid">
 
-                    ${items.map(function(item,index){
+                <div class="diagnosis-meta">
+
+                    ${
+                        confidence
+                            ? `
+                                <span class="confidence-badge">
+                                    Confidence: ${escapeHTML(confidence)}
+                                </span>
+                              `
+                            : ""
+                    }
+
+                    ${
+                        difficulty
+                            ? `
+                                <span class="difficulty-badge">
+                                    ${escapeHTML(difficulty)}
+                                </span>
+                              `
+                            : ""
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="problem-box">
+
+                <div class="problem-box-icon">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <strong>
+                        Reported Problem
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(problem)}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            ${
+                summary
+                    ? `
+                        <div class="diagnosis-summary">
+
+                            <span class="summary-icon">
+                                💡
+                            </span>
+
+                            <div>
+                                ${escapeHTML(summary)}
+                            </div>
+
+                        </div>
+                      `
+                    : ""
+            }
+
+
+            ${
+                causes.length
+                    ? renderCauses(causes)
+                    : ""
+            }
+
+
+            ${
+                diagnosisSteps.length
+                    ? renderDiagnosisSteps(diagnosisSteps)
+                    : ""
+            }
+
+
+            ${
+                repairSteps.length
+                    ? renderRepairSteps(repairSteps)
+                    : ""
+            }
+
+
+            ${
+                tools.length
+                    ? renderTools(tools)
+                    : ""
+            }
+
+
+            ${
+                parts.length
+                    ? renderParts(parts)
+                    : ""
+            }
+
+
+            ${
+                safety.length
+                    ? renderSafety(safety)
+                    : ""
+            }
+
+
+            ${
+                professional
+                    ? renderProfessional(professional)
+                    : ""
+            }
+
+
+            ${renderProducts(products)}
+
+
+            <div class="diagnosis-footer">
+
+                <p>
+                    ⚠️ AI-generated guidance should be verified
+                    before performing hardware repairs.
+                </p>
+
+            </div>
+
+        </div>
+    `;
+
+
+    resultSection.classList.remove("hidden");
+
+
+    resultSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+/* ================================
+   CAUSES
+================================ */
+
+function renderCauses(causes) {
+
+    return `
+
+        <section class="diagnosis-section">
+
+            <h3 class="section-heading">
+                🔎 Possible Causes
+            </h3>
+
+            <div class="causes-grid">
+
+                ${
+                    causes.map(function(cause, index) {
+
+                        const text =
+                            normalizeText(cause);
+
+                        if (!text) {
+                            return "";
+                        }
 
                         return `
 
@@ -2281,50 +1996,48 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
 
                                 <div class="cause-content">
-                                    ${escapeHTML(cleanAIText(item))}
+                                    ${escapeHTML(text)}
                                 </div>
 
                             </div>
-
                         `;
 
-                    }).join("")}
-
-                </div>
+                    }).join("")
+                }
 
             </div>
 
-        `;
+        </section>
+    `;
 
-    }
-
-
-    function renderDiagnosisSteps(steps) {
-
-        const items =
-            getArray(steps);
+}
 
 
-        if (!items.length) {
-            return "";
-        }
+/* ================================
+   DIAGNOSIS STEPS
+================================ */
 
+function renderDiagnosisSteps(steps) {
 
-        return `
+    return `
 
-            <div class="diagnosis-section">
+        <section class="diagnosis-section">
 
-                <div class="section-heading-small">
+            <h3 class="section-heading">
+                🧪 Diagnostic Steps
+            </h3>
 
-                    <span class="section-icon">🔎</span>
+            <div class="steps-list">
 
-                    <span>Diagnostic Steps</span>
+                ${
+                    steps.map(function(step, index) {
 
-                </div>
+                        const text =
+                            normalizeText(step);
 
-                <div class="steps-list">
-
-                    ${items.map(function(item,index){
+                        if (!text) {
+                            return "";
+                        }
 
                         return `
 
@@ -2335,76 +2048,48 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
 
                                 <div class="step-content">
-                                    ${escapeHTML(cleanAIText(item))}
+                                    ${escapeHTML(text)}
                                 </div>
 
                             </div>
-
                         `;
 
-                    }).join("")}
-
-                </div>
+                    }).join("")
+                }
 
             </div>
 
-        `;
+        </section>
+    `;
 
-    }
-
-
-    function renderRepairSteps(steps) {
-
-        const items =
-            getArray(steps);
+}
 
 
-        if (!items.length) {
-            return "";
-        }
+/* ================================
+   REPAIR STEPS
+================================ */
 
+function renderRepairSteps(steps) {
 
-        return `
+    return `
 
-            <div class="repair-section">
+        <section class="diagnosis-section repair-section">
 
-                <div class="section-heading-small">
+            <h3 class="section-heading">
+                🛠️ Recommended Repair Steps
+            </h3>
 
-                    <span class="section-icon">🛠️</span>
+            <div class="repair-steps">
 
-                    <span>Repair Steps</span>
+                ${
+                    steps.map(function(step, index) {
 
-                </div>
+                        const text =
+                            normalizeText(step);
 
-                <div class="repair-steps">
-
-                    ${items.map(function(item,index){
-
-                        let title = "";
-                        let description = cleanAIText(item);
-
-
-                        if (
-                            typeof item === "object" &&
-                            item !== null
-                        ) {
-
-                            title =
-                                getText(
-                                    item.title ||
-                                    item.step ||
-                                    item.name
-                                );
-
-                            description =
-                                getText(
-                                    item.description ||
-                                    item.details ||
-                                    item.action
-                                );
-
+                        if (!text) {
+                            return "";
                         }
-
 
                         return `
 
@@ -2416,261 +2101,389 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                 <div class="repair-step-content">
 
+                                    <div class="repair-step-top">
+                                        Step ${index + 1}
+                                    </div>
+
+                                    <p>
+                                        ${escapeHTML(text)}
+                                    </p>
+
+                                </div>
+
+                            </div>
+                        `;
+
+                    }).join("")
+                }
+
+            </div>
+
+        </section>
+    `;
+
+}
+
+
+/* ================================
+   TOOLS
+================================ */
+
+function renderTools(tools) {
+
+    return `
+
+        <section class="diagnosis-section">
+
+            <h3 class="section-heading">
+                🔧 Required Tools
+            </h3>
+
+            <div class="tools-grid">
+
+                ${
+                    tools.map(function(tool) {
+
+                        const text =
+                            normalizeText(tool);
+
+                        if (!text) {
+                            return "";
+                        }
+
+                        return `
+
+                            <div class="tool-card">
+
+                                <span class="tool-icon">
+                                    🧰
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(text)}
+                                </span>
+
+                            </div>
+                        `;
+
+                    }).join("")
+                }
+
+            </div>
+
+        </section>
+    `;
+
+}
+
+
+/* ================================
+   PARTS
+================================ */
+
+function renderParts(parts) {
+
+    return `
+
+        <section class="diagnosis-section">
+
+            <h3 class="section-heading">
+                🧩 Parts You May Need
+            </h3>
+
+            <div class="parts-required-grid">
+
+                ${
+                    parts.map(function(part) {
+
+                        const text =
+                            normalizeText(part);
+
+                        if (!text) {
+                            return "";
+                        }
+
+                        return `
+
+                            <div class="required-part-card">
+
+                                <div class="required-part-icon">
+                                    🧩
+                                </div>
+
+                                <div class="required-part-info">
+                                    ${escapeHTML(text)}
+                                </div>
+
+                            </div>
+                        `;
+
+                    }).join("")
+                }
+
+            </div>
+
+        </section>
+    `;
+
+}
+
+
+/* ================================
+   SAFETY
+================================ */
+
+function renderSafety(safety) {
+
+    return `
+
+        <section class="diagnosis-section">
+
+            <h3 class="section-heading">
+                ⚠️ Safety Information
+            </h3>
+
+            <ul class="safety-list">
+
+                ${
+                    safety.map(function(item) {
+
+                        const text =
+                            normalizeText(item);
+
+                        if (!text) {
+                            return "";
+                        }
+
+                        return `
+
+                            <li class="safety-item">
+                                <span>
+                                    ⚠️
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(text)}
+                                </span>
+                            </li>
+                        `;
+
+                    }).join("")
+                }
+
+            </ul>
+
+        </section>
+    `;
+
+}
+
+
+/* ================================
+   PROFESSIONAL
+================================ */
+
+function renderProfessional(text) {
+
+    return `
+
+        <section class="professional-box">
+
+            <div class="professional-icon">
+                👨‍🔧
+            </div>
+
+            <div class="professional-content">
+
+                <h3>
+                    When to Contact a Professional
+                </h3>
+
+                <p>
+                    ${escapeHTML(text)}
+                </p>
+
+            </div>
+
+        </section>
+    `;
+
+}
+
+
+/* ================================
+   PRODUCTS
+================================ */
+
+function renderProducts(products) {
+
+    return `
+
+        <section class="products-section">
+
+            <div class="section-heading">
+
+                <span>
+                    🛒
+                </span>
+
+                Product Recommendations
+
+            </div>
+
+            <p class="product-note">
+                Product links and prices may change.
+                Verify specifications before purchasing.
+            </p>
+
+
+            ${
+                products.length
+                    ? `
+                        <div class="product-groups">
+
+                            <div class="product-group">
+
+                                <div class="product-group-header">
+
+                                    <div>
+                                        <h4>
+                                            Recommended Products
+                                        </h4>
+                                    </div>
+
+                                    <span class="product-count">
+                                        ${products.length}
+                                        ${
+                                            products.length === 1
+                                                ? " item"
+                                                : " items"
+                                        }
+                                    </span>
+
+                                </div>
+
+
+                                <div class="product-grid">
+
                                     ${
-                                        title
-                                        ?
-                                        `<div class="repair-step-top">
-                                            ${escapeHTML(title)}
-                                        </div>`
-                                        :
-                                        ""
+                                        products.map(function(product) {
+                                            return renderProduct(product);
+                                        }).join("")
                                     }
 
-                                    ${escapeHTML(description)}
-
                                 </div>
 
                             </div>
 
-                        `;
-
-                    }).join("")}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderTools(tools) {
-
-        const items =
-            getArray(tools);
-
-
-        if (!items.length) {
-            return "";
-        }
-
-
-        return `
-
-            <div class="diagnosis-section">
-
-                <div class="section-heading-small">
-
-                    <span class="section-icon">🔧</span>
-
-                    <span>Tools You May Need</span>
-
-                </div>
-
-                <div class="tools-grid">
-
-                    ${items.map(function(item){
-
-                        return `
-
-                            <div class="tool-card">
-
-                                <div class="tool-card-content">
-
-                                    <div class="tool-icon">
-                                        🧰
-                                    </div>
-
-                                    <h3>
-                                        ${escapeHTML(
-                                            typeof item === "object"
-                                            ? getText(item.name || item.tool)
-                                            : cleanAIText(item)
-                                        )}
-                                    </h3>
-
-                                    <p>
-                                        Use only when appropriate
-                                        for the repair procedure.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }).join("")}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderParts(parts) {
-
-        const items =
-            getArray(parts);
-
-
-        if (!items.length) {
-            return "";
-        }
-
-
-        return `
-
-            <div class="diagnosis-section">
-
-                <div class="section-heading-small">
-
-                    <span class="section-icon">🧩</span>
-
-                    <span>Parts That May Be Required</span>
-
-                </div>
-
-                <div class="tools-grid">
-
-                    ${items.map(function(item){
-
-                        let name =
-                            typeof item === "object"
-                            ? getText(
-                                item.name ||
-                                item.part ||
-                                item.title
-                            )
-                            : cleanAIText(item);
-
-
-                        return `
-
-                            <div class="tool-card">
-
-                                <div class="tool-card-content">
-
-                                    <div class="tool-icon">
-                                        🔩
-                                    </div>
-
-                                    <h3>
-                                        ${escapeHTML(name)}
-                                    </h3>
-
-                                    <p>
-                                        Verify exact model compatibility before purchasing.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }).join("")}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderSafety(safety) {
-
-        const items =
-            getArray(safety);
-
-
-        if (!items.length) {
-            return "";
-        }
-
-
-        return `
-
-            <div class="diagnosis-section">
-
-                <div class="section-heading-small">
-
-                    <span class="section-icon">🛡️</span>
-
-                    <span>Safety Notes</span>
-
-                </div>
-
-                <div class="steps-list">
-
-                    ${items.map(function(item){
-
-                        return `
-
-                            <div class="diagnosis-step">
-
-                                <div class="step-number">
-                                    ⚠️
-                                </div>
-
-                                <div class="step-content">
-                                    ${escapeHTML(cleanAIText(item))}
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }).join("")}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderProfessional(value) {
-
-        const text =
-            getText(value);
-
-
-        if (!text) {
-            return "";
-        }
-
-
-        return `
-
-            <div class="diagnosis-section">
-
-                <div class="repair-step">
-
-                    <div class="repair-step-number">
-                        👨‍🔧
-                    </div>
-
-                    <div class="repair-step-content">
-
-                        <div class="repair-step-top">
-                            Professional Help
                         </div>
+                      `
+                    : `
+                        <div class="product-empty">
 
-                        ${escapeHTML(text)}
+                            <div class="product-empty-icon">
+                                🧩
+                            </div>
 
-                    </div>
+                            <h4>
+                                No specific products found
+                            </h4>
 
-                </div>
+                            <p>
+                                The AI identified the problem,
+                                but did not find a specific product
+                                recommendation.
+                            </p>
 
+                        </div>
+                      `
+            }
+
+        </section>
+    `;
+
+}
+
+
+/* ================================
+   SINGLE PRODUCT
+================================ */
+
+function renderProduct(product) {
+
+    const name =
+        product.name ||
+        "Recommended Part";
+
+
+    const price =
+        product.price ||
+        "";
+
+
+    const rating =
+        product.rating ||
+        "";
+
+
+    const url =
+        product.url ||
+        "";
+
+
+    const image =
+        product.image ||
+        "";
+
+
+    const store =
+        product.store ||
+        "Product Store";
+
+
+    const safeName =
+        escapeHTML(name);
+
+
+    const safePrice =
+        escapeHTML(price);
+
+
+    const safeRating =
+        escapeHTML(rating);
+
+
+    const safeStore =
+        escapeHTML(store);
+
+
+    const encodedName =
+        encodeURIComponent(name);
+
+
+    let imageHTML;
+
+
+    if (image) {
+
+        imageHTML = `
+
+            <img
+                class="product-image"
+                src="${escapeHTML(image)}"
+                alt="${safeName}"
+                loading="lazy"
+                onerror="handleProductImageError(this)"
+            >
+
+        `;
+
+    } else {
+
+        imageHTML = `
+
+            <div class="product-placeholder">
+                🧩
             </div>
 
         `;
@@ -2678,1265 +2491,348 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    function renderProduct(product) {
-
-        if (
-            !product ||
-            typeof product !== "object"
-        ) {
-            return "";
-        }
+    let linkHTML;
 
 
-        const name =
-            getText(
-                product.name ||
-                product.title ||
-                product.product_name
-            );
+    if (url) {
+
+        linkHTML = `
+
+            <a
+                class="product-link"
+                href="${escapeHTML(url)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-product-name="${encodedName}"
+                data-product-store="${encodeURIComponent(store)}"
+            >
+                View Product →
+            </a>
+
+        `;
+
+    } else {
+
+        linkHTML = `
+
+            <span class="product-link disabled-link">
+                Product Link Unavailable
+            </span>
+
+        `;
+
+    }
 
 
-        const price =
-            getText(
-                product.price ||
-                product.current_price
-            );
+    return `
+
+        <article class="product-card">
+
+            <div class="product-image-wrap">
+
+                ${imageHTML}
+
+                <span class="product-source-badge">
+                    ${safeStore}
+                </span>
+
+            </div>
 
 
-        const rating =
-            getText(
-                product.rating ||
-                product.stars
-            );
+            <div class="product-info">
+
+                <h5 class="product-title">
+                    ${safeName}
+                </h5>
 
 
-        const image =
-            normalizeUrl(
-                product.image ||
-                product.image_url ||
-                product.thumbnail
-            );
+                ${
+                    safePrice
+                        ? `
+                            <div class="product-price">
+                                ${safePrice}
+                            </div>
+                          `
+                        : ""
+                }
 
+
+                ${
+                    safeRating
+                        ? `
+                            <div class="product-rating">
+                                ⭐ ${safeRating}
+                            </div>
+                          `
+                        : ""
+                }
+
+
+                <div class="product-actions">
+
+                    ${linkHTML}
+
+                </div>
+
+            </div>
+
+        </article>
+    `;
+
+}
+
+
+/* ================================
+   PRODUCT IMAGE ERROR
+================================ */
+
+function handleProductImageError(image) {
+
+    if (!image) {
+        return;
+    }
+
+
+    const wrapper =
+        image.parentElement;
+
+
+    image.remove();
+
+
+    if (wrapper) {
+
+        const placeholder =
+            document.createElement("div");
+
+        placeholder.className =
+            "product-placeholder";
+
+        placeholder.textContent =
+            "🧩";
+
+        wrapper.prepend(
+            placeholder
+        );
+
+    }
+
+}
+
+
+/* ================================
+   PRODUCT CLICK TRACKING
+================================ */
+
+document.addEventListener(
+    "click",
+    function(event) {
 
         const link =
-            normalizeUrl(
-                product.link ||
-                product.url ||
-                product.product_url
+            event.target.closest(
+                ".product-link[href]"
+            );
+
+
+        if (!link) {
+            return;
+        }
+
+
+        const productName =
+            decodeURIComponent(
+                link.dataset.productName || ""
             );
 
 
         const store =
-            getText(
-                product.store ||
-                product.source ||
-                product.retailer
+            decodeURIComponent(
+                link.dataset.productStore || ""
             );
 
 
-        return `
+        let domain = "";
 
-            <div class="product-card">
+        try {
 
-                <div class="product-image-wrap">
+            domain =
+                new URL(
+                    link.href
+                ).hostname;
 
-                    ${
-                        image
-                        ?
-                        `<img
-                            class="product-image"
-                            src="${escapeHTML(image)}"
-                            alt="${escapeHTML(name)}"
-                            loading="lazy"
-                            onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
-                        >`
-                        :
-                        ""
-                    }
-
-                    <div
-                        class="product-placeholder"
-                        style="${image ? "display:none;" : ""}"
-                    >
-                        🧩 Product
-                    </div>
-
-                </div>
+        } catch (error) {}
 
 
-                ${
-                    store
-                    ?
-                    `<span class="product-source-badge">
-                        ${escapeHTML(store)}
-                    </span>`
-                    :
-                    ""
-                }
+        if (window.PCRepairAnalytics) {
 
-
-                <div class="product-info">
-
-                    <div class="product-title">
-                        ${escapeHTML(name || "Recommended Part")}
-                    </div>
-
-
-                    ${
-                        price
-                        ?
-                        `<div class="product-price">
-                            ${escapeHTML(price)}
-                        </div>`
-                        :
-                        ""
-                    }
-
-
-                    ${
-                        rating
-                        ?
-                        `<div class="product-rating">
-                            ⭐ ${escapeHTML(rating)}
-                        </div>`
-                        :
-                        ""
-                    }
-
-
-                    <div class="product-actions">
-
-                        ${
-                            link
-                            ?
-                            `<a
-                                href="${escapeHTML(link)}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="product-link"
-                                data-product-name="${escapeHTML(name)}"
-                                data-product-store="${escapeHTML(store)}"
-                            >
-                                View Product →
-                            </a>`
-                            :
-                            `<span class="product-link disabled-link">
-                                Product Link Unavailable
-                            </span>`
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderProductGroup(title, products) {
-
-        const items =
-            getArray(products);
-
-
-        if (!items.length) {
-            return "";
-        }
-
-
-        return `
-
-            <div class="product-group">
-
-                <div class="product-group-header">
-
-                    <h4>
-                        ${escapeHTML(title)}
-                    </h4>
-
-                    <span class="product-count">
-                        ${items.length} item${items.length > 1 ? "s" : ""}
-                    </span>
-
-                </div>
-
-
-                <div class="product-grid">
-
-                    ${items.map(renderProduct).join("")}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderProducts(data) {
-
-        const groups = [];
-
-
-        if (
-            Array.isArray(data.products)
-        ) {
-
-            groups.push(
-                renderProductGroup(
-                    "Recommended Products",
-                    data.products
-                )
+            window.PCRepairAnalytics.productClick(
+                productName,
+                store,
+                domain
             );
 
         }
 
+    }
+);
 
-        if (
-            data.products &&
-            typeof data.products === "object" &&
-            !Array.isArray(data.products)
-        ) {
 
-            Object.entries(data.products)
-                .forEach(function ([key,value]) {
+/* ================================
+   CONNECTION ERROR
+================================ */
 
-                    if (Array.isArray(value)) {
+function renderConnectionError(error) {
 
-                        groups.push(
-                            renderProductGroup(
-                                key,
-                                value
-                            )
+    const message =
+        error && error.message
+            ? error.message
+            : "Unknown server error";
+
+
+    resultSection.classList.remove("hidden");
+
+
+    resultContainer.innerHTML = `
+
+        <div class="error-card">
+
+            <div class="error-icon">
+                ⚠️
+            </div>
+
+            <h3>
+                AI Diagnosis Server Problem
+            </h3>
+
+            <p>
+                ${escapeHTML(message)}
+            </p>
+
+            <div class="error-help">
+
+                <strong>
+                    Please check:
+                </strong>
+
+                <ul>
+
+                    <li>
+                        Your internet connection
+                    </li>
+
+                    <li>
+                        Whether the AI server is running
+                    </li>
+
+                    <li>
+                        Whether the Render API is awake
+                    </li>
+
+                    <li>
+                        Try the diagnosis again after a few seconds
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    `;
+
+
+    resultSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+/* ================================
+   SCROLL REVEAL
+================================ */
+
+const revealElements =
+    document.querySelectorAll(
+        ".info-card, .about-card, .parts-preview-card"
+    );
+
+
+if ("IntersectionObserver" in window) {
+
+    const observer =
+        new IntersectionObserver(
+            function(entries) {
+
+                entries.forEach(function(entry) {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+                        observer.unobserve(
+                            entry.target
                         );
 
                     }
 
                 });
 
-        }
-
-
-        if (
-            Array.isArray(data.recommended_products)
-        ) {
-
-            groups.push(
-                renderProductGroup(
-                    "Recommended Products",
-                    data.recommended_products
-                )
-            );
-
-        }
-
-
-        const output =
-            groups.filter(Boolean).join("");
-
-
-        if (!output) {
-            return "";
-        }
-
-
-        return `
-
-            <div class="products-section">
-
-                <div class="section-heading-small">
-
-                    <span class="section-icon">🛒</span>
-
-                    <span>Product Recommendations</span>
-
-                </div>
-
-                <div class="product-note">
-                    Product links and prices may change. Verify specifications before purchasing.
-                </div>
-
-                <div class="product-groups">
-                    ${output}
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function renderDiagnosis(data) {
-
-        const diagnosis =
-            data.diagnosis ||
-            data.title ||
-            data.problem ||
-            "Computer Problem Analysis";
-
-
-        const device =
-            data.device ||
-            data.device_type ||
-            deviceInput.value;
-
-
-        const confidence =
-            data.confidence ||
-            data.confidence_score ||
-            "";
-
-
-        const difficulty =
-            data.difficulty ||
-            "";
-
-
-        const summary =
-            data.summary ||
-            data.explanation ||
-            data.description ||
-            "";
-
-
-        const causes =
-            data.causes ||
-            data.possible_causes ||
-            data.common_causes ||
-            [];
-
-
-        const diagnosisSteps =
-            data.diagnostic_steps ||
-            data.diagnosis_steps ||
-            data.checks ||
-            [];
-
-
-        const repairSteps =
-            data.repair_steps ||
-            data.steps ||
-            data.solution ||
-            [];
-
-
-        const tools =
-            data.tools ||
-            data.required_tools ||
-            [];
-
-
-        const parts =
-            data.parts ||
-            data.required_parts ||
-            [];
-
-
-        const safety =
-            data.safety ||
-            data.safety_notes ||
-            [];
-
-
-        const professional =
-            data.professional_help ||
-            data.when_to_seek_help ||
-            data.service_advice ||
-            "";
-
-
-        return `
-
-            <div class="ai-result-card diagnosis-shell">
-
-                <div class="diagnosis-header">
-
-                    <div class="diagnosis-header-left">
-
-                        <div class="result-ai-icon">
-                            🤖
-                        </div>
-
-                        <div>
-
-                            <div class="diagnosis-label">
-                                AI DIAGNOSIS
-                            </div>
-
-                            <div class="diagnosis-title">
-                                ${escapeHTML(cleanAIText(diagnosis))}
-                            </div>
-
-                            <div class="diagnosis-device">
-                                ${escapeHTML(cleanAIText(device))}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="diagnosis-meta">
-
-                        ${
-                            confidence
-                            ?
-                            `<span class="confidence-badge">
-                                Confidence: ${escapeHTML(String(confidence))}
-                            </span>`
-                            :
-                            ""
-                        }
-
-
-                        ${
-                            difficulty
-                            ?
-                            `<span class="difficulty-badge">
-                                ${escapeHTML(String(difficulty))}
-                            </span>`
-                            :
-                            ""
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <div class="problem-box">
-
-                    <strong>
-                        <span class="problem-box-icon">⚠️</span>
-                        Reported Problem
-                    </strong>
-
-                    <div class="diagnosis-summary">
-                        ${escapeHTML(problemInput.value)}
-                    </div>
-
-                </div>
-
-
-                ${
-                    summary
-                    ?
-                    `
-                    <div class="diagnosis-summary">
-
-                        <span class="summary-icon">💡</span>
-
-                        ${escapeHTML(cleanAIText(summary))}
-
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-
-                ${renderCauses(causes)}
-
-                ${renderDiagnosisSteps(diagnosisSteps)}
-
-                ${renderRepairSteps(repairSteps)}
-
-                ${renderTools(tools)}
-
-                ${renderParts(parts)}
-
-                ${renderSafety(safety)}
-
-                ${renderProfessional(professional)}
-
-                ${renderProducts(data)}
-
-
-                <div class="diagnosis-footer">
-
-                    <div class="error-help">
-                        AI guidance is for informational and troubleshooting purposes.
-                        Disconnect power before opening hardware and seek professional
-                        service when a repair involves electrical or physical safety risks.
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function setLoadingState() {
-
-        diagnoseButton.classList.add("loading");
-
-        diagnoseButton.disabled = true;
-
-
-        resultSection.classList.add("show");
-
-
-        resultContainer.innerHTML = `
-
-            <div class="ai-result-card">
-
-                <div class="ai-loading">
-
-                    <div class="ai-spinner"></div>
-
-                    <div>
-
-                        <strong>Analyzing your problem...</strong>
-
-                        <div class="loading-status">
-                            Checking possible causes and repair guidance.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function getErrorType(error) {
-
-        const message =
-            String(
-                error?.message ||
-                error ||
-                ""
-            ).toLowerCase();
-
-
-        if (
-            message.includes("failed to fetch") ||
-            message.includes("network") ||
-            message.includes("cors")
-        ) {
-
-            return "network";
-
-        }
-
-
-        if (
-            message.includes("500") ||
-            message.includes("503")
-        ) {
-
-            return "server";
-
-        }
-
-
-        if (
-            message.includes("timeout")
-        ) {
-
-            return "timeout";
-
-        }
-
-
-        return "unknown";
-
-    }
-
-
-    function renderConnectionError(error) {
-
-        const type =
-            getErrorType(error);
-
-
-        let title =
-            "Unable to complete diagnosis";
-
-
-        let message =
-            "The AI server could not be reached. Please try again.";
-
-
-        if (type === "network") {
-
-            title =
-                "Server Connection Problem";
-
-            message =
-                "The AI server could not be reached. Make sure your FastAPI server or deployed API is running.";
-
-        }
-
-
-        if (type === "server") {
-
-            title =
-                "AI Server Error";
-
-            message =
-                "The AI server returned an error. Please try again after a short time.";
-
-        }
-
-
-        if (type === "timeout") {
-
-            title =
-                "Request Timed Out";
-
-            message =
-                "The AI server took too long to respond. Please try the diagnosis again.";
-
-        }
-
-
-        return `
-
-            <div class="ai-result-card">
-
-                <div class="error-card">
-
-                    <h3>
-                        ⚠️ ${escapeHTML(title)}
-                    </h3>
-
-                    <p>
-                        ${escapeHTML(message)}
-                    </p>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    function showResult(html) {
-
-        resultContainer.innerHTML =
-            html;
-
-        resultSection.classList.add("show");
-
-        setTimeout(function () {
-
-            resultSection.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        },100);
-
-    }
-
-
-    async function diagnose() {
-
-        const device =
-            deviceInput.value.trim();
-
-
-        const problem =
-            problemInput.value.trim();
-
-
-        if (!device || !problem) {
-
-            window.PCRepairAnalytics
-                .diagnosisValidationError();
-
-
-            showResult(`
-
-                <div class="ai-result-card">
-
-                    <div class="error-card">
-
-                        <h3>
-                            ⚠️ Please enter both fields
-                        </h3>
-
-                        <p>
-                            Enter your device name and describe the problem before starting the diagnosis.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            `);
-
-            return;
-
-        }
-
-
-        window.PCRepairAnalytics
-            .diagnosisStarted();
-
-
-        setLoadingState();
-
-
-        try {
-
-            const response =
-                await fetch(
-                    API_URL + "/diagnose",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-                                device: device,
-                                problem: problem
-                            })
-                    }
-                );
-
-
-            const contentType =
-                response.headers.get(
-                    "content-type"
-                ) || "";
-
-
-            let data;
-
-
-            if (
-                contentType.includes(
-                    "application/json"
-                )
-            ) {
-
-                data =
-                    await response.json();
-
-            } else {
-
-                const text =
-                    await response.text();
-
-                throw new Error(
-                    text ||
-                    "Server returned a non-JSON response."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data?.detail ||
-                    data?.message ||
-                    "Server returned an error."
-                );
-
-            }
-
-
-            const productCount =
-                countProducts(data);
-
-
-            window.PCRepairAnalytics
-                .diagnosisSuccess(
-                    productCount
-                );
-
-
-            showResult(
-                renderDiagnosis(data)
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Diagnosis error:",
-                error
-            );
-
-
-            window.PCRepairAnalytics
-                .diagnosisError(
-                    getErrorType(error)
-                );
-
-
-            showResult(
-                renderConnectionError(error)
-            );
-
-        } finally {
-
-            diagnoseButton.classList.remove(
-                "loading"
-            );
-
-            diagnoseButton.disabled = false;
-
-        }
-
-    }
-
-
-    diagnoseButton.addEventListener(
-        "click",
-        diagnose
-    );
-
-
-    deviceInput.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (event.key === "Enter") {
-
-                event.preventDefault();
-
-                problemInput.focus();
-
-            }
-
-        }
-    );
-
-
-    problemInput.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (
-                event.key === "Enter" &&
-                event.ctrlKey
-            ) {
-
-                event.preventDefault();
-
-                diagnose();
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "click",
-        function (event) {
-
-            const productLink =
-                event.target.closest(
-                    ".product-link"
-                );
-
-
-            if (!productLink) {
-                return;
-            }
-
-
-            if (
-                window.PCRepairAnalytics
-            ) {
-
-                window.PCRepairAnalytics
-                    .productClick(
-
-                        productLink.dataset.productName ||
-                        "",
-
-                        productLink.dataset.productStore ||
-                        "",
-
-                        (() => {
-
-                            try {
-
-                                return new URL(
-                                    productLink.href
-                                ).hostname;
-
-                            } catch (error) {
-
-                                return "";
-
-                            }
-
-                        })()
-
-                    );
-
-            }
-
-        },
-        true
-    );
-
-
-    const backTop =
-        document.getElementById(
-            "backTop"
-        );
-
-
-    window.addEventListener(
-        "scroll",
-        function () {
-
-            if (window.scrollY > 500) {
-
-                backTop.classList.add("show");
-
-            } else {
-
-                backTop.classList.remove("show");
-
-            }
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    backTop.addEventListener(
-        "click",
-        function () {
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-
-            if (
-                window.PCRepairAnalytics
-            ) {
-
-                window.PCRepairAnalytics.track(
-                    "back_to_top"
-                );
-
-            }
-
-        }
-    );
-
-
-    const revealObserver =
-        new IntersectionObserver(
-            function (entries) {
-
-                entries.forEach(
-                    function (entry) {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target
-                                .classList
-                                .add("visible");
-
-
-                            revealObserver
-                                .unobserve(
-                                    entry.target
-                                );
-
-                        }
-
-                    }
-                );
-
             },
             {
-                threshold: .12
+                threshold: 0.12
             }
         );
 
 
-    document
-        .querySelectorAll(".reveal")
-        .forEach(function (element) {
+    revealElements.forEach(function(element) {
 
-            revealObserver.observe(
-                element
-            );
+        observer.observe(element);
 
-        });
+    });
+
+}
 
 
-    const navLinks =
-        document.querySelectorAll(
-            ".nav-links a[href^='#']"
-        );
+/* ================================
+   PAGE READY
+================================ */
+
+window.PCRepairAnalytics.track(
+    "page_ready"
+);
 
 
-    const sections =
-        document.querySelectorAll(
-            "section[id]"
-        );
+/* ================================
+   GLOBAL JAVASCRIPT ERROR
+================================ */
 
+window.addEventListener(
+    "error",
+    function(event) {
 
-    window.addEventListener(
-        "scroll",
-        function () {
+        if (
+            window.PCRepairAnalytics &&
+            event.error
+        ) {
 
-            let current = "";
-
-
-            sections.forEach(
-                function (section) {
-
-                    const top =
-                        section.offsetTop - 120;
-
-
-                    if (
-                        window.scrollY >= top
-                    ) {
-
-                        current =
-                            section.id;
-
-                    }
-
+            window.PCRepairAnalytics.track(
+                "javascript_error",
+                {
+                    message:
+                        String(
+                            event.message || ""
+                        ).slice(0, 200)
                 }
             );
 
-
-            navLinks.forEach(
-                function (link) {
-
-                    link.classList.remove(
-                        "active"
-                    );
-
-
-                    if (
-                        link.getAttribute("href") ===
-                        "#" + current
-                    ) {
-
-                        link.classList.add(
-                            "active"
-                        );
-
-                    }
-
-                }
-            );
-
-        },
-        {
-            passive: true
         }
-    );
 
+    }
+);
 
-    document
-        .querySelectorAll(
-            ".btn, .diagnose-btn"
-        )
-        .forEach(function (button) {
-
-            button.addEventListener(
-                "click",
-                function (event) {
-
-                    const ripple =
-                        document.createElement(
-                            "span"
-                        );
-
-
-                    ripple.style.position =
-                        "absolute";
-
-                    ripple.style.width =
-                        "10px";
-
-                    ripple.style.height =
-                        "10px";
-
-                    ripple.style.borderRadius =
-                        "50%";
-
-                    ripple.style.background =
-                        "rgba(255,255,255,.35)";
-
-                    ripple.style.pointerEvents =
-                        "none";
-
-                    ripple.style.transform =
-                        "translate(-50%,-50%)";
-
-                    ripple.style.left =
-                        event.offsetX + "px";
-
-                    ripple.style.top =
-                        event.offsetY + "px";
-
-
-                    const oldPosition =
-                        getComputedStyle(
-                            button
-                        ).position;
-
-
-                    if (
-                        oldPosition ===
-                        "static"
-                    ) {
-
-                        button.style.position =
-                            "relative";
-
-                    }
-
-
-                    button.appendChild(
-                        ripple
-                    );
-
-
-                    setTimeout(
-                        function () {
-
-                            ripple.remove();
-
-
-                            if (
-                                oldPosition ===
-                                "static"
-                            ) {
-
-                                button.style.position =
-                                    "";
-
-                            }
-
-                        },
-                        500
-                    );
-
-                }
-            );
-
-        });
-
-
-    document
-        .querySelectorAll(".info-mini")
-        .forEach(function (card) {
-
-            card.addEventListener(
-                "mousemove",
-                function (event) {
-
-                    const rect =
-                        card.getBoundingClientRect();
-
-
-                    const x =
-                        ((event.clientX - rect.left) /
-                            rect.width) * 100;
-
-
-                    const y =
-                        ((event.clientY - rect.top) /
-                            rect.height) * 100;
-
-
-                    card.style.background =
-                        `radial-gradient(circle at ${x}% ${y}%, rgba(108,99,255,.13), var(--card))`;
-
-                }
-            );
-
-
-            card.addEventListener(
-                "mouseleave",
-                function () {
-
-                    card.style.background =
-                        "";
-
-                }
-            );
-
-        });
-
-
-    document
-        .querySelectorAll(".info-card")
-        .forEach(function (card) {
-
-            card.addEventListener(
-                "mousemove",
-                function (event) {
-
-                    const rect =
-                        card.getBoundingClientRect();
-
-
-                    const x =
-                        ((event.clientX - rect.left) /
-                            rect.width) * 100;
-
-
-                    const y =
-                        ((event.clientY - rect.top) /
-                            rect.height) * 100;
-
-
-                    card.style.background =
-                        `radial-gradient(circle at ${x}% ${y}%, rgba(108,99,255,.09), var(--card))`;
-
-                }
-            );
-
-
-            card.addEventListener(
-                "mouseleave",
-                function () {
-
-                    card.style.background =
-                        "";
-
-                }
-            );
-
-        });
-
-
-});
 </script>
 
 </body>
