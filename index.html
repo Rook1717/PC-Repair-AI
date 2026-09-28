@@ -28,22 +28,25 @@ function trackEvent(name, params = {}) {
 <body>
 
 <header class="navbar">
+    <div class="logo">
+        🖥️ <span>PC Repair AI</span>
+    </div>
 
-    <a href="index.html" class="logo">
-        ⚡ PC Repair AI
-    </a>
-
-    <nav>
-        <a href="index.html">Home</a>
+    <nav class="nav-links">
+        <a href="index.html" class="active">Home</a>
         <a href="parts.html">Parts Explorer</a>
-        <a href="#how">How It Works</a>
+        <a href="#how-it-works">How It Works</a>
         <a href="#about">About</a>
     </nav>
 
-    <button id="themeBtn" class="theme-btn" type="button" aria-label="Toggle theme">
+    <button
+        id="themeBtn"
+        class="theme-btn"
+        type="button"
+        aria-label="Switch to dark mode"
+    >
         🌙
     </button>
-
 </header>
 
 <main>
