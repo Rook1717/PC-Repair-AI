@@ -5,11 +5,23 @@ import time
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from groq import Groq
 
+
+# ============================================================
+# LOAD ENVIRONMENT VARIABLES
+# ============================================================
 
 load_dotenv()
 
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+
+# ============================================================
+# CHECK API KEYS
+# ============================================================
 
 if not GEMINI_API_KEY:
     raise RuntimeError(
@@ -18,10 +30,30 @@ if not GEMINI_API_KEY:
     )
 
 
-client = genai.Client(
+if not GROQ_API_KEY:
+    raise RuntimeError(
+        "GROQ_API_KEY is missing. "
+        "Please add your Groq API key to the Render Environment Variables."
+    )
+
+
+# ============================================================
+# AI CLIENTS
+# ============================================================
+
+gemini_client = genai.Client(
     api_key=GEMINI_API_KEY
 )
 
+
+groq_client = Groq(
+    api_key=GROQ_API_KEY
+)
+
+
+# ============================================================
+# SYSTEM PROMPT
+# ============================================================
 
 SYSTEM_PROMPT = """
 You are an expert PC and laptop troubleshooting assistant.
@@ -124,11 +156,15 @@ Use exactly this structure:
 """
 
 
+# ============================================================
+# JSON PARSER
+# ============================================================
+
 def parse_json_response(text: str):
 
     if not text:
         raise ValueError(
-            "Gemini returned an empty response."
+            "AI returned an empty response."
         )
 
     text = text.strip()
@@ -153,9 +189,13 @@ def parse_json_response(text: str):
             pass
 
     raise ValueError(
-        "Gemini returned invalid JSON."
+        "AI returned invalid JSON."
     )
 
+
+# ============================================================
+# GEMINI
+# ============================================================
 
 def call_gemini(model_name: str, user_prompt: str):
 
@@ -173,7 +213,7 @@ def call_gemini(model_name: str, user_prompt: str):
 
     try:
 
-        response = client.models.generate_content(
+        response = gemini_client.models.generate_content(
             model=model_name,
             contents=user_prompt,
             config=config
@@ -186,6 +226,7 @@ def call_gemini(model_name: str, user_prompt: str):
         )
 
         if not response_text:
+
             raise ValueError(
                 "Gemini returned an empty response."
             )
@@ -195,6 +236,7 @@ def call_gemini(model_name: str, user_prompt: str):
         )
 
         if not isinstance(result, dict):
+
             raise ValueError(
                 "Gemini returned an invalid diagnosis format."
             )
@@ -219,11 +261,107 @@ def call_gemini(model_name: str, user_prompt: str):
         raise
 
 
+# ============================================================
+# GROQ FALLBACK
+# ============================================================
+
+def call_groq(user_prompt: str):
+
+    print()
+    print("=" * 60)
+    print("Gemini failed.")
+    print("Switching to Groq fallback...")
+    print("=" * 60)
+
+    # Current Groq model
+    model_name = "openai/gpt-oss-20b"
+
+    try:
+
+        response = groq_client.chat.completions.create(
+
+            model=model_name,
+
+            messages=[
+                {
+                    "role": "system",
+                    "content": SYSTEM_PROMPT
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ],
+
+            temperature=0.2,
+
+            max_tokens=4096,
+
+            response_format={
+                "type": "json_object"
+            }
+        )
+
+
+        response_text = (
+            response
+            .choices[0]
+            .message
+            .content
+        )
+
+
+        if not response_text:
+
+            raise ValueError(
+                "Groq returned an empty response."
+            )
+
+
+        result = parse_json_response(
+            response_text
+        )
+
+
+        if not isinstance(result, dict):
+
+            raise ValueError(
+                "Groq returned an invalid diagnosis format."
+            )
+
+
+        print()
+        print("=" * 60)
+        print(
+            f"SUCCESS: Diagnosis generated using Groq ({model_name})"
+        )
+        print("=" * 60)
+
+
+        return result
+
+
+    except Exception as error:
+
+        print()
+        print("=" * 60)
+        print("ERROR using Groq")
+        print(str(error))
+        print("=" * 60)
+
+        raise
+
+
+# ============================================================
+# TEMPORARY GEMINI ERROR CHECK
+# ============================================================
+
 def is_temporary_error(error):
 
     error_text = str(error).upper()
 
     temporary_errors = [
+
         "503",
         "UNAVAILABLE",
         "429",
@@ -234,6 +372,7 @@ def is_temporary_error(error):
         "DEADLINE",
         "INTERNAL",
         "SERVICE UNAVAILABLE"
+
     ]
 
     return any(
@@ -242,6 +381,10 @@ def is_temporary_error(error):
     )
 
 
+# ============================================================
+# MAIN DIAGNOSIS FUNCTION
+# ============================================================
+
 def diagnose_problem(problem: str, device: str = ""):
 
     if not problem or not problem.strip():
@@ -249,6 +392,7 @@ def diagnose_problem(problem: str, device: str = ""):
         raise ValueError(
             "Please describe your computer problem."
         )
+
 
     user_prompt = f"""
 Analyze this computer problem.
@@ -269,16 +413,27 @@ Do not invent product prices, product links, or product images.
 Return ONLY the required JSON.
 """
 
-    # Start with the model that previously worked reliably
-    # and use other models only as fallbacks.
+
+    # ========================================================
+    # GEMINI MODELS
+    # ========================================================
+
     models_to_try = [
+
         "gemini-3.5-flash-lite",
         "gemini-3.8-flash",
         "gemini-3.7-flash",
         "gemini-3.6-flash"
+
     ]
 
-    last_error = None
+
+    last_gemini_error = None
+
+
+    # ========================================================
+    # TRY GEMINI FIRST
+    # ========================================================
 
     for model_name in models_to_try:
 
@@ -291,9 +446,11 @@ Return ONLY the required JSON.
                     user_prompt
                 )
 
+
             except Exception as error:
 
-                last_error = error
+                last_gemini_error = error
+
 
                 if not is_temporary_error(error):
 
@@ -304,25 +461,35 @@ Return ONLY the required JSON.
 
                     break
 
+
                 if attempt < 2:
 
                     wait_time = 2 ** attempt
 
+
                     print()
+
                     print(
                         f"Temporary Gemini error with "
                         f"{model_name}."
                     )
 
+
                     print(
                         f"Retrying in {wait_time} seconds..."
                     )
 
-                    time.sleep(wait_time)
+
+                    time.sleep(
+                        wait_time
+                    )
+
 
                     continue
 
+
                 print()
+
                 print(
                     f"{model_name} failed after "
                     f"3 attempts."
@@ -330,19 +497,83 @@ Return ONLY the required JSON.
 
                 break
 
+
+    # ========================================================
+    # ALL GEMINI MODELS FAILED
+    # ========================================================
+
     print()
     print("=" * 60)
     print("ALL GEMINI MODELS FAILED")
+    print("ACTIVATING GROQ FALLBACK")
     print("=" * 60)
 
-    if last_error:
-        print(type(last_error).__name__)
-        print(str(last_error))
+
+    if last_gemini_error:
+
+        print(
+            "Last Gemini error:"
+        )
+
+        print(
+            type(last_gemini_error).__name__
+        )
+
+        print(
+            str(last_gemini_error)
+        )
+
 
     print("=" * 60)
 
-    raise RuntimeError(
-        "Unable to generate diagnosis. "
-        "Gemini API request failed. "
-        f"Last error: {last_error}"
-    )
+
+    # ========================================================
+    # TRY GROQ
+    # ========================================================
+
+    try:
+
+        return call_groq(
+            user_prompt
+        )
+
+
+    except Exception as groq_error:
+
+        print()
+        print("=" * 60)
+        print("BOTH GEMINI AND GROQ FAILED")
+        print("=" * 60)
+
+        print(
+            "Gemini error:"
+        )
+
+        print(
+            str(last_gemini_error)
+        )
+
+        print()
+
+        print(
+            "Groq error:"
+        )
+
+        print(
+            str(groq_error)
+        )
+
+        print("=" * 60)
+
+
+        raise RuntimeError(
+
+            "Unable to generate diagnosis. "
+
+            "Both Gemini and Groq API requests failed. "
+
+            f"Gemini error: {last_gemini_error}. "
+
+            f"Groq error: {groq_error}"
+
+        )
