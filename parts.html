@@ -3,24 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TXNZC0SK5X"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("js", new Date());
-gtag("config", "G-TXNZC0SK5X", {
-    send_page_view: true
-});
-
-function trackEvent(name, params = {}) {
-    if (typeof gtag === "function") {
-        gtag("event", name, params);
-    }
-}
-</script>
-
 <title>AI PC & Laptop Repair Assistant | Parts Explorer</title>
 
 <style>
@@ -1165,52 +1147,202 @@ body.light .header{
     }
 }
 </style>
+
+<!-- Google Analytics 4 - Added without changing existing website code -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TXNZC0SK5X"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-TXNZC0SK5X", {
+    send_page_view: true
+});
+</script>
+
+<!-- AI PC Repair Assistant - GA4 Analytics Layer -->
+<script>
+(function () {
+    function track(name, params) {
+        if (typeof gtag === "function") {
+            gtag("event", name, params || {});
+        }
+    }
+
+    window.PCRepairAnalytics = { track: track };
+
+    track("page_loaded", {
+        page_name: document.title,
+        page_path: window.location.pathname
+    });
+
+    const scrollMarks = [25, 50, 75, 90, 100];
+    const sentScrollMarks = {};
+
+    function checkScrollDepth() {
+        const doc = document.documentElement;
+        const scrollable = doc.scrollHeight - window.innerHeight;
+        if (scrollable <= 0) return;
+
+        const percent = Math.min(100, Math.round((window.scrollY / scrollable) * 100));
+
+        scrollMarks.forEach(function (mark) {
+            if (percent >= mark && !sentScrollMarks[mark]) {
+                sentScrollMarks[mark] = true;
+                track("scroll_depth", {
+                    percent_scrolled: mark,
+                    page_path: window.location.pathname
+                });
+            }
+        });
+    }
+
+    window.addEventListener("scroll", checkScrollDepth, { passive: true });
+
+    document.addEventListener("click", function (event) {
+        const element = event.target.closest(
+            "a, button, input[type='submit'], input[type='button'], [role='button']"
+        );
+        if (!element) return;
+
+        const text = (
+            element.innerText ||
+            element.value ||
+            element.getAttribute("aria-label") ||
+            element.getAttribute("title") ||
+            ""
+        ).trim().replace(/\s+/g, " ").slice(0, 100);
+
+        track("user_action", {
+            element_type: element.tagName.toLowerCase(),
+            element_text: text,
+            element_id: element.id || "",
+            page_path: window.location.pathname
+        });
+
+        if (element.tagName.toLowerCase() === "a" && element.href) {
+            try {
+                const url = new URL(element.href, window.location.href);
+
+                if (url.origin !== window.location.origin) {
+                    track("outbound_click", {
+                        link_domain: url.hostname,
+                        link_path: url.pathname
+                    });
+                }
+
+                if (url.hostname.includes("youtube.com") ||
+                    url.hostname.includes("youtu.be")) {
+                    track("youtube_click", {
+                        video_domain: url.hostname
+                    });
+                }
+
+                if (url.hostname.includes("amazon.") ||
+                    url.hostname.includes("flipkart.") ||
+                    url.hostname.includes("mdcomputers.") ||
+                    url.hostname.includes("primeabgb.") ||
+                    url.hostname.includes("vedant.")) {
+                    track("product_link_click", {
+                        store_domain: url.hostname
+                    });
+                }
+            } catch (e) {}
+        }
+    }, true);
+
+    document.addEventListener("submit", function (event) {
+        const form = event.target;
+        track("form_submit", {
+            form_id: form.id || "",
+            form_name: form.getAttribute("name") || "",
+            page_path: window.location.pathname
+        });
+    }, true);
+
+    document.addEventListener("change", function (event) {
+        const element = event.target;
+        if (!element || !["SELECT", "INPUT"].includes(element.tagName)) return;
+
+        track("form_interaction", {
+            field_type: element.type || element.tagName.toLowerCase(),
+            field_name: element.name || element.id || "",
+            page_path: window.location.pathname
+        });
+    }, true);
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+
+            const section = entry.target;
+            if (section.dataset.analyticsTracked === "true") return;
+
+            section.dataset.analyticsTracked = "true";
+
+            track("section_view", {
+                section_name: (
+                    section.getAttribute("data-analytics-section") ||
+                    section.id ||
+                    section.getAttribute("aria-label") ||
+                    section.tagName.toLowerCase()
+                ).slice(0, 100),
+                page_path: window.location.pathname
+            });
+        });
+    }, { threshold: 0.35 });
+
+    document.querySelectorAll("section, main > div, [data-section]").forEach(function (element) {
+        observer.observe(element);
+    });
+
+    window.addEventListener("error", function () {
+        track("javascript_error", {
+            error_type: "window_error",
+            page_path: window.location.pathname
+        });
+    });
+
+    window.addEventListener("unhandledrejection", function () {
+        track("javascript_error", {
+            error_type: "promise_rejection",
+            page_path: window.location.pathname
+        });
+    });
+
+    window.addEventListener("load", function () {
+        track("page_ready", {
+            page_name: document.title,
+            page_path: window.location.pathname
+        });
+    });
+})();
+</script>
+<!-- End AI PC Repair Assistant - GA4 Analytics Layer -->
+
 </head>
 
 <body>
 
-<header class="navbar">
+<header class="header">
+    <div class="navbar">
 
-    <a href="index.html" class="logo">
-        🖥️
-        <span>PC Repair AI</span>
-    </a>
-
-
-    <nav class="nav-links">
-
-        <a href="index.html">
-            Home
+        <a href="index.html" class="logo">
+            <span class="logo-mark">⚡</span>
+            <span>PC Repair AI</span>
         </a>
 
-        <a
-            href="parts.html"
-            class="active"
-        >
-            Parts Explorer
-        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#parts" class="active">Parts Explorer</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+        </nav>
 
-        <a href="index.html#how-it-works">
-            How It Works
-        </a>
+        <button class="theme-btn" id="themeBtn" title="Change theme">🌙</button>
 
-        <a href="index.html#about">
-            About
-        </a>
-
-    </nav>
-
-
-    <button
-        id="themeBtn"
-        class="theme-btn"
-        type="button"
-        aria-label="Toggle theme"
-    >
-        🌙
-    </button>
-
+    </div>
 </header>
+
 <main>
 
 <section class="hero">
@@ -2294,47 +2426,22 @@ body.light .header{
 
 const themeBtn = document.getElementById("themeBtn");
 
-const savedTheme = localStorage.getItem("pcRepairTheme") || "light";
+const savedTheme = localStorage.getItem("theme");
 
-function applyTheme() {
-
-    const theme = localStorage.getItem("pcRepairTheme") || "light";
-
-    if (theme === "light") {
-        document.body.classList.add("light");
-        themeBtn.textContent = "☀️";
-    } else {
-        document.body.classList.remove("light");
-        themeBtn.textContent = "🌙";
-    }
+if(savedTheme === "light"){
+    document.body.classList.add("light");
+    themeBtn.textContent = "☀️";
 }
-
-applyTheme();
 
 themeBtn.addEventListener("click", () => {
 
-    const currentTheme = localStorage.getItem("pcRepairTheme") || "light";
-    const newTheme = currentTheme === "light" ? "dark" : "light";
+    document.body.classList.toggle("light");
 
-    localStorage.setItem("pcRepairTheme", newTheme);
+    const isLight = document.body.classList.contains("light");
 
-    applyTheme();
+    localStorage.setItem("theme", isLight ? "light" : "dark");
 
-    trackEvent("theme_changed", {
-        theme: newTheme
-    });
-
-});
-
-
-/* Keep theme synchronized across index.html and parts.html */
-window.addEventListener("storage", function (event) {
-
-    if (event.key !== "pcRepairTheme") {
-        return;
-    }
-
-    applyTheme();
+    themeBtn.textContent = isLight ? "☀️" : "🌙";
 
 });
 
@@ -2393,26 +2500,7 @@ function filterParts(){
 }
 
 
-let searchAnalyticsTimer;
-
 searchInput.addEventListener("input", filterParts);
-
-searchInput.addEventListener("input", () => {
-    clearTimeout(searchAnalyticsTimer);
-
-    searchAnalyticsTimer = setTimeout(() => {
-        const query = searchInput.value.trim();
-
-        if (query) {
-            trackEvent("parts_search", {
-                query_length: query.length,
-                visible_results: document.querySelectorAll(
-                    ".part-card:not(.hide-card)"
-                ).length
-            });
-        }
-    }, 700);
-});
 
 
 filterButtons.forEach(button => {
@@ -2428,13 +2516,6 @@ filterButtons.forEach(button => {
         currentFilter = button.dataset.filter;
 
         filterParts();
-
-        trackEvent("parts_filter", {
-            filter_name: currentFilter,
-            visible_results: document.querySelectorAll(
-                ".part-card:not(.hide-card)"
-            ).length
-        });
 
     });
 
@@ -2666,10 +2747,6 @@ document.querySelectorAll(".details-btn").forEach(button => {
 
         const part = button.dataset.part;
 
-        trackEvent("part_details_open", {
-            part_name: part
-        });
-
         const data = partDetails[part];
 
         if(!data) return;
@@ -2726,15 +2803,7 @@ document.querySelectorAll(".tool-trigger").forEach(trigger => {
 
     trigger.addEventListener("click", () => {
 
-        const toolName = trigger.dataset.tool || "unknown";
         const card = trigger.closest(".tool-card");
-        const opening = !card.classList.contains("open");
-
-        if (opening) {
-            trackEvent("smart_tool_open", {
-                tool_name: toolName
-            });
-        }
 
         document.querySelectorAll(".tool-card").forEach(other => {
 
@@ -3597,112 +3666,6 @@ document.querySelectorAll(".tool-card").forEach(card => {
 });
 
 
-/* GA4 detailed interaction tracking */
-document.addEventListener("click", function (event) {
-
-    const button = event.target.closest("button");
-
-    if (button && button.classList.contains("tool-action")) {
-        trackEvent("smart_tool_action", {
-            tool_id: button.id || "unknown",
-            action_name: (button.textContent || "").trim()
-        });
-    }
-
-    const link = event.target.closest("a");
-
-    if (link) {
-        const href = link.getAttribute("href") || "";
-        const text = (link.textContent || "").trim();
-
-        if (href.startsWith("#")) {
-            trackEvent("navigation_click", {
-                destination: href.substring(1),
-                link_text: text
-            });
-        }
-
-        if (/^https?:/i.test(href)) {
-            try {
-                trackEvent("outbound_click", {
-                    link_domain: new URL(href).hostname
-                });
-            } catch {}
-        }
-    }
-});
-
-const partsSections = document.querySelectorAll(
-    "#parts, #smart-tools, #how-it-works, #about"
-);
-
-const viewedPartsSections = new Set();
-
-const partsSectionObserver = new IntersectionObserver(
-    entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !viewedPartsSections.has(entry.target)) {
-                viewedPartsSections.add(entry.target);
-
-                trackEvent("section_view", {
-                    section_name: entry.target.id
-                });
-            }
-        });
-    },
-    { threshold: 0.35 }
-);
-
-partsSections.forEach(section => {
-    partsSectionObserver.observe(section);
-});
-
-const resultBoxes = document.querySelectorAll(".result-box");
-
-resultBoxes.forEach(box => {
-    const observer = new MutationObserver(() => {
-        const text = box.textContent.trim();
-
-        if (text) {
-            trackEvent("smart_tool_result", {
-                result_box: box.id || "unknown",
-                result_length: text.length
-            });
-        }
-    });
-
-    observer.observe(box, {
-        childList: true,
-        subtree: true,
-        characterData: true
-    });
-});
-
-let maxScroll = 0;
-const scrollMarks = [25, 50, 75, 90, 100];
-
-window.addEventListener("scroll", function () {
-    const doc = document.documentElement;
-    const scrollable = doc.scrollHeight - window.innerHeight;
-
-    if (scrollable <= 0) return;
-
-    const percent = Math.round((window.scrollY / scrollable) * 100);
-
-    if (percent > maxScroll) {
-        maxScroll = percent;
-
-        scrollMarks.forEach(mark => {
-            if (percent >= mark && !window[`gaPartsScroll${mark}`]) {
-                window[`gaPartsScroll${mark}`] = true;
-
-                trackEvent("scroll_depth", {
-                    percent: mark
-                });
-            }
-        });
-    }
-});
 </script>
 
 </body>
